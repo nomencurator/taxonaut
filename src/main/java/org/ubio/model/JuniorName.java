@@ -1,0 +1,67 @@
+/*
+ * JuniorName.java: provides a container of uBio JuniorName.
+ *
+ * Copyright (c) 2016 Nozomi `James' Ytow
+ * All rights reserved.
+ */
+
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.ubio.model;
+
+import java.util.Objects;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * {@code JuniorName} provides a container of uBio JuniorName.
+ *
+ * @version 	27 June 2016
+ * @author 	Nozomi `James' Ytow
+ */
+public class JuniorName 
+    extends SeniorName
+{
+    private static final long serialVersionUID = -7133701406862018104L;
+
+    @Getter
+    @Setter
+    protected int seniorClassificationBankID;
+
+    public JuniorName() {
+	super();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+	if(object == this) return true;
+	if(object == null) return false;
+	if(getClass() != object.getClass()) return false;
+
+	final JuniorName theOther = (JuniorName) object;
+	return super.equals(object)
+	    && Objects.equals(this.getSeniorClassificationBankID(), theOther.getSeniorClassificationBankID())
+	    ;
+    }
+
+    @Override
+    public int hashCode() {
+	return Objects.hash(super.hashCode(),
+			    getSeniorClassificationBankID()
+			    );
+    }
+
+}

@@ -1,0 +1,65 @@
+# TaxoNote properties for Japanese
+#
+#
+FILE=ファイル
+NEW_FILE=新規作成
+OPEN=開く
+CLOSE=閉じる
+IMPORT=読み込み
+EXPORT=書き出し
+SAVE=保存
+SAVE_AS=名前をつけて保存
+PRINT=印刷
+EXIT=終了
+LANGUAGES=言語
+HELP=ヘルプ
+VERISON=バージョン
+ADD_TO_COMPARATOR=比較表に追加
+COMPARE=比較
+TO_COMPARE_COLUMN=比較
+
+NEW=新規
+DUPLICATE=複製
+LOCK=書込禁止
+
+#FileFilter messages
+TEXT_FILE=テキストファイル (*.txt)
+XML_FILE=XML ファイル (*.xml)
+MS_ACCESS_FILE=Microsoft Access ファイル (*.mdb)
+MS_EXCEL_FILE=Microsoft Excel ファイル (*.xls)
+MS_WORD_FILE=Microsoft Word ファイル (*.doc)
+FILEMAKER_FILE=ファイルメーカーファイル (*.fmp)
+ODBC_FILE=ODBC ファイル (*.dns)
+
+AUTHOR=著者
+CLASSIFICAITON=分類体系
+CLASSIFICAITONS=分類体系
+DETAILS=詳細
+RESULTS=検索結果
+HIERARCHY=分類体系
+NAME_APPEARANCE=表現
+NAME_USAGE=用例
+PUBLICATION=文献
+RESULT=結果
+LANGUAGE=言語
+CLEAR=クリア
+RANK=階級
+SEARCH=検索
+TAXON_NAME=分類群名
+SENSU=著者
+YEAR=年
+RECORD=レコード
+RECORDS=レコード
+FOUND_MESSAGE={0}件みつかりました 
+FOUND_FOR_MESSAGE={2}に対応する{1}は{0}件みつかりました
+NOT_FOUND_MESSAGE={0}はみつかりませんでした。
+NOT_FOUND_FOR_MESSAGE={1}はみつかりませんでした。
+
+#query type
+EXACT_QUERY=完全一致
+CONTAINS_QUERY=を含む
+FUZZY_QUERY=あいまい検索
+FULL_DEPTH=すべて
+FULL_HEIGHT=すべて
+FULL_DEPTH_LABEL=下位分類群
+FULL_HEIGHT_LABEL=上位分類群
