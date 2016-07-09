@@ -42,7 +42,7 @@ import org.nomencurator.model.DefaultNameUsage;
  * @see <A HREF="http://evolution.genetics.washington.edu/phylip/newicktree.html">http://evolution.genetics.washington.edu/phylip/newicktree.html</A>
  * @see org.nomencurator.model.NameUsage
  *
- * @version 	27 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NewickReader
@@ -70,7 +70,7 @@ public class NewickReader
      * @exception FileNotFoundException
      * @exception IOException
      */
-    public NameUsage<?, ?>[] parseTrees(File file)
+    public NameUsage<?>[] parseTrees(File file)
 	throws FileNotFoundException, IOException
     {
 	reader = new BufferedReader(new FileReader(file));
@@ -78,22 +78,22 @@ public class NewickReader
 	if(line == null)
 	    return null;
 
-	Collection<NameUsage<?, ?>> roots = parseTrees();
+	Collection<NameUsage<?>> roots = parseTrees();
 
 	if(roots.isEmpty())
 	    return null;
 
-	NameUsage<?, ?>[] nodes = roots.toArray(new NameUsage<?, ?>[roots.size()]);
+	NameUsage<?>[] nodes = roots.toArray(new NameUsage<?>[roots.size()]);
 	roots.clear();
 	return nodes;
     }
 
-    protected Collection<NameUsage<?, ?>> parseTrees()
+    protected Collection<NameUsage<?>> parseTrees()
 	throws IOException
     {
-	Collection<NameUsage<?, ?>> roots = new ArrayList<NameUsage<?, ?>>();
+	Collection<NameUsage<?>> roots = new ArrayList<NameUsage<?>>();
 	do {
-	    NameUsage<?, ?> root = parseTreeLine();
+	    NameUsage<?> root = parseTreeLine();
 	    if(root != null)
 	    roots.add(root);
 	} while(hasMoreTrees());
@@ -131,24 +131,24 @@ public class NewickReader
 	return (line != null);
     }
 
-    protected NameUsage<?, ?> parseTreeLine()
+    protected NameUsage<?> parseTreeLine()
 	throws IOException
     {
 	return parseSubTreeLine(null);
     }
 
     @SuppressWarnings("unchecked")
-    protected NameUsage<?, ?> parseSubTreeLine(NameUsage<?, ?> parent)
+    protected NameUsage<?> parseSubTreeLine(NameUsage<?> parent)
 	throws IOException
     {
-	NameUsage<?, ?> current = null;
+	NameUsage<?> current = null;
 	while(line != null &&
 	      index < line.length() &&
 	      line.charAt(index) != ';') {
 	    if(line.charAt(index) == '(') {
 		index++;
-		current = new DefaultNameUsage();
-		current.setHigherNameUsage((NameUsage)parent);
+		current = parent.create();
+		current.setHigherNameUsage(current.getClass().cast(parent));
 
 		if(index == line.length()) {
 		    line = reader.readLine().trim();
@@ -172,7 +172,6 @@ public class NewickReader
 	    }
 	    else if(line.charAt(index) == ')') {
 		index++;
-		//return parent;
 		return current;
 	    }
 	    else if(line.charAt(index) == ','){
@@ -181,13 +180,14 @@ public class NewickReader
 	    }
 	    else {
 		int i = index;
-		parseNodeToken(new DefaultNameUsage()).setHigherNameUsage((NameUsage)parent);
+		NameUsage<?> toParse = parent.create();
+		parseNodeToken(toParse).setHigherNameUsage(toParse.getClass().cast(parent));
 	    }
 	}
 	return current;
     }
 
-    protected NameUsage<?, ?> parseNodeToken(NameUsage<?, ?> node)
+    protected NameUsage<?> parseNodeToken(NameUsage<?> node)
     {
 	int comma = line.indexOf(",", index);
 	int last = line.indexOf(")", index);
@@ -225,7 +225,7 @@ public class NewickReader
 	if(value != null)
 	    node.setNotes(value);
 
-	NameUsage<?, ?> p = (NameUsage<?, ?>)node.getHigherNameUsage();
+	NameUsage<?> p = (NameUsage<?>)node.getHigherNameUsage();
 	index = last;
 
 	return node;
@@ -236,7 +236,7 @@ public class NewickReader
     public static void main(String[] args)
     {
 	NewickReader reader = new NewickReader();
-	NameUsage<?, ?>[] roots = null;
+	NameUsage<?>[] roots = null;
 	try{
 	    roots = reader.parseTrees(new File(args[0]));
 	}

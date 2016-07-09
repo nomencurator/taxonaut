@@ -30,11 +30,11 @@ import org.w3c.dom.Element;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	26 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class DefaultNameUsage
-    extends AbstractNameUsage<DefaultNameUsage, DefaultNameUsage>
+    extends AbstractNameUsage<DefaultNameUsage>
 {
     private static final long serialVersionUID = 6159012881992744269L;
 
@@ -68,7 +68,7 @@ public class DefaultNameUsage
      * Constructs a <CODE>NameUsage</CODE> based on
      * <CODE>nameUsage</CODE>
      */
-    public DefaultNameUsage(Name<? extends DefaultNameUsage, ? extends DefaultNameUsage> nameUsage)
+    public DefaultNameUsage(Name<? extends DefaultNameUsage> nameUsage)
     {
 	super(nameUsage);
     }
@@ -78,7 +78,7 @@ public class DefaultNameUsage
      *
      * @param nameUsage <CODE>NameUsage</CODE> to be copied deeply
      */
-    public DefaultNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    public DefaultNameUsage(NameUsage<?> nameUsage)
     {
 	super(nameUsage);
     }
@@ -96,9 +96,9 @@ public class DefaultNameUsage
      * @param lower array of lower taxa's <CODE>Name</CODE>s
      */
     public DefaultNameUsage(String rankLiteral, String name,
-		     Name<DefaultNameUsage, DefaultNameUsage> auth, Name<DefaultNameUsage, DefaultNameUsage> rec,
+		     Name<DefaultNameUsage> auth, Name<DefaultNameUsage> rec,
 		     boolean type,
-		     Name<DefaultNameUsage, DefaultNameUsage> higher, Name<DefaultNameUsage, DefaultNameUsage> [] lower)
+		     Name<DefaultNameUsage> higher, Name<DefaultNameUsage> [] lower)
     {
 	super(rankLiteral, name, auth, rec, type, higher, lower);
     }
@@ -133,15 +133,15 @@ public class DefaultNameUsage
     }
 
     @SuppressWarnings("unchecked")
-    protected DefaultNameUsage createNameUsage(Name<?, ?> nameUsage)
+    protected DefaultNameUsage createNameUsage(Name<?> nameUsage)
     {
 	if(nameUsage instanceof DefaultNameUsage)
-	    return new DefaultNameUsage((Name<? extends DefaultNameUsage, ? extends DefaultNameUsage>)nameUsage);
+	    return new DefaultNameUsage((Name<? extends DefaultNameUsage>)nameUsage);
 	else
 	    return new DefaultNameUsage();
     }
 
-    protected DefaultNameUsage createNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    protected DefaultNameUsage createNameUsage(NameUsage<?> nameUsage)
     {
 	return new DefaultNameUsage(nameUsage);
     }

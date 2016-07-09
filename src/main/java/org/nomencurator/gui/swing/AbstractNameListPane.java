@@ -89,10 +89,10 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
  * {@code AbstractNameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	26 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extends N*/>
+public abstract class AbstractNameListPane<T extends NameUsage<?>>
     extends JPanel
     implements ActionListener,
 	       ChangeListener,
@@ -102,11 +102,11 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
 {
     private static final long serialVersionUID = -2133224927427201961L;
 
-    protected NameTable/*<N>*/  nameTable;
+    protected NameTable/*<T>*/  nameTable;
     protected JScrollPane listPane;
     protected JPanel buttonsPanel;
 
-    /* list of <tt>EventLIstener}s */
+    /* list of {@code EventLIstener}s */
     protected EventListenerList listeners;
 
     protected LanguageMenu languageMenu;
@@ -146,7 +146,7 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
      */
     protected void createComponents()
     {
-	nameTable = new NameTable/*<N>*/();
+	nameTable = new NameTable/*<T>*/();
 	nameTable.setAutoscrolls(true);
 	nameTable.getSelectionModel().addListSelectionListener(this);
 
@@ -298,16 +298,16 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
     }
 
     @SuppressWarnings("unchecked")
-	protected QueryEvent<N, N/*T*/> composeQuery()
+    protected QueryEvent<T> composeQuery()
     {
 	int index = getSelectedModelRow();
 	if(index == -1)
 	    return null;
-	NameUsageQueryParameter<N, N/*T*/> parameter = new NameUsageQueryParameter<N, N/*T*/>();
+	NameUsageQueryParameter<T> parameter = new NameUsageQueryParameter<T>();
 	// FIXME
 	// re-design NameTableModel to use generics
-	parameter.setFilter((NameUsage<N, N/*T*/>)getNameTableModel().getNamedObject(index));
-	return new QueryEvent<N, N/*T*/>(this, parameter);
+	parameter.setFilter((NameUsage<T>)getNameTableModel().getNamedObject(index));
+	return new QueryEvent<T>(this, parameter);
     }
 
     /**
@@ -315,7 +315,7 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
      *
      *  @return list of name usages as {@code NameTable}
      */
-    public NameTable/*<N>*/ getNameList()
+    public NameTable/*<T>*/ getNameList()
     {
 	return nameTable;
     }
@@ -382,7 +382,7 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
 	return models;
     }
 
-    public void addQueryListener(QueryListener<N, N/*T*/> listener)
+    public void addQueryListener(QueryListener<T> listener)
     {
 	if(listener == null)
 	    return;
@@ -393,7 +393,7 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
 	listeners.add(QueryListener.class, listener);
     }
 
-    public void removeQueryListener(QueryListener<N, N/*T*/> listener)
+    public void removeQueryListener(QueryListener<T> listener)
     {
 	if(listener == null || listeners == null)
 	    return;
@@ -405,7 +405,7 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
      * Dispatches queryEvent to {@code QueryListenr}.
      */
     @SuppressWarnings("unchecked")
-    protected void fireQueryEvent(QueryEvent<N, N/*T*/> queryEvent)
+    protected void fireQueryEvent(QueryEvent<T> queryEvent)
     {
 	if(queryEvent == null || listeners == null)
 	    return;
@@ -413,7 +413,7 @@ public abstract class AbstractNameListPane<N extends NameUsage<?, ?>/*, T extend
 	Object[] listenersArray = listeners.getListenerList();
 	for (int i = listenersArray.length-2; i>=0; i-=2) {
 	    if (listenersArray[i]==QueryListener.class) {
-		((QueryListener<N, N/*T*/>)listenersArray[i+1]).query(queryEvent);
+		((QueryListener<T>)listenersArray[i+1]).query(queryEvent);
 	    }
 	}
     }

@@ -49,11 +49,11 @@ import lombok.Getter;
  * {@code NameTableModel} is a {@code TableModel} to
  * manage {@code NameUsage}s.
  *
- * @version 	27 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NameTableModel/*<N extends NameUsage<?, ?>>*/
-    extends NamedObjectTableModel<NameUsage<?, ?>>
+public class NameTableModel/*<T extends NameUsage<?>>*/
+    extends NamedObjectTableModel<NameUsage<?>>
 {
     private static final long serialVersionUID = 8280031941034886624L;
 
@@ -77,12 +77,12 @@ public class NameTableModel/*<N extends NameUsage<?, ?>>*/
 	super(locale);
     }
 
-    public NameTableModel(Iterator<? extends NameUsage<?, ?>> names)
+    public NameTableModel(Iterator<? extends NameUsage<?>> names)
     {
 	this(names, Locale.getDefault());
     }
 
-    public NameTableModel(Iterator<? extends NameUsage<?, ?>> names,
+    public NameTableModel(Iterator<? extends NameUsage<?>> names,
 			  Locale locale)
     {
 	this(locale);
@@ -95,7 +95,7 @@ public class NameTableModel/*<N extends NameUsage<?, ?>>*/
 	setLocale(locale);
     }
 
-    public NameTableModel(NameUsage<?, ?>[] names,
+    public NameTableModel(NameUsage<?>[] names,
 			  Locale locale)
     {
 	this(locale);
@@ -141,9 +141,9 @@ public class NameTableModel/*<N extends NameUsage<?, ?>>*/
 	    return null;
 
 	Object o = getObjects().get(row);
-	NameUsage<?, ?> nameUsage = null;
+	NameUsage<?> nameUsage = null;
 	if(o instanceof NameUsage)
-	    nameUsage = (NameUsage<?, ?>)o;
+	    nameUsage = (NameUsage<?>)o;
 	else if(o instanceof NameTreeNode)
 	    nameUsage = 
 		((NameTreeNode)o).getNameUsage();

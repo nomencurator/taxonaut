@@ -56,11 +56,11 @@ import org.w3c.dom.NodeList;
  * @see 	org.nomencurator.model.Appearance
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Publication
-    extends AbstractNamedObject<Publication, Publication>
+    extends AbstractNamedObject<Publication>
     implements Serializable
 {
     private static final long serialVersionUID = -7690519396181073630L;
@@ -365,7 +365,7 @@ public class Publication
      *
      * @param name {@code Name} representation of an {@code Publication}
      */
-    public Publication(Name<? extends Publication, ? extends Publication> name)
+    public Publication(Name<? extends Publication> name)
     {
 	//don't use NamedObject(String) constructor
 	this();
@@ -1096,7 +1096,7 @@ public class Publication
      *
      * @return true if merged, or false if not mergiable
      */
-    public boolean merge(NamedObject<?, ?> namedObject){
+    public boolean merge(NamedObject<?> namedObject){
 	if(!(namedObject instanceof Publication))
 	    return false;
 	return false; //not yet implemented

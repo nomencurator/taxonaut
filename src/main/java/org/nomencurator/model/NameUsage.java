@@ -33,9 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-// it is incompatible with Collections.synchronizedMap().
-//import org.nomencurator.util.Map;
-
 import org.nomencurator.model.vocabulary.TypeStatus;
 
 import org.w3c.dom.Element;
@@ -43,7 +40,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * An implementation of <tt>NameUsage</tt> in Nomencurator
+ * An implementation of {@code NameUsage} in Nomencurator
  * data model.
  * It was referred to as NameRecord in the original publication.
  *
@@ -51,36 +48,33 @@ import org.w3c.dom.NodeList;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	28 June 2016
+ * @version 	06 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
-				      //public interface NameUsage <T>
-    extends NamedObject <N, T>, Cloneable
+public interface NameUsage <T extends NameUsage<?>>
+    extends NamedObject <T>, Cloneable
 {
-
-
     /**
-     * Returns true if <tt>nameUsage</tt> is a senior synonym of this
-     * <tt>NameUsage</tt>, or null if unknown.
+     * Returns true if {@code nameUsage} is a senior synonym of this
+     * {@code NameUsage}, or null if unknown.
      *
-     * @param nameUsage <tt>NameUsage</tt> to be examined
+     * @param nameUsage {@code NameUsage} to be examined
      *
-     * @return true if  <tt>nameUsage</tt> is a senior synonym of this.
+     * @return true if  {@code nameUsage} is a senior synonym of this.
      */
-    public Boolean isSynonymOf(final NameUsage<?, ?> nameUsage);
+    public Boolean isSynonymOf(final NameUsage<?> nameUsage);
 
 
     /**
-     * Returns a persistent ID representing this <tt>NameUsage</tt>
-     * with specified  <tt>separator</tt>.  It contains class name header
-     * if <tt>withClassName</tt> true.
+     * Returns a persistent ID representing this {@code NameUsage}
+     * with specified  {@code separator}.  It contains class name header
+     * if {@code withClassName} true.
      *
-     * @param separator <tt>char</tt> to be used as the field separator
-     * @param withClassName <tt>boolean</tt> specifying with or without
+     * @param separator {@code char} to be used as the field separator
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing this <tt>NameUsage</tt>
+     * @return String representing this {@code NameUsage}
      */
     public String getPersistentID(String separator, boolean withClassName);
 
@@ -117,90 +111,88 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public boolean isResolvedInFullDepth();
 
     /**
-     * Returns <tt>Rank</tt>
+     * Returns {@code Rank}
      *
-     * @return <tt>Rank</tt>
+     * @return {@code Rank}
      */ 
     public Rank getRank();
 
     /**
-     * Sets <tt>rank</tt> as rank
+     * Sets {@code rank} as rank
      *
-     * @param Rank of the <tt>NameUsage</tt>
+     * @param Rank of the {@code NameUsage}
      */ 
     public void setRank(Rank rank);
 
     /**
-     * Returns <tt>String</tt> representing rank name
+     * Returns {@code String} representing rank name
      *
-     * @return <tt>String</tt> representing rank name
+     * @return {@code String} representing rank name
      */ 
     public String getRankLiteral();
 
     /**
-     * Sets <tt>rank</tt> as rank name
+     * Sets {@code rank} as rank name
      *
-     * @param rank <tt>String</tt> representing rank name
+     * @param rank {@code String} representing rank name
      */ 
     public void setRankLiteral(String rankLiteral);
     
     /**
-     * Returns <tt>String</tt> representing the name used
+     * Returns {@code String} representing the name used
      *
-     * @return <tt>String</tt> representing the name used
+     * @return {@code String} representing the name used
      */ 
     public String getLiteral();
     
     /**
-     * Sets <tt>name</tt> as the name used
+     * Sets {@code name} as the name used
      *
-     * @param name <tt>String</tt> representing the name used
+     * @param name {@code String} representing the name used
      */ 
     public void setLiteral(String name);
     
     /**
-     * Returns <tt>Locale</tt> representing locale
+     * Returns {@code Locale} representing locale
      *
-     * @return <tt>Locale</tt> representing locale
+     * @return {@code Locale} representing locale
      */ 
     public Locale getLocale();
-    //public String getLocale();
     
     /**
-     * Sets <tt>locale</tt> as locale of this <tt>NameUsage</tt>
+     * Sets {@code locale} as locale of this {@code NameUsage}
      *
-     * @param locale <tt>Locale</tt> to be set
+     * @param locale {@code Locale} to be set
      */ 
     public void setLocale(Locale locale);
-    //public void setLocale(String locale);
 
     
-    /*
-     * Returns <tt>Publication</tt> containing this <tt>NameUsage</tt>,
+    /**
+     * Returns {@code Publication} containing this {@code NameUsage},
      * or null if unknown.
      *
-     * @return <tt>Publication</tt> containint this <tt>NameUsage</tt>
+     * @return {@code Publication} containint this {@code NameUsage}
      */
     public Publication getPublication();
     
-    /*
-     * Sets <tt>publication</tt> as <tt>Publication</tt> contaiing this <tt>NameUsage</tt>
+    /**
+     * Sets {@code publication} as {@code Publication} contaiing this {@code NameUsage}
      *
-     * @param publication <tt>Publication</tt> containing this <tt>NameUsage</tt>
+     * @param publication {@code Publication} containing this {@code NameUsage}
      */
     public void setPublication(Publication publication);
     
-    /*
-     * Returns <tt>Appearance</tt> encoding this <tt>NameUsage</tt>
+    /**
+     * Returns {@code Appearance} encoding this {@code NameUsage}
      *
-     * @return <tt>Appearance</tt> encoding this <tt>NameUsage</tt>
+     * @return {@code Appearance} encoding this {@code NameUsage}
      */
     public Appearance getAppearance();
     
-    /*
-     * Sets <tt>appearance</tt> as <tt>Apperance</tt> encoding this <tt>NameUsage</tt>
+    /**
+     * Sets {@code appearance} as {@code Apperance} encoding this {@code NameUsage}
      *
-     * @param appearance <tt>Appearance</tt> encoding this <tt>NameUsage</tt>
+     * @param appearance {@code Appearance} encoding this {@code NameUsage}
      */
     public void setAppearance(Appearance appearance);
     
@@ -209,46 +201,53 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
      * It may be this object itself if it is the root of the hierarchy,
      * or null if unknown.
      *
-     * @return <tt>NameUsage</tt> representing the higher taxon
+     * @return {@code NameUsage} representing the higher taxon
      */
-    public NameUsage<N, T> getHigherNameUsage();
-
-    public List<NameUsage<N, T>> getNameUsagePath();
-    
-    /**
-     * Sets higherTaxon as the higher taxon of this NameUsage.
-     *
-     * @param higherNameUsage <tt>NameUsage</tt> representing higher taxon
-     */
-    public boolean setHigherNameUsage(NameUsage<N, T> higherNameUsage);
-    
-    /**
-     * Sets <tt>higherTaxon</tt> as higher taxon where this
-     * <tt>NameUsage</tt> as the <tt>index</tt>th 
-     * lower taxon of the <tt>higherTaxon</tt>
-     *
-     * @param higherTaxon <tt>NameUsage</tt> representing higher taxon
-     * @param index <tt>int</tt> representing postion of this
-     * <tt>NameUsgae</tt>
-     */
-    public boolean setHigherNameUsage(NameUsage<N, T> higherNameUsage, int index);
+    public NameUsage<T> getHigherNameUsage();
+    //public <N extends NameUsage<?>> N getHigherNameUsage();
 
     /**
-     * Returns position of this <tt>NameUsage</tt> in its siblings,
+     * Returns {@code List} of higher name usages of the {@code NameUsage}.
+     *
+     * @return {@code List} of {@code NameUsage} representing higher taxa.
+     */
+    public List<NameUsage<T>> getNameUsagePath();
+    //public <N extends NameUsage<?>> List<? extends N> getNameUsagePath();
+    
+    /**
+     * Sets {@code higherNameUsage} as the higher taxon of this NameUsage.
+     *
+     * @param higherNameUsage {@code NameUsage} representing higher taxon
+     */
+    public boolean setHigherNameUsage(NameUsage<T> higherNameUsage);
+    
+    /**
+     * Sets {@code higherTaxon} as higher taxon where this
+     * {@code NameUsage} as the {@code index}th 
+     * lower taxon of the {@code higherTaxon}
+     *
+     * @param higherTaxon {@code NameUsage} representing higher taxon
+     * @param index {@code int} representing postion of this
+     * {@code NameUsgae}
+     */
+    public boolean setHigherNameUsage(NameUsage<T> higherNameUsage, int index);
+
+    /**
+     * Returns position of this {@code NameUsage} in its siblings,
      * or -1 if it does not have siblings
      *
-     * @return <tt>int</tt> representing postion of this
-     * <tt>NameUsage</tt> in its siblings,
+     * @return {@code int} representing postion of this
+     * {@code NameUsage} in its siblings,
      * or -1 if it does not have siblings
      */
     public int getIndex();
 
     /**
-     * Sets <tt>index</tt> as position of this <tt>NameUsage</tt> in its siblings,
+     * Sets {@code index} as position of this {@code NameUsage} in its siblings,
      * or -1 if it does not have siblings
      *
-     * @param <tt>index</tt> representing postion of this
-     * <tt>NameUsage</tt> in its siblings,
+     * @param {@code index} representing postion of this
+     * {@code NameUsage} in its siblings,
      * or -1 if it does not have siblings
      */
     public void setIndex(int index);
@@ -265,7 +264,7 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     /**
      * Sets incertaeSedis to indicate whether the assignment to the higher taxon should be considerd as incertae sedis
      *
-     * @param incertaeCeis <tt>boolean</tt> true if the assignment to the higher taxon
+     * @param incertaeCeis {@code boolean} true if the assignment to the higher taxon
      * should be considerd as incertae sedis
      */
     public void setIncertaeSedis(boolean incertaeSedis);
@@ -280,7 +279,7 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     /**
      * Sets maximum number of lower taxa and allocate
      * slots to store them, enables automatic
-     * management by giving -1 as <tt>count</tt>,
+     * management by giving -1 as {@code count},
      * or prohibits to have lower taxa by giving 0
      *
      * @param capacity maximum number of lower taxa, 
@@ -309,75 +308,72 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public void toArray();
 
     /**
-     * Tests if <tt>nameUsage</tt> is a direct
+     * Tests if {@code nameUsage} is a direct
      * lower taxon of this object
      *
-     * @param nameUsage <tt>NameUsage</tt> to be tested
-     * @return true if this object contains <tt>nameUsage</tt>
+     * @param nameUsage {@code NameUsage} to be tested
+     * @return true if this object contains {@code nameUsage}
      * as a lower taxon just below
      */
-    public boolean contains(NameUsage<? extends N, ? extends N> nameUsage);
+    public boolean contains(NameUsage<?> nameUsage);
 
     /**
-     * Tests if <tt>nameUsage</tt> is a 
+     * Tests if {@code nameUsage} is a 
      * lower taxon of this object, recursively if
-     * <tt>recursive</tt> is true
+     * {@code recursive} is true
      *
-     * @param nameUsage <tt>NameUsage</tt> to be tested
+     * @param nameUsage {@code NameUsage} to be tested
      * @param recursive true to recursive search
-     * @return true if this object contains <tt>nameUsage</tt>
+     * @return true if this object contains {@code nameUsage}
      * as a lower taxon
      */
-    public boolean contains(NameUsage<? extends N, ? extends N> nameUsage, boolean recursive);
+    public boolean contains(NameUsage<?> nameUsage, boolean recursive);
 
     /**
-     * Returns <tt>Enumeration</tt> of lower taxa
+     * Returns {@code Enumeration} of lower taxa
      * or null if none
      *
      * @return an array of lower taxa
      * or null if none
      */
-    public List<NameUsage<N, T>> getLowerNameUsages();
+    public List<NameUsage<T>> getLowerNameUsages();
 
     /**
-     * Sets <tt>lowerNameUsages</tt> as the list of lower taxa
+     * Sets {@code lowerNameUsages} as the list of lower taxa
      *
-     * @param lowerNameUsages <tt>List</tt> representing the list of lower taxa
+     * @param lowerNameUsages {@code List} representing the list of lower taxa
      */
-    public void setLowerNameUsages(List<? extends NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> lowerNameUsages);
+    public void setLowerNameUsages(List<? extends NameUsage<? extends T>> lowerNameUsages);
 
     /**
-     * Sets <tt>lowerNameUsages</tt> as the list of lower taxa
+     * Sets {@code lowerNameUsages} as the list of lower taxa
      *
-     * @param lowerNameUsages an array of <tt>NameUsage</tt>s
+     * @param lowerNameUsages an array of {@code NameUsage}s
      * representing the list of lower taxa
      */
-    //public void setLowerNameUsages(NameUsage<? extends N, ? extends N>[] lowerNameUsagesArray);
+    //public void setLowerNameUsages(NameUsage<? extends T>[] lowerNameUsagesArray);
 
     /**
-     * Adds <tt>nameUsage</tt> to the list of lower taxa
-     * It returns true if the <tt>nameUsage</tt> added to the
-     * list successfuly, or false if the <tt>nameUsage</tt> is
+     * Adds {@code nameUsage} to the list of lower taxa
+     * It returns true if the {@code nameUsage} added to the
+     * list successfuly, or false if the {@code nameUsage} is
      * already in the list.
      *
-     * @param nameUsage <tt>NameUsage</tt> to be added to the list of lower taxa
+     * @param nameUsage {@code NameUsage} to be added to the list of lower taxa
      *
-     * @return true if <tt>nameUsage</tt> was appended to the list of lower taxa
-     * successfully, or false if <tt>nameUsage</tt> is already in the list
+     * @return true if {@code nameUsage} was appended to the list of lower taxa
+     * successfully, or false if {@code nameUsage} is already in the list
      */
-    public boolean addLowerNameUsage(NameUsage<N, T> nameUsage);
-    //public boolean addLowerNameUsage(NameUsage<? extends N, ? extends N> nameUsage);
-    //public boolean addLowerNameUsage(NameUsage<N, ?> nameUsage);
+    public boolean addLowerNameUsage(NameUsage<T> nameUsage);
 
     /**
-     * Removes <tt>nameUsage</tt> from the list of lower taxa
+     * Removes {@code nameUsage} from the list of lower taxa
      *
-     * @param nameUsage <tt>NameUsage</tt> to be removed fromthe list of lower taxa
-     * @return true if <tt>nameUsage</tt> is a lower taxon of the object,
+     * @param nameUsage {@code NameUsage} to be removed fromthe list of lower taxa
+     * @return true if {@code nameUsage} is a lower taxon of the object,
      * or false if else
      */
-    //public boolean removeLowerNameUsage(NameUsage<? extends N, ? extends N> nameUsage);
-    public boolean removeLowerNameUsage(NameUsage<N, T> nameUsage);
+    public boolean removeLowerNameUsage(NameUsage<T> nameUsage);
 
     /**
      * Removes all lower taxa
@@ -385,34 +381,42 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public void removeLowerNameUsages();
 
     /**
-     * Returns <tt>NameUsage</tt> representing type taxon of this
-     * <tt>NameUsage</tt>, or null if no type is designated
+     * Returns {@code NameUsage} representing type taxon of this
+     * {@code NameUsage}, or null if no type is designated
      *
      * @return NamedObject representing type taxon of this
-     * <tt>NameUsage</tt>, or null if no type is designated
+     * {@code NameUsage}, or null if no type is designated
      */
-    public NameUsage<? extends N, ? extends N> getTypeUsage();
+    public <N extends NameUsage<?>> N getTypeUsage();
 
     /**
      * Returns type of  type taxon of this NameUsage, or null if no type is designated
      *
-     * @return String representing type of type taxon of this NameUsage,
+     * @return TypeStatus representing type of type taxon of this NameUsage,
      * or null if no type is designated
      */
-    public String getTypeOfType();
+    public TypeStatus getTypeStatus();
 
     /**
      * Sets type of type taxon of this NameUsage.
      *
-     * @param typeOfType String representing type of type taxon of this
+     * @param typeStatus {@code String} representing type of type taxon of this
      * NameUsage
      */
-    public void setTypeOfType(String typeOfType);
+    public void setTypeStatus(String typeStatus);
 
     /**
-     * Returns true if this <tt>NamedObject</tt> is a type taxon
+     * Sets type of type taxon of this NameUsage.
      *
-     * @return true if this <tt>NamedObject</tt> is a type
+     * @param typeStatus {@code TypeStatus} representing type of type taxon of this
+     * NameUsage
+     */
+    public void setTypeStatus(TypeStatus typeStatus);
+
+    /**
+     * Returns true if this {@code NamedObject} is a type taxon
+     *
+     * @return true if this {@code NamedObject} is a type
      */
     public boolean isType();
     
@@ -428,122 +432,139 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
      *
      * @param type String representing type of its type taxon
      */
-    public void setType(String typeOfType);
+    public void setType(String typeStatus);
+
+    /**
+     * Sets type as type of taxon
+     *
+     * @param type {@code TypeStatus} representing type of its type taxon
+     */
+    public void setType(TypeStatus typeStatus);
 
     /**
      * Sets type as type taxon of this NameUsage.
      *
-     * @param type <tt>NameUsage</tt> to be designated as the type of
-     * this <tt>NameUsage</tt>
+     * @param type {@code NameUsage} to be designated as the type of
+     * this {@code NameUsage}
      */
-    public void setTypeUsage(NameUsage<? extends N, ? extends N> type);
+    public void setTypeUsage(NameUsage<?> type);
 
     /**
-     * Sets <tt>type</tt> as <tt>typeOfType</tt> of this <tt>NameUsage</tt>
-     * The  <tt>type</tt> may be null.  If <tt>type</tt> is null,
-     * <tt>typeOfType</tt> is ignored.
+     * Sets {@code type} as {@code typeStatus} of this {@code NameUsage}
+     * The  {@code type} may be null.  If {@code type} is null,
+     * {@code typeStatus} is ignored.
      *
-     * @param type <tt>NameUsage</tt> to be designated as the type of
-     * this <tt>NameUsage</tt>
-     * @param typeOfType <tt>String</tt> represents type of type, e.g.
+     * @param type {@code NameUsage} to be designated as the type of
+     * this {@code NameUsage}
+     * @param typeStatus {@code String} represents type of type, e.g.
      * holotype.
      * 
      */
-    public void setTypeUsage(NameUsage<? extends N, ? extends N> type, String typeOfType);
+    public void setTypeUsage(NameUsage<?> type, String typeStatus);
 
     /**
-     * Adds <tt>designator</tt> as one of <tt>NameUsage</tt>s
-     * designating this <tt>NameUsage</tt> as its type.
+     * Sets {@code type} as {@code typeStatus} of this {@code NameUsage}
+     * The  {@code type} may be null.  If {@code type} is null,
+     * {@code typeStatus} is ignored.
      *
-     * @param designator <tt>NameUsage</tt> designating this <tt>NameUsage</tt>
+     * @param type {@code NameUsage} to be designated as the type of
+     * this {@code NameUsage}
+     * @param typeStatus {@code TypeStatus} represents type of type, e.g.
+     * holotype.
+     */
+    public void setTypeUsage(NameUsage<?> type, TypeStatus typeStatus);
+
+    /**
+     * Adds {@code designator} as one of {@code NameUsage}s
+     * designating this {@code NameUsage} as its type.
+     *
+     * @param designator {@code NameUsage} designating this {@code NameUsage}
      * as its type
      */
-    // public void addTypeDesignator(NameUsage<? extends N, ? extends N> designator, TypeStatus typeStatus);
+    // public void addTypeDesignator(NameUsage<? extends N, ? extends T> designator, TypeStatus typeStatus);
 
     /**
-     * Removes <tt>designator</tt> from the list of <tt>NameUsage</tt>s
-     * designating this <tt>NameUsage</tt> as its type.
+     * Removes {@code designator} from the list of {@code NameUsage}s
+     * designating this {@code NameUsage} as its type.
      *
-     * @param designator <tt>NameUsage</tt> to be remvoed from designator list
-     * of this <tt>NameUsage</tt>
+     * @param designator {@code NameUsage} to be remvoed from designator list
+     * of this {@code NameUsage}
      */
-    // public void removeTypeDesignator(NameUsage<? extends N, ? extends N> designator);
+    // public void removeTypeDesignator(NameUsage<? extends N, ? extends T> designator);
 
     /**
-     * Returns <tt>Collection</tt> of <tt>Annotatoin</tt>s made by this <tt>NameUsage</tt>, or null if none
+     * Returns {@code Collection} of {@code Annotatoin}s made by this {@code NameUsage}, or null if none
      *
-     * @return Enumeration of <tt>Annotation</tt>s or null if none
+     * @return Enumeration of {@code Annotation}s or null if none
      */
     public Collection<Annotation> getAnnotations();
 
     /**
-     * Returns <tt>Collection</tt> of <tt>Annotations</tt> having specified <tt>linkType</tt> made by this <tt>NameUsage</tt>, or null
-     * if there is no <tt>Annotations</tt> having <tt>linkType</tt>.
+     * Returns {@code Collection} of {@code Annotations} having specified {@code linkType} made by this {@code NameUsage}, or null
+     * if there is no {@code Annotations} having {@code linkType}.
      *
-     * @param linkType link type of <tt>Annotation</tt> to be returned
+     * @param linkType link type of {@code Annotation} to be returned
      *
-     * @return Collection of <tt>Annotation</tt>s having <tt>linkType</tt>
+     * @return Collection of {@code Annotation}s having {@code linkType}
      */
     public Collection<Annotation> getAnnotations(String linkType);
 
     /**
-     * Sets <Tt>annotations</tt> as the list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
+     * Sets {@code annotations} as the list of {@code Annotation}s made by this {@code NameUsage}
      *
-     * @param annotations <tt>Vector</tt> representing the list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
+     * @param annotations {@code Vector} representing the list of {@code Annotation}s made by this {@code NameUsage}
      */
     public void setAnnotations(Collection<? extends Annotation> annotations);
 
     /**
-     * Adds <tt>Annotation</tt> to the list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
-     * It returns true if the <tt>annotation</tt> added to the
-     * list successfuly, or false if the <tt>annotation</tt> is
+     * Adds {@code Annotation} to the list of {@code Annotation}s made by this {@code NameUsage}
+     * It returns true if the {@code annotation} added to the
+     * list successfuly, or false if the {@code annotation} is
      * already in the list.
      *
-     * @param annotation <tt>Annotation</tt> to be added to the list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
+     * @param annotation {@code Annotation} to be added to the list of {@code Annotation}s made by this {@code NameUsage}
      *
-     * @return true if <tt>annotation</tt> was appended to the list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
-     * successfully, or false if <tt>annotation</tt> is already in the list
+     * @return true if {@code annotation} was appended to the list of {@code Annotation}s made by this {@code NameUsage}
+     * successfully, or false if {@code annotation} is already in the list
      */
     public boolean addAnnotation(Annotation annotation);
 
     /**
-     * Removes <tt>annotation</tt> from the list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
+     * Removes {@code annotation} from the list of {@code Annotation}s made by this {@code NameUsage}
      *
-     * @param annotation <tt>NameUsage</tt> to be removed fromthe list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
+     * @param annotation {@code NameUsage} to be removed fromthe list of {@code Annotation}s made by this {@code NameUsage}
      */
     public boolean removeAnnotation(Annotation annotation);
 
 
     /**
-     * Removes all <tt>Annotation</tt> from the list of <tt>Annotation</tt>s made by this <tt>NameUsage</tt>
+     * Removes all {@code Annotation} from the list of {@code Annotation}s made by this {@code NameUsage}
      */
     public void removeAnnotations();
 
     /**
-     * Returns <tt>NameUsage</tt> representing in which sensu the name
-     * is used by this <tt>NameUsage</tt>.
+     * Returns {@code NameUsage} representing in which sensu the name
+     * is used by this {@code NameUsage}.
      * It may designate the autoritative usage of the name.
      *
-     * @return <tt>NameUsage</tt> representing <tt>NameUsage</tt> in which sens
-     * it was used.  It may desiganate the authoritative usage of the name as <tt>NameUsage</tt>.
+     * @return {@code NameUsage} representing {@code NameUsage} in which sens
+     * it was used.  It may desiganate the authoritative usage of the name as {@code NameUsage}.
      */
-    public NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> getSensu();
-    //public NameUsage<? extends N, ? extends N> getSensu();
+    public NameUsage<?> getSensu();
 
     /**
-     * Sets <tt>sensu</tt> in which the <tt>NameUsage</tt> is used.
+     * Sets {@code sensu} in which the {@code NameUsage} is used.
      * It may designate the autoritative usage of the name.
      *
-     * @param sensu <tt>NameUsage</tt> representing the sens of this <tt>NameUsage</tt>
+     * @param sensu {@code NameUsage} representing the sens of this {@code NameUsage}
      */
-    public void setSensu(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> sensu);
-    //public void setSensu(NameUsage<? extends N, ? extends N> sensu);
+    public void setSensu(NameUsage<?> sensu);
 
     /**
-     * Returns <tt>Enumeration</tt> of author of the name,
+     * Returns {@code Enumeration} of author of the name,
      * or null if none.
      * It shall be null if authors of the name match to authors of autority
-     * <tt>NameUsage</tt>.
+     * {@code NameUsage}.
      *
      * @return Enumertion of author of the name
      * or null if none.
@@ -551,34 +572,34 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public Collection<Author> getAuthors();
 
     /**
-     * Sets <tt>authors</tt> as the list of <tt>Author</tt>s of the name.
+     * Sets {@code authors} as the list of {@code Author}s of the name.
      * Is shall not be called if authors  of thename matche to authors of autority
-     * <tt>NameUsage</tt>.
+     * {@code NameUsage}.
      *
-     * @param authors <tt>Collection</tt> representing the list of <tt>Author</tt>s of the name
+     * @param authors {@code Collection} representing the list of {@code Author}s of the name
      */
     public void setAuthors(Collection<? extends Author> authors);
 
     /**
-     * Adds <tt>Author</tt> to the list of <tt>Author</tt>s of the name.
-     * It returns true if the <tt>author</tt> added to the
-     * list successfuly, or false if the <tt>author</tt> is
+     * Adds {@code Author} to the list of {@code Author}s of the name.
+     * It returns true if the {@code author} added to the
+     * list successfuly, or false if the {@code author} is
      * already in the list.
      * <P>
      * Is shall not be called if authors  of thename matche to authors of autority
-     * <tt>NameUsage</tt>.
+     * {@code NameUsage}.
      *
-     * @param author <tt>Author</tt> to be added to the list of <tt>Author</tt>s of the name
+     * @param author {@code Author} to be added to the list of {@code Author}s of the name
      *
-     * @return true if <tt>author</tt> was appended to the list
-     * successfully, or false if <tt>author</tt> is already in the list
+     * @return true if {@code author} was appended to the list
+     * successfully, or false if {@code author} is already in the list
      */
     public boolean addAuthor(Author author);
 
     /**
-     * Removes <tt>author</tt> from the list of <tt>Author</tt>s of the name
+     * Removes {@code author} from the list of {@code Author}s of the name
      *
-     * @param author <tt>NameUsage</tt> to be removed fromthe list of <tt>Author</tt>s of the name
+     * @param author {@code NameUsage} to be removed fromthe list of {@code Author}s of the name
      */
     public boolean removeAuthor(Author author);
 
@@ -590,15 +611,15 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public String getAuthority();
 
     /**
-     * Sets <tt>authority</tt>.
+     * Sets {@code authority}.
      *
-     * @param authority of the <tt>NameUsage</tt>
+     * @param authority of the {@code NameUsage}
      */
     public void setAuthority(String authority);
 
     /**
-     * Returns authority year in <tt>int</tt>.
-     * It must be zero if authors of authority <tt>NameUsage</tt>
+     * Returns authority year in {@code int}.
+     * It must be zero if authors of authority {@code NameUsage}
      * are nominal authority of the name.
      *
      * @return int representing authority year.
@@ -608,18 +629,18 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
 
     /**
      * Sets year as authority year.
-     * It shall be used only if authority <tt>NameUsage</tt>
+     * It shall be used only if authority {@code NameUsage}
      * gives aurthority author names difference from authors
-     * of the authority <tt>NameUsage</tt>, or if
-     * the authority <tt>NameUsage</tt> is unknown but
+     * of the authority {@code NameUsage}, or if
+     * the authority {@code NameUsage} is unknown but
      * author names and year are known.
      *
-     * @param year <tt>int</tt> representing authority year.
+     * @param year {@code int} representing authority year.
      */
     public void setAuthorityYear(Integer year);
 
     /**
-     * Returns name of taxonomic view where this <tt>NameUsage</tt>
+     * Returns name of taxonomic view where this {@code NameUsage}
      * belongs to.
      *
      * @return String representing name of the taxonomic view
@@ -627,9 +648,9 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public String getViewName();
 
     /**
-     * Returns name of taxonomic view where this <tt>NameUsage</tt>
-     * belongs to.  The parameter <tt>toSort</tt> determines
-     * words order in the name.  If <tt>toSort</tt> is true,
+     * Returns name of taxonomic view where this {@code NameUsage}
+     * belongs to.  The parameter {@code toSort} determines
+     * words order in the name.  If {@code toSort} is true,
      * the first word represents the year of name publciation.
      *
      * @param toSort boolean to determine words order
@@ -639,19 +660,19 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public String getViewName(boolean toSort);
 
     /**
-     * Returns yaer of publication as <tt>String</tt>
+     * Returns yaer of publication as {@code String}
      *
      * @return String representing the year of name publication
      */
     public String getYear();
 
     /**
-     * Returns root <tt>NameUsage</tt> of the name hierarchy
-     * where this <tt>NameUsage</tt> belongs to.
+     * Returns root {@code NameUsage} of the name hierarchy
+     * where this {@code NameUsage} belongs to.
      *
-     * @return root <tt>NameUsage</tt> of the name hierarhcy.
+     * @return root {@code NameUsage} of the name hierarhcy.
      */
-    public NameUsage<N, T> getRoot();
+    public NameUsage<T> getRoot();
 
     /**
      * Returns true if lower taxa are assigned to this
@@ -661,162 +682,162 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
     public boolean hasLowerNameUsages();
 
     /**
-     * Returns <tt>NameUsage</tt> proxied by this <tt>NameUsage</tt>
+     * Returns {@code NameUsage} proxied by this {@code NameUsage}
      *
-     * @return NameUsage proxied by this <tt>NameUsage</tt>
+     * @return NameUsage proxied by this {@code NameUsage}
      */
-    public NameUsage<N, T> getNameUsage();
+    public NameUsage<T> getNameUsage();
 
     /**
-     * Returns leaf taxa, i.e. taxa without children, under this <tt>NameUsage</tt>
-     * as <tt>Map</tt> keyed by their persistent ID.
+     * Returns leaf taxa, i.e. taxa without children, under this {@code NameUsage}
+     * as {@code Map} keyed by their persistent ID.
      *
-     * @return <tt>Map</tt> containing <tt>Set</tt>s of leaf taxa under this <tt>NameUsage</tt>
+     * @return {@code Map} containing {@code Set}s of leaf taxa under this {@code NameUsage}
      * keyed by their name literal, or null if none keyed by their persisitent ID
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLeafNameUsages();
+    public Map<String, NameUsage<T>> getLeafNameUsages();
 
-    public Map<String, NameUsage<? extends N, ? extends N>> putLeafNameUsagesTo(Map<String, NameUsage<? extends N, ? extends N>> leafNameUsagesMap);
+    public  Map<String, NameUsage<T>> putLeafNameUsagesTo(Map<String, NameUsage<T>> leafNameUsagesMap);
 
     /**
-     * Returns <tt>Map</tt> containing lower taxa at <tt>rank</tt> under this <tt>NameUsage</tt>
+     * Returns {@code Map} containing lower taxa at {@code rank} under this {@code NameUsage}
      * keyed by their persistent ID.
      *
-     * @param rank <tt>Rank</tt> of <tt>NameUsage</tt> to be included in return set of
+     * @param rank {@code Rank} of {@code NameUsage} to be included in return set of
      *
-     * @return <tt>Map</tt> containing lower taxa at <tt>rank</tt> under this
-     * <tt>NameUsage</tt> or null if none.
+     * @return {@code Map} containing lower taxa at {@code rank} under this
+     * {@code NameUsage} or null if none.
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLowerNameUsagesAt(Rank rank);
+    public Map<String, NameUsage<T>> getLowerNameUsagesAt(Rank rank);
 
-    public void putLowerNameUsagesAt(Rank rank, Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsagesMap);
+    public void putLowerNameUsagesAt(Rank rank, Map<String, NameUsage<T>> lowerNameUsageMap);
 
     /**
-     * Returns <tt>Map</tt> containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt> or null if none
+     * Returns {@code Map} containing
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage} or null if none
      *
-     * @param rank lowest <tt>Rank</tt> of <tt>NameUsage</tt>
+     * @param rank lowest {@code Rank} of {@code NameUsage}
      * to be included in return set
      *
-     * @return <tt>Map<String, NameUsage<N, T>></tt> containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt> or null if none
+     * @return {@code Map<String, NameUsage<T>}
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage} or null if none
      * keyed by its persistent ID.
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLeafNameUsagesUntil(String rank);
+    public Map<String, NameUsage<T>> getLeafNameUsagesUntil(String rank);
 
     /**
-     * Returns <tt>Map</tt> containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt> or null if none
+     * Returns {@code Map} containing
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage} or null if none
      *
-     * @param rank lowest <tt>Rank</tt> of <tt>NameUsage</tt>
+     * @param rank lowest {@code Rank} of {@code NameUsage}
      * to be included in return set
      *
-     * @return <tt>Map</tt> containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt> or null if none
+     * @return {@code Map} containing
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage} or null if none
      * keyed by its persistent ID
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLeafNameUsagesUntil(Rank rank);
+    public Map<String, NameUsage<T>> getLeafNameUsagesUntil(Rank rank);
 
-    public void putLeafNameUsagesUntil(Rank rank, Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsages);
+    public void putLeafNameUsagesUntil(Rank rank, Map<String, NameUsage<T>> leaves);
 
     /**
      * Returns all lower taxa under this NameUsage.
      *
-     * @return <tt>Map</tt> containing all
-     * lower taxa under this <tt>NameUsage</tt>
+     * @return {@code Map} containing all
+     * lower taxa under this {@code NameUsage}
      * or null if none, keyed by its persistent ID
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getAllLowerNameUsages();
+    public Map<String, NameUsage<T>> getAllLowerNameUsages();
 
-    public void putAllLowerNameUsagesTo(Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsages);
+    public void putAllLowerNameUsagesTo(Map<String, NameUsage<T>> lowerNameUsageMap);
 
     /**
-     * Returns <tt>Map</tt> of  <tt>Set</tt>s, containing leaf taxa, i.e. taxa without children,
-     * under this <tt>NameUsage</tt>, indexed by their ascribed names.   It is <tt>Set</tt> because single name literal
+     * Returns {@code Map} of  {@code Set}s, containing leaf taxa, i.e. taxa without children,
+     * under this {@code NameUsage}, indexed by their ascribed names.   It is {@code Set} because single name literal
      * can be used different name usages under multilingual or multiple code hierarchies.
      *
-     * <p> Note that a single literal may have multiple <tt>NameUsage</tt>s even under a
+     * <p> Note that a single literal may have multiple {@code NameUsage}s even under a
      * name hierarchy because of it can be multilingual.
      *
-     * @return <tt>Map</tt> of <tt>Set</tt>s
-     * containing leaf taxa, under this <tt>NameUsage</tt>,
+     * @return {@code Map} of {@code Set}s
+     * containing leaf taxa, under this {@code NameUsage},
      * keyed by their ascribed names, or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLeafNames();
+    public Map<String, Set<NameUsage<T>>> getLeafNames();
 
     /**
-     * Returns <tt>Hashtable</tt> of 
-     * <tt>Hashtable</tt>s containing
-     * lower taxa at <tt>rank</tt> under this
-     * <tt>NameUsage</tt>, indexed by
+     * Returns {@code Hashtable} of 
+     * {@code Hashtable}s containing
+     * lower taxa at {@code rank} under this
+     * {@code NameUsage}, indexed by
      * their ascribed names, or null if none
      *
-     * @param rank <tt>Rank</tt> of <tt>NameUsage</tt>
+     * @param rank {@code Rank} of {@code NameUsage}
      * to be included in return set of
      *
-     * @return <tt>Hashtable</tt> of <tt>Hashtable</tt>s containing
-     * lower taxa at <tt>rank</tt> under this
-     * <tt>NameUsage</tt>, indexed by their ascribed names,
+     * @return {@code Hashtable} of {@code Hashtable}s containing
+     * lower taxa at {@code rank} under this
+     * {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLowerNamesAt(Rank rank);
+    public Map<String, Set<NameUsage<T>>> getLowerNamesAt(Rank rank);
 
     /**
-     * Returns <tt>Hashtable</tt> of 
-     * <tt>Hashtable</tt>s containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt>, indexed by
+     * Returns {@code Hashtable} of 
+     * {@code Hashtable}s containing
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage}, indexed by
      * their ascribed names, or null if none
      *
-     * @param rank lowest <tt>Rank</tt> of <tt>NameUsage</tt>
+     * @param rank lowest {@code Rank} of {@code NameUsage}
      * to be included in return set
      *
-     * @return <tt>Hashtable</tt> of <tt>Hashtable</tt>s containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt>, indexed by their ascribed names,
+     * @return {@code Hashtable} of {@code Hashtable}s containing
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLeafNamesUntil(String rank);
+    public Map<String, Set<NameUsage<T>>> getLeafNamesUntil(String rank);
 
     /**
-     * Returns <tt>Hashtable</tt> of <tt>Hashtable</tt>s containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt> or null if none
+     * Returns {@code Hashtable} of {@code Hashtable}s containing
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage} or null if none
      *
-     * @param rank lowest <tt>Rank</tt> of <tt>NameUsage</tt>
+     * @param rank lowest {@code Rank} of {@code NameUsage}
      * to be included in return set
      *
-     * @return <tt>Hashtable</tt> of <tt>Hashtable</tt>s containing
-     * leaf taxa at, or higher than <tt>rank</tt>
-     * under this <tt>NameUsage</tt>, indexed by their ascribed names,
+     * @return {@code Hashtable} of {@code Hashtable}s containing
+     * leaf taxa at, or higher than {@code rank}
+     * under this {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLeafNamesUntil(Rank rank);
+    public Map<String, Set<NameUsage<T>>> getLeafNamesUntil(Rank rank);
 
     /**
-     * Returns <tt>Hashtable</tt> of <tt>Hashtable</tt>s containing all
-     * lower taxa under this <tt>NameUsage</tt>
+     * Returns {@code Hashtable} of {@code Hashtable}s containing all
+     * lower taxa under this {@code NameUsage}
      * or null if none
      *
-     * @return <tt>Hashtable</tt> of <tt>Hashtable</tt>s containing all
-     * lower taxa under this <tt>NameUsage</tt>, indexed by their ascribed names,
+     * @return {@code Hashtable} of {@code Hashtable}s containing all
+     * lower taxa under this {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getAllLowerNames();
+    public Map<String, Set<NameUsage<T>>> getAllLowerNames();
 
-    public Map<String, NameUsage<? extends N, ? extends N>> getSiblings();
+    public Map<String, NameUsage<T>> getSiblings();
 
-    public Map<String, NameUsage<? extends N, ? extends N>> getLowerNameUsagesSet();
+    public Map<String, NameUsage<T>> getLowerNameUsagesSet();
 
-    public Map<String, NameUsage<? extends N, ? extends N>> getIncludants();
+    public Map<String, NameUsage<T>> getIncludants();
 
     public void clearIncludants();
 
-    public Map<String, NameUsage<? extends N, ? extends N>> getExcludants();
+    public Map<String, NameUsage<T>> getExcludants();
 
     public void clearExcludants();
 
@@ -826,20 +847,20 @@ public interface NameUsage <N extends NameUsage<?, ?>, T extends N>
 
     /**
      * Returns base name literal of the name literal by removing name ending
-     * specific to the rank, zero length <tt>String</tt> if base name
+     * specific to the rank, zero length {@code String} if base name
      * is unapplicable to the name, or null if not implemented.
      *
-     * @return <tt>String</tt> representing base name literal of the name
-     * literal, or zero length  <tt>String</tt> if base name
+     * @return {@code String} representing base name literal of the name
+     * literal, or zero length  {@code String} if base name
      * is unapplicable to the name, or null if not implemented.
      */
     //public String getBaseName();
 
-    public NameUsage<N, T> clone();
+    public NameUsage<T> clone();
 
-    public NameUsage<N, T> create();
+    public NameUsage<T> create();
 
-    public NameUsage<N, T> getNameUsage(Object object);
+    public NameUsage<T> getNameUsage(Object object);
 
     public Integer getDescendantCount();
 }

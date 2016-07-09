@@ -38,11 +38,11 @@ import org.nomencurator.resources.ResourceKey;
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  * @see org.nomencurator.model.NameUsage
  *
- * @version 	27 June 2016
+ * @version 	02 June 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameUsageTableModel
-    extends NamedObjectTableModel<NameUsage<?, ?>>
+    extends NamedObjectTableModel<NameUsage<?>>
 {
     private static final long serialVersionUID = 8754198090017932443L;
 
@@ -70,8 +70,8 @@ public class NameUsageTableModel
 
     public Object getValueAt(int row, int column)
     {
-	NameUsage<?, ?> nameUsage = 
-	    (NameUsage<?, ?>)super.getValueAt(row, -1);
+	NameUsage<?> nameUsage = 
+	    (NameUsage<?>)super.getValueAt(row, -1);
 
 	if(nameUsage == null)
 	    return null;
@@ -97,7 +97,7 @@ public class NameUsageTableModel
 	    toReturn = nameUsage.getLiteral();
 	    break;
 	case SENSU:
-	    NameUsage<?, ?> sensu = nameUsage.getSensu();
+	    NameUsage<?> sensu = nameUsage.getSensu();
 	    if(sensu == null)
 		return "not specified";
 	    if(sensu == nameUsage)

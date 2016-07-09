@@ -120,10 +120,10 @@ import lombok.Setter;
 /**
  * A set of tabs containging tables to compare hierarchies
  *
- * @version 	26 June. 2016
+ * @version 	02 June. 2016
  * @author 	Nozomi `James' Ytow
  */
-public class HierarchiesPane<T extends NameUsage<?, ?>>
+public class HierarchiesPane<T extends NameUsage<?>>
     extends JTabbedPane
     implements ActionListener,
 	       ChangeListener,

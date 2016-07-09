@@ -31,14 +31,14 @@ import org.nomencurator.model.NameUsageNode;
 import org.nomencurator.model.Rank;
 
 /**
- * <CODE>NameUsageExchanger</CODE> defines an intereface to exchange
- * <CODE>NameUsages</CODE>s of specified type with a data source
+ * {@code NameUsageExchanger} defines an intereface to exchange
+ * {@code NameUsages}s of specified type with a data source
  *
- * @version 	29 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface NameUsageExchanger<N extends NameUsage<?, ?>, T extends N>
-    extends ObjectExchanger<N, T>
+public interface NameUsageExchanger<T extends NameUsage<?>>
+    extends ObjectExchanger<T>
 {
     public final int EXCLUDE_SCIENTIFIC_NAMES = 0x100;
     public final int EXCLUDE_VERNACULAR_NAMES = 0x200;
@@ -47,148 +47,150 @@ public interface NameUsageExchanger<N extends NameUsage<?, ?>, T extends N>
     public final int FULL_DEPTH = -1;
 
     /**
-     * Returnes a <tt>Collection</tt> of <CODE>NameUsage</CODE>s having
-     * the name and <CODE>rank</CODE>.  <CODE>rank</CODE>
+     * Returnes a {@code Collection} of {@code NameUsage}s having
+     * the name and {@code rank}.  {@code rank}
      * may be ignored depending on the data source.
      *
      * @param query to be searched in the data source, a name literal or name literals separated by "|"
      * @param rank to be searchied in the data source
      *
-     * @return NameUsage having <CODE>name</CODE>
-     * and <CODE>rank</CODE>, or null if it doesn't exist in
+     * @return NameUsage having {@code name}
+     * and {@code rank}, or null if it doesn't exist in
      * the data source.
      */
-    public Collection<NameUsage<?, ?>> getNameUsages(String query, Rank rank);
+    public Collection<NameUsage<?>> getNameUsages(String query, Rank rank);
 
     /**
-     * Returnes an array of <CODE>NameUsage</CODE> having
-     * <CODE>name</CODE> and <CODE>rank</CODE>.  <CODE>rank</CODE>
+     * Returnes an array of {@code NameUsage} having
+     * {@code name} and {@code rank}.  {@code rank}
      * may be ignored depending on the data source.
      *
      * @param query to be searched in the data source, a name literal or name literals separated by "|"
      * @param rank to be searchied in the data source
      * @param matchingMode specifies the method for literal matching
      *
-     * @return NameUsage having <CODE>name</CODE>
-     * and <CODE>rank</CODE>, or null if it doesn't exist in
+     * @return NameUsage having {@code name}
+     * and {@code rank}, or null if it doesn't exist in
      * the data source.
      */
-    public Collection<NameUsage<?, ?>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
+    public Collection<NameUsage<?>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
 
     /**
-     * Returns higher <CODE>NameUsage</CODE> above given
-     * <CODE>nameUsage</CODE> until to specified <tt>rank</tt>
-     * or to specified <tt>height</tt>
-     * as the highest <tt>NameUsage</tt> of the higher <tt>NameUsage</tt>s
-     * path, or null if null <CODE>nameUsage</CODE> is specified.
-     * Specifying both null <tt>rank</tt> and negative <tt>height</tt>
+     * Returns higher {@code NameUsage} above given
+     * {@code nameUsage} until to specified {@code rank}
+     * or to specified {@code height}
+     * as the highest {@code NameUsage} of the higher {@code NameUsage}s
+     * path, or null if null {@code nameUsage} is specified.
+     * Specifying both null {@code rank} and negative {@code height}
      * results full path to the root name usage.
      *
      * @param nameUsage of interest
      * @param rank of the haigher name usage on the returend path
      * @param height of returend path
      *
-     * @return NameUsage highest  <CODE>nameUsage</CODE> at the specified
-     * <tt>height</tt>.
+     * @return NameUsage highest  {@code nameUsage} at the specified
+     * {@code height}.
      */
-    public Collection<NameUsage<?, ?>> getHigher(NameUsage<?, ?> nameUsage, Rank rank, int height);
+    public Collection<NameUsage<?>> getHigher(NameUsage<?> nameUsage, Rank rank, int height);
+
 
     /**
-     * Returns the highest <CODE>NameUsage</CODE> in the hierarchy
-     * containing <CODE>nameUsage</CODE>.
+     * Returns the highest {@code NameUsage} in the hierarchy
+     * containing {@code nameUsage}.
      *
      * @param nameUsage of interest
      *
      * @return NameUsage representing highest taxon of the hierarchy.
      */
-    public Collection<NameUsage<?, ?>> getHigher(NameUsage<?, ?> nameUsage);
+    public Collection<NameUsage<?>> getHigher(NameUsage<?> nameUsage);
 
     /**
-     * Returns the highest <CODE>NameUsage</CODE>s in each hierarchy
-     * containing <CODE>nameUsage</CODE>.
+     * Returns the highest {@code NameUsage}s in each hierarchy
+     * containing {@code nameUsage}.
      *
      * @param nameUsage of interest
      *
-     * @return NameUsage representing highest name usage containing the <tt>nameUsage</tt>
+     * @return NameUsage representing highest name usage containing the {@code nameUsage}
      */
-    public Collection<NameUsage<?, ?>> getRoots(NameUsage<?, ?> nameUsage);
+    public Collection<NameUsage<?>> getRoots(NameUsage<?> nameUsage);
 
     /**
-     * Returns the highest <CODE>NameUsage</CODE>s in each hierarchy
-     * containing <CODE>NameUsage</CODE>s of <CODE>name</CODE>.
+     * Returns the highest {@code NameUsage}s in each hierarchy
+     * containing {@code NameUsage}s of {@code name}.
      *
      * @param query name of interest, a name literal or name literals separated by "|"
      *
      * @return array of NameUsage representing highest taxa of the hierarchies
      */
-    public Collection<NameUsage<?, ?>> getRoots(String query);
+    public Collection<NameUsage<?>> getRoots(String query);
 
     /**
-     * Returns a list of <CODE>NameUsage</CODE>s
-     * having <CODE>nameUsage</CODE> as their higher <CODE>NameUsage</CODE>.
-     * Eacth <CODE>NameUsage</CODE> in the returned List may contain its lower
-     * <CODE>NameUsage</CODE>s until specified higher one of <CODE>rank</CODE>
-     * or <tt>depth</tt>
-     * by recursive access to the data source, or in  full depth if <tt>rank</tt> is null
-     * and <tt>depth</tt> is negative.
+     * Returns a list of {@code NameUsage}s
+     * having {@code nameUsage} as their higher {@code NameUsage}.
+     * Eacth {@code NameUsage} in the returned List may contain its lower
+     * {@code NameUsage}s until specified higher one of {@code rank}
+     * or {@code depth}
+     * by recursive access to the data source, or in  full depth if {@code rank} is null
+     * and {@code depth} is negative.
      *
      * @param nameUsage of interest
-     * @param rank limit of recursive search for lower <CODE>NameUsage</CODE>s.
-     * @param depth limit of recursive search for lower <CODE>NameUsage</CODE>s.
+     * @param rank limit of recursive search for lower {@code NameUsage}s.
+     * @param depth limit of recursive search for lower {@code NameUsage}s.
      */
-    public List<NameUsage<?, ?>> getLowerNameUsages(NameUsage<?, ?> nameUsage, Rank rank, int depth);
+    public <N extends NameUsage<?>> List<N> getLowerNameUsages(N nameUsage, Rank rank, int depth);
 
     /**
      * Returns the full hierarchy containing
-     * <CODE>nameUsage</CODE>.
+     * {@code nameUsage}.
      *
      * @param nameUsage of interest
      *
      * @return NameUsage representing highest taxon of returned hierarchy,
-     * or null if <CODE>nameUsage</CODE> doesn't exit in the data source.
+     * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?, ?>> getHierarchies(NameUsage<?, ?> nameUsage);
+    public Collection<NameUsage<?>> getHierarchies(NameUsage<?> nameUsage);
+
 
 
     /**
-     * Reduces redundancy in partial hierarchies given by <tt>nameUsages</tt>.
+     * Reduces redundancy in partial hierarchies given by {@code nameUsages}.
      * 
      */
-    public Collection<NameUsage<?, ?>> integrateHierarchies(Collection<? extends NameUsage<?, ?>> nameUsages);
+    public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages);
 
     /**
-     * Returns full hierarchies containing <CODE>NameUsage</CODE>s
-     * of <CODE>name</CODE>.
+     * Returns full hierarchies containing {@code NameUsage}s
+     * of {@code name}.
      *
      * @param name of interest
      *
-     * @return Array of <COCE>NameUsage</CODE>s representing highest taxon of returned hierarchy,
-     * or null if <CODE>NameUsage</CODE> of <CODE>name</CODE> doesn't exit
+     * @return Array of <COCE>NameUsage}s representing highest taxon of returned hierarchy,
+     * or null if {@code NameUsage} of {@code name} doesn't exit
      * in the data source.
      */
-    public Collection<NameUsage<?, ?>> getHierarchies(String name);
+    public Collection<NameUsage<?>> getHierarchies(String name);
 
     /**
-     * Returns a part of the hierarchy containing <CODE>nameUsage</CODE>.
-     * It contains all taxa under the <CODE>nameUsage</CODE> and full
+     * Returns a part of the hierarchy containing {@code nameUsage}.
+     * It contains all taxa under the {@code nameUsage} and full
      * path to the highest taxon in the hierarhcy but not taxa side 
-     * of the higher taxon path.  The returned <CODE>NameUsage</CODE>
-     * could be the <CODE>nameUsage</CODE> itself if <CODE>nameUsage</CODE>
+     * of the higher taxon path.  The returned {@code NameUsage}
+     * could be the {@code nameUsage} itself if {@code nameUsage}
      * is the highest taxon of the hierarhcy.
      *
      * @param nameUsage of interest
      *
      * @return NameUsage representing highest taxon of returned hierarchy,
-     * or null if <CODE>nameUsage</CODE> doesn't exit in the data source.
+     * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(NameUsage<?, ?> nameUsage);
+    public Collection<NameUsage<?>> getPartialHierarchies(NameUsage<?> nameUsage);
 
     /**
-     * Returns a part of the hierarchy containing <CODE>nameUsage</CODE>
-     * with higher taxa upto <CODE>height</CODE> levels above and
-     * lower taxa down to <CODE>depth</CODE> levels below.
-     * The returned <CODE>NameUsage</CODE>
-     * could be the <CODE>nameUsage</CODE> itself if <CODE>nameUsage</CODE>
+     * Returns a part of the hierarchy containing {@code nameUsage}
+     * with higher taxa upto {@code height} levels above and
+     * lower taxa down to {@code depth} levels below.
+     * The returned {@code NameUsage}
+     * could be the {@code nameUsage} itself if {@code nameUsage}
      * is the highest taxon of the hierarhcy.
      *
      * @param nameUsage of interest
@@ -196,17 +198,17 @@ public interface NameUsageExchanger<N extends NameUsage<?, ?>, T extends N>
      * @param depth levels of returned lower taxa
      *
      * @return NameUsage representing highest taxon of returned hierarchy,
-     * or null if <CODE>nameUsage</CODE> doesn't exit in the data source.
+     * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(NameUsageQueryParameter<?, ?> parameter);
+    public Collection<NameUsage<?>> getPartialHierarchies(NameUsageQueryParameter<?> parameter);
 
 
     /**
-     * Returns a part of the hierarchy containing <CODE>nameUsage</CODE>
-     * with upto <tt>heigher</tt> rank taxa and
-     * lower taxa down to rank of <CODE>lower</CODE> at lowest.
-     * The returned <CODE>NameUsage</CODE>
-     * could be the <CODE>nameUsage</CODE> itself if <CODE>nameUsage</CODE>
+     * Returns a part of the hierarchy containing {@code nameUsage}
+     * with upto {@code heigher} rank taxa and
+     * lower taxa down to rank of {@code lower} at lowest.
+     * The returned {@code NameUsage}
+     * could be the {@code nameUsage} itself if {@code nameUsage}
      * is the highest taxon of the hierarhcy.
      *
      * @param nameUsage of interest
@@ -216,88 +218,88 @@ public interface NameUsageExchanger<N extends NameUsage<?, ?>, T extends N>
      * @param depth levels of returned lower taxa
      *
      * @return NameUsage representing highest taxon of returned hierarchy,
-     * or null if <CODE>nameUsage</CODE> doesn't exit in the data source.
+     * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(NameUsage<?, ?> nameUsage, Rank heigher, int height, Rank lower, int depth);
+    public Collection<NameUsage<?>> getPartialHierarchies(NameUsage<?> nameUsage, Rank heigher, int height, Rank lower, int depth);
 
     /**
-     * Returns partial hierarchies containing <CODE>NameUsage</CODE>
-     * of <CODE>name</CODE>.
-     * Each partial hierarhy contains all taxa just below the <CODE>NameUsage</CODE>
-     * of the <CODE>name</CODE> and full path to the highest taxon in
+     * Returns partial hierarchies containing {@code NameUsage}
+     * of {@code name}.
+     * Each partial hierarhy contains all taxa just below the {@code NameUsage}
+     * of the {@code name} and full path to the highest taxon in
      * the hierarhcy but not taxa side of the higher taxon path. 
      *
      * @param query of interest, a name literal or name literals separated by "|"
      *
-     * @return <tt>Collection</tt> of <COCE>NameUsage</CODE>s representing highest taxon of returned hierarchy,
-     * or null if <CODE>NameUsage</CODE> of <CODE>name</CODE> doesn't exit
+     * @return {@code Collection} of <COCE>NameUsage}s representing highest taxon of returned hierarchy,
+     * or null if {@code NameUsage} of {@code name} doesn't exit
      * in the data source.
      */
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(String query);
+    public Collection<NameUsage<?>> getPartialHierarchies(String query);
 
     /**
-     * Returns a collection of <CODE>NameUsage</CODE> relevant to
-     * given <CODE>nameUsage</CODE>, or null if the method is not suppored by the data source.
+     * Returns a collection of {@code NameUsage} relevant to
+     * given {@code nameUsage}, or null if the method is not suppored by the data source.
      * Null parameter returns null also.
      *
      * @param nameUsage of interest
      *
-     * @return <tt>Collection</tt> of <tt>NameUsage</tt> relevant
-     * to the <CODE>nameUsage</CODE>, or null if the method is not suppored by the data source.
+     * @return {@code Collection} of {@code NameUsage} relevant
+     * to the {@code nameUsage}, or null if the method is not suppored by the data source.
      * Null parameter returns null also.
      * 
      */
-    public Collection<NameUsage<?, ?>> getRelevantNameUsages(NameUsage<?, ?> nameUsage);
+    public Collection<NameUsage<?>> getRelevantNameUsages(NameUsage<?> nameUsage);
 
     /**
-     * Returns a collection of <CODE>NameUsage</CODE> relevant to
-     * name usages of the <CODE>query</CODE>, or null if the method is not suppored by the data source.
+     * Returns a collection of {@code NameUsage} relevant to
+     * name usages of the {@code query}, or null if the method is not suppored by the data source.
      * Null parameter returns null also.
      *
      * @param query name of interest, a name literal or name literals separated by "|"
      *
-     * @return <tt>Collection</tt> of <tt>NameUsage</tt> relevant
+     * @return {@code Collection} of {@code NameUsage} relevant
      * to name usages of the name, or null if the method is not suppored by the data source.
      * Null parameter returns null also.
      */
-    public Collection<NameUsage<?, ?>> getRelevantNameUsages(String query);
+    public Collection<NameUsage<?>> getRelevantNameUsages(String query);
 
     /**
-     * Returns a collections of <CODE>NameUsage</CODE> which have
-     * names shared with descendent name usaages of the <CODE>nameUsage</CODE>.
+     * Returns a collections of {@code NameUsage} which have
+     * names shared with descendent name usaages of the {@code nameUsage}.
      *
      * @param nameUsage of interest
      *
-     * @return <tt>Collection</tt> of <tt>NameUsage</tt> having names shared
-     * with descendent name usages of the <CODE>nameUsage</CODE>.
+     * @return {@code Collection} of {@code NameUsage} having names shared
+     * with descendent name usages of the {@code nameUsage}.
      */
-    public Collection<NameUsage<?, ?>> getDescendentNames(NameUsage<?, ?> nameUsage);
+    public Collection<NameUsage<?>> getDescendentNames(NameUsage<?> nameUsage);
 
     /**
-     * Returns a collections of <CODE>NameUsage</CODE> which have
-     * names shared with descendent name usaages of the <CODE>query</CODE>.
+     * Returns a collections of {@code NameUsage} which have
+     * names shared with descendent name usaages of the {@code query}.
      *
      * @param query name of interest, a name literal or name literals separated by "|"
      *
-     * @return <tt>Collection</tt> of <tt>NameUsage</tt> having names shared
+     * @return {@code Collection} of {@code NameUsage} having names shared
      * with descendent name usages of name usages having the name.
      */
-    public Collection<NameUsage<?, ?>> getDescendentNames(String query);
+    public Collection<NameUsage<?>> getDescendentNames(String query);
 
     /**
-     * Returns a collections of <CODE>NameUsage</CODE> which is treated
-     * as a synonym of the <CODE>nameUsage</CODE>.   The result may contain
-     * usages of accepted names if the <CODE>nameUsage</CODE> is a (junior) synonym.
+     * Returns a collections of {@code NameUsage} which is treated
+     * as a synonym of the {@code nameUsage}.   The result may contain
+     * usages of accepted names if the {@code nameUsage} is a (junior) synonym.
      *
      * @param nameUsage of interest
      *
-     * @return <tt>Collection</tt> of <tt>NameUsage</tt> which is treated
-     * as synonum of the <CODE>nameUsage</CODE>.
+     * @return {@code Collection} of {@code NameUsage} which is treated
+     * as synonum of the {@code nameUsage}.
      */
-    //public Collection<NameUsage<N, T>> getSynonyms(NameUsage<N, T> nameUsage);
+    //public Collection<NameUsage<T>> getSynonyms(NameUsage<T> nameUsage);
 
     /**
-     * Sets <CODE>depth</CODE> as default depth in hierarchical search
+     * Sets {@code depth} as default depth in hierarchical search
      *
      * @param depth default depth to search down to
      */
@@ -311,7 +313,7 @@ public interface NameUsageExchanger<N extends NameUsage<?, ?>, T extends N>
     public int getDefaultDepth();
 
     /**
-     * Sets <CODE>height</CODE> as default height in hierarchical search
+     * Sets {@code height} as default height in hierarchical search
      *
      * @param height default height to search upto
      */
@@ -325,16 +327,16 @@ public interface NameUsageExchanger<N extends NameUsage<?, ?>, T extends N>
     public int getDefaultHeight();
 
     /**
-     * Sets <tt>synonymMode</tt> as default <tt>SynonymMode</tt>.
+     * Sets {@code synonymMode} as default {@code SynonymMode}.
      *
      * @param synonymMode default value to set
      */
     // public void setDefaultSynonymMode(SynonymMode synonymMode);
 
     /**
-     * Returns default <tt>SynonymMode</tt>.
+     * Returns default {@code SynonymMode}.
      *
-     * @return <tt>SynonymMode</tt> to be used to search
+     * @return {@code SynonymMode} to be used to search
      */
     // public SynonymMode getDefaultSynonymMode();
 }

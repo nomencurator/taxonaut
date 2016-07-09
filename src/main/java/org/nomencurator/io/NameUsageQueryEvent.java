@@ -34,19 +34,19 @@ import org.nomencurator.model.NameUsage;
  * @version 	29 June 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NameUsageQueryEvent<N extends NameUsage<?, ?>, T extends N>
-    extends QueryEvent<N, T>
+public class NameUsageQueryEvent<T extends NameUsage<?>>
+    extends QueryEvent<T>
 {
     private static final long serialVersionUID = -9023331710074208932L;
 
-    public NameUsageQueryEvent(Object source, NameUsageQueryParameter<N, T> queryParameter)
+    public NameUsageQueryEvent(Object source, NameUsageQueryParameter<T> queryParameter)
     {
 	super(source, queryParameter);
     }
 
 
-    public NameUsageQueryParameter<?, ?> getNameUsageQueryParameter()
+    public NameUsageQueryParameter<?> getNameUsageQueryParameter()
     {
-	return (NameUsageQueryParameter<?, ?>)getQueryParameter();
+	return (NameUsageQueryParameter<?>)getQueryParameter();
     }
 }

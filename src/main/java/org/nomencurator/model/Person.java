@@ -46,14 +46,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * An implementation of Person data structure of Nomencurator data model
+ * An implementation of {@code Person} data structure of Nomencurator data model
  *
  * @see 	org.nomencurator.model.NamedObject
  * @see 	org.nomencurator.model.Affiliation
  * @see 	org.nomencurator.model.Publication
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	07 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Person
@@ -124,7 +124,7 @@ private static final long serialVersionUID = -8873884348900762590L;
      *
      * @param name {@code Name} representation of an {@code Person}
      */
-    public Person(Name<?, ?> name)
+    public Person(Name<?> name)
     {
 	//don't use NamedObject(String) constructor
 	this();
@@ -155,7 +155,7 @@ private static final long serialVersionUID = -8873884348900762590L;
 		  String surnamePrefix, String  surname, String epithet,
 		  Calendar birthDate, Calendar deathDate,
 		  int firstPublication, int lastPublication,
-		  Collection<Affiliation> affiliations, Collection<Publication> publications)
+		  Collection<? extends Affiliation> affiliations, Collection<? extends Publication> publications)
     {
 	this();
 	author(title, firstName, middleNames, surnamePrefix, surname, epithet,
@@ -312,7 +312,7 @@ private static final long serialVersionUID = -8873884348900762590L;
 			String surnamePrefix, String  surname, String epithet,
 			Calendar birthDate, Calendar deathDate,
 			int firstPublication, int lastPublication,
-			Collection<Affiliation> affiliations, Collection<Publication> publications)
+			Collection<? extends Affiliation> affiliations, Collection<? extends Publication> publications)
     {
 	this.title      = title;
 	this.firstName  = firstName;
@@ -457,7 +457,7 @@ private static final long serialVersionUID = -8873884348900762590L;
      *
      * @return true if merged, or false if not mergiable
      */
-    public boolean merge(NamedObject<?, ?> nr)
+    public boolean merge(NamedObject<?> nr)
     {
 	if(!getClassNameHeader().equals(nr.getClassNameHeader()))
 	    return false;
@@ -955,7 +955,7 @@ private static final long serialVersionUID = -8873884348900762590L;
      *
      * @param publications {@code Vector} representing author's publication list
      */
-    public void setPublications(Collection<Publication> publications)
+    public void setPublications(Collection<? extends Publication> publications)
     {
 	if(entity != null)
 	    ((Person)getEntity()).setPublications(publications);

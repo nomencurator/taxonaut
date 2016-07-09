@@ -1,7 +1,7 @@
 /*
  * ArrayUtility.java:  an utilty to operate an Java array
  *
- * Copyright (c) 2006, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2006, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -26,9 +26,9 @@ import java.util.List;
 
 
 /**
- * <code>ArrayUtility</code> provides operations manipurating an Java array
+ * {@code ArrayUtility} provides operations manipurating an Java array
  *
- * @version 	16 July 2015
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class ArrayUtility
@@ -37,14 +37,14 @@ public class ArrayUtility
     ArrayUtility() {}
 
     /**
-     * Examine whether <CODE>array</CODE> contains <CODE>object</CODE>
+     * Examine whether {@code array} contains {@code object}
      *
      * @param object to be looked for
      * @param array to be examined
      *
-     * @return true if <CODE>array</CODE> contains <CODE>object</CODE>
-     * or false if <CODE>object</CODE> is not found in <CODE>array</CODE>, or inapplicable,
-     * i.e. if either <CODE>object</CODE> or <CODE>array</CODE> is null.
+     * @return true if {@code array} contains {@code object}
+     * or false if {@code object} is not found in {@code array}, or inapplicable,
+     * i.e. if either {@code object} or {@code array} is null.
      */
     public static <T> boolean contains(T object, T[] array) 
     {
@@ -52,14 +52,14 @@ public class ArrayUtility
     }
 
     /**
-     * Returns index of <CODE>object</CODE> in <CODE>array</CODE>
+     * Returns index of {@code object} in {@code array}
      *
      * @param object to be looked for
-     * @param array to be searched for the <CODE>object</CODE>
+     * @param array to be searched for the {@code object}
      *
-     * @return index of the <CODE>object</CODE> in <CODE>array</CODE>,
-     * or -1 if <CODE>object</CODE> is not found in <CODE>array</CODE>, or inapplicable,
-     * i.e. if either <CODE>object</CODE> or <CODE>array</CODE> is null.
+     * @return index of the {@code object} in {@code array},
+     * or -1 if {@code object} is not found in {@code array}, or inapplicable,
+     * i.e. if either {@code object} or {@code array} is null.
      */
     public static <T> int indexOf(T object, T[] array) 
     {
@@ -77,19 +77,19 @@ public class ArrayUtility
     }
 
     /**
-     * Create and return an array containing <CODE>object</CODE> after elements
-     * of <CODE>array</CODE> if <CODE>array</CODE> does not contain <CODE>object</CODE>.
-     * If returned array is the <CODE>array</CODE>, <CODE>object</CODE> was not added.
-     * If the <CODE>array</CODE> is null or empty and <CODE>object</CODE> is not null,
-     * it crates a new array contains only the <CODE>object</CODE>.
+     * Create and return an array containing {@code object} after elements
+     * of {@code array} if {@code array} does not contain {@code object}.
+     * If returned array is the {@code array}, {@code object} was not added.
+     * If the {@code array} is null or empty and {@code object} is not null,
+     * it crates a new array contains only the {@code object}.
      *
      * @param object to add
-     * @param array to accept <CODE>object</CODE>
+     * @param array to accept {@code object}
      *
-     * @return a new array containing <CODE>object</CODE> after elements of<CODE>array</CODE>,
+     * @return a new array containing {@code object} after elements of{@code array},
      * or null if both are null.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <T> T[] add(T object, T[] array)
     {
 	if(object == null)
@@ -97,7 +97,6 @@ public class ArrayUtility
 
 	if(array == null ||
 	   array.length == 0) {
-	    //array = (T[])java.lang.reflect.Array.newInstance(object.getClass(), 1);
 	    array = (T[])create(object.getClass(), 1);
 	    array[0] = object;
 	    return array;
@@ -114,19 +113,19 @@ public class ArrayUtility
 
 
     /**
-     * Create and return an array containing <CODE>object</CODE> after elements
-     * of <CODE>array</CODE> if <CODE>array</CODE> does not contain <CODE>object</CODE>.
-     * If returned array is the <CODE>array</CODE>, <CODE>object</CODE> was not added.
-     * If the <CODE>array</CODE> is null or empty and <CODE>object</CODE> is not null,
-     * it crates a new array contains only the <CODE>object</CODE>.
+     * Create and return an array containing {@code object} after elements
+     * of {@code array} if {@code array} does not contain {@code object}.
+     * If returned array is the {@code array}, {@code object} was not added.
+     * If the {@code array} is null or empty and {@code object} is not null,
+     * it crates a new array contains only the {@code object}.
      *
      * @param object to add
-     * @param array to accept <CODE>object</CODE>
+     * @param array to accept {@code object}
      *
-     * @return a new array containing <CODE>object</CODE> after elements of<CODE>array</CODE>,
+     * @return a new array containing {@code object} after elements of{@code array},
      * or null if both are null.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <T> T[] add(T object, int index, T[] array)
     {
 
@@ -158,17 +157,17 @@ public class ArrayUtility
     }
 
     /**
-     * Return an array of elements in <CODE>array</CODE>
-     * but <CODE>object</CODE>.
-     * If <CODE>array</CODE> does not contain <CODE>object</CODE>,
-     * it returns <CODE>array</CODE> itslef.
+     * Return an array of elements in {@code array}
+     * but {@code object}.
+     * If {@code array} does not contain {@code object},
+     * it returns {@code array} itslef.
      *
      * @param object to remove
      * @param array to be removed
      *
-     * @return a new array containing elements of <CODE>array</CODE>
-     * but <CODE>object</CODE> or <CODE>array</CODE> if it does
-     * not contain the <CODE>object</CODE>.
+     * @return a new array containing elements of {@code array}
+     * but {@code object} or {@code array} if it does
+     * not contain the {@code object}.
      *
      * @see removeElement(T, T[])
      */
@@ -195,7 +194,7 @@ public class ArrayUtility
     }
 
     /**
-     * Remove all elements from <CODE>array</CODE>
+     * Remove all elements from {@code array}
      *
      * @param array to clear
      */
@@ -213,7 +212,7 @@ public class ArrayUtility
     }
 
     /**
-     * Returns a copy of <CODE>array</CODE>
+     * Returns a copy of {@code array}
      *
      * @param array to copy
      */
@@ -232,7 +231,7 @@ public class ArrayUtility
     }
 
     /**
-     * Returns a copy of <CODE>list</CODE>
+     * Returns a copy of {@code list}
      *
      * @param array to copy
      */
@@ -276,8 +275,8 @@ public class ArrayUtility
     }
 
     /**
-     * Create and return an array containing elements of <CODE>source1</CODE> and 
-     * <CODE>source2</CODE>, or null if both sources are null.
+     * Create and return an array containing elements of {@code source1} and 
+     * {@code source2}, or null if both sources are null.
      *
      * @param source1 array to merge
      * @param source2 array to merge
@@ -302,7 +301,7 @@ public class ArrayUtility
     }
 
     /**
-     * Create and return an array containing elements of <CODE>sources</CODE>,
+     * Create and return an array containing elements of {@code sources},
      * or null if all source arrays are null.
      *
      * @param sources arrays to merge

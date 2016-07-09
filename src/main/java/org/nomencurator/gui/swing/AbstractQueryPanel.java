@@ -86,10 +86,10 @@ import org.nomencurator.gui.vocabulary.QueryPanelElement;
  * {@code AbstractQueryPanel} provides components to specify a filter to search data sources.
  * It dispatches a {@code QueryEvent} representing a query filter.
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends N>
+public abstract class AbstractQueryPanel<T extends NamedObject<?>>
     extends JPanel
     implements ActionListener,
 	       DocumentListener,
@@ -139,7 +139,7 @@ public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends 
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    protected AbstractQueryPanel(QueryListener<N, T> listener)
+    protected AbstractQueryPanel(QueryListener<T> listener)
     {
 	this(Locale.getDefault(), listener);
     }
@@ -150,7 +150,7 @@ public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends 
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    protected AbstractQueryPanel(Locale locale, QueryListener<N, T> listener)
+    protected AbstractQueryPanel(Locale locale, QueryListener<T> listener)
     {
 	super(new GridBagLayout());
 	queryFieldGridWidth = createComponents();
@@ -250,7 +250,7 @@ public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends 
 	revalidate();
     }
 
-    public void addQueryListener(QueryListener<N, T> listener)
+    public void addQueryListener(QueryListener<T> listener)
     {
 	if(listener == null)
 	    return;
@@ -261,7 +261,7 @@ public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends 
 	listeners.add(QueryListener.class, listener);
     }
 
-    public void removeQueryListener(QueryListener<N, T> listener)
+    public void removeQueryListener(QueryListener<T> listener)
     {
 	if(listener == null || listeners == null)
 	    return;
@@ -270,7 +270,7 @@ public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends 
     }
 
     @SuppressWarnings("unchecked")
-    protected void fireQueryEvent(QueryEvent<N, T> queryEvent)
+    protected void fireQueryEvent(QueryEvent<T> queryEvent)
     {
 	if(queryEvent == null || listeners == null)
 	    return;
@@ -278,7 +278,7 @@ public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends 
 	Object[] listenersArray = listeners.getListenerList();
 	for (int i = listenersArray.length-2; i>=0; i-=2) {
 	    if (listenersArray[i]==QueryListener.class) {
-		((QueryListener<N, T>)listenersArray[i+1]).query(queryEvent);
+		((QueryListener<T>)listenersArray[i+1]).query(queryEvent);
 	    }
 	}
     }
@@ -340,7 +340,7 @@ public abstract class AbstractQueryPanel<N extends NamedObject<?, ?>, T extends 
 	}
     }	
 
-    protected abstract QueryEvent<N, T> composeQuery();
+    protected abstract QueryEvent<T> composeQuery();
 
     protected void enableButtons(boolean enable)
     {

@@ -32,30 +32,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-//import org.nomencurator.sql.NamedObjectConnection;
 import org.nomencurator.io.sql.NamedObjectConnection;
 
 /**
- * <CODE>SQLSerializable</CODE> provides an interface to save/retrieve
- * an<CODE>Object</CODE> to/from a database accessible via SQL.
+ * {@code SQLSerializable} provides an interface to save/retrieve
+ * an{@code Object} to/from a database accessible via SQL.
  *
- * @version 	16 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
+public interface SQLSerializable<T extends NamedObject<?>>
 {
     /**
-     * Sets <CODE>sql</CODE> as a SQL to create table
-     * in DBMS specified bye <CODE>sqlType</CODE>
-     * for the <CODE>SQLObject</CODE>
+     * Sets {@code sql} as a SQL to create table
+     * in DBMS specified bye {@code sqlType}
+     * for the {@code SQLObject}
      *
-     * @param sqlType <CODE>Locale</CODE> representing the target SQL subset
+     * @param sqlType {@code Locale} representing the target SQL subset
      *
-     * @param key <CODE>String</CODE> representing resource key to access to the SQL
+     * @param key {@code String} representing resource key to access to the SQL
      *
-     * @param sql <CODE>String</CODE> representing the SQL to create the table
+     * @param sql {@code String} representing the SQL to create the table
      *
-     * @param parameters <CODE>String</CODE> representing parameters of the SQL
+     * @param parameters {@code String} representing parameters of the SQL
      */
     /*
     public void setCreateTableSQL(Locale sqlType,
@@ -66,9 +65,9 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Returns a SQL to create a relevant table in given
-     * <CODE>sqlType</CODE>
+     * {@code sqlType}
      *
-     * @param sqlType <CODE>Locale</CODE> representing the target SQL subset
+     * @param sqlType {@code Locale} representing the target SQL subset
      *
      * @return String representing a SQL to create relevant table
      */
@@ -76,13 +75,12 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Appends a SQL to create a relevant table at the end of
-     * <CODE>buffer</CODE>.  If <CODE>buffer</CODE> is null,
-     * it creates a new <CODE>StringBuffer</CODE>.
+     * {@code buffer}.  If {@code buffer} is null,
+     * it creates a new {@code StringBuffer}.
      *
-     * @param buffer <CODE>StringBuffer</CODE> to which the
-     * SQL to be appended, or null to create a new
-     * CODE>StringBuffer</CODE>
-     * @param sqlType <CODE>Locale</CODE> representing the target SQL subset
+     * @param buffer {@code StringBuffer} to which the
+     * SQL to be appended, or null to create a new {@code StringBuffer}
+     * @param sqlType {@code Locale} representing the target SQL subset
      *
      * @return StringBuffer containing the SQL at the end
      */
@@ -91,9 +89,9 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Returns a SQL to insert the object to a relevant table
-     * with <CODE>objectID</CODE>
+     * with {@code objectID}
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return String representing a SQL to insert the object
@@ -103,14 +101,13 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Appends a SQL to insert to a relevant table at the end of
-     * <CODE>buffer</CODE>.  If <CODE>buffer</CODE> is null,
-     * it creates a new <CODE>StringBuffer</CODE>.
+     * {@code buffer}.  If {@code buffer} is null,
+     * it creates a new {@code StringBuffer}.
      *
-     * @param buffer <CODE>StringBuffer</CODE> to which the
-     * SQL to be appended, or null to create a new
-     * CODE>StringBuffer</CODE>
+     * @param buffer {@code StringBuffer} to which the
+     * SQL to be appended, or null to create a new {@code StringBuffer}
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return StringBuffer containing the SQL at the end
@@ -119,9 +116,9 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Inserts the object to the database specified by the
-     * <CODE>connection</CODE>
+     * {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return object ID of inserted object
      */
@@ -130,9 +127,9 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Inserts the object to the database specified by the
-     * <CODE>connection</CODE>
+     * {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return object ID of inserted object
      */
@@ -141,9 +138,9 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Inserts the object to the database specified by the
-     * <CODE>connection</CODE>
+     * {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return object ID of inserted object
      */
@@ -153,31 +150,31 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
     /**
      * Returns object ID of the named object, or zero if the
      * object doesn't exist in the database behind
-     * given <CODE>connection</CODE>
+     * given {@code connection}
      *
-     * @param connection <CODE>NamedObjectConnection</CODE> to the database
+     * @param connection {@code NamedObjectConnection} to the database
      *
-     * @return the object ID of the NamedObject in the <CODE>connection</CODE>
+     * @return the object ID of the NamedObject in the {@code connection}
      * or zero if it is no in the database.
      */
-    public int getObjetID(NamedObjectConnection<? extends N> connection)
+    public int getObjetID(NamedObjectConnection<? extends T> connection)
     	throws SQLException;
 
     /**
-     * Sets <CODE>objectID</CODE> of the NamedObject for the
-     * object in the database behind <CODE>connection</CODE>.
+     * Sets {@code objectID} of the NamedObject for the
+     * object in the database behind {@code connection}.
      *
-     * @param objectID <CODE>int</CODE> of object ID in the database
-     * @param connection <CODE>NamedObjectConnection</CODE> to the database
+     * @param objectID {@code int} of object ID in the database
+     * @param connection {@code NamedObjectConnection} to the database
      */
-    public void setObjetID(int objectID, NamedObjectConnection<? extends N> connection);
+    public void setObjetID(int objectID, NamedObjectConnection<? extends T> connection);
     //throws SQLException;
 
     /**
      * Returns a precompiled statement to insert an object
-     * of this class to <CODE>connection</CODE>
+     * of this class to {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return List containing precompiled SQL statement to insert
      */
@@ -186,9 +183,9 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Returns a precompiled statement to insert an object
-     * of this class to <CODE>connection</CODE>
+     * of this class to {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return List containing precompiled SQL statement to update
      */
@@ -197,9 +194,9 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Returns a precompiled statement to delete an object
-     * of this class in <CODE>connection</CODE>
+     * of this class in {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return List containing precompiled SQL statement to delete
      */
@@ -207,14 +204,14 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
     	throws SQLException;
 
     /**
-     * Sets paremeters to <CODE>PreparedStatement</CODE> in 
-     * <CODE>statements</CODE> to INSERT to the database
+     * Sets paremeters to {@code PreparedStatement} in 
+     * {@code statements} to INSERT to the database
      *
-     * @param statements <CODE>Iterator</CODE> of 
-     * <CODE>PreparedStatement</CODE> to which 
+     * @param statements {@code Iterator} of 
+     * {@code PreparedStatement} to which 
      * paramters to be set
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return number of parameters
@@ -224,14 +221,14 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 	throws SQLException;
 
     /**
-     * Sets paremeters to <CODE>PreparedStatement</CODE> in 
-     * <CODE>statements</CODE> to UPDATE data in the database
+     * Sets paremeters to {@code PreparedStatement} in 
+     * {@code statements} to UPDATE data in the database
      *
-     * @param statements <CODE>Iterator</CODE> of 
-     * <CODE>PreparedStatement</CODE> to which 
+     * @param statements {@code Iterator} of 
+     * {@code PreparedStatement} to which 
      * paramters to be set
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return number of parameters
@@ -241,14 +238,14 @@ public interface SQLSerializable<N extends NamedObject<?, ?>, T extends N>
 	throws SQLException;
 
     /**
-     * Sets paremeters to <CODE>PreparedStatement</CODE> in 
-     * <CODE>statements</CODE> to DELETE data in the database
+     * Sets paremeters to {@code PreparedStatement} in 
+     * {@code statements} to DELETE data in the database
      *
-     * @param statements <CODE>Iterator</CODE> of 
-     * <CODE>PreparedStatement</CODE> to which 
+     * @param statements {@code Iterator} of 
+     * {@code PreparedStatement} to which 
      * paramters to be set
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return number of parameters

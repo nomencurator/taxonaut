@@ -33,31 +33,23 @@ import org.nomencurator.model.NamedObject;
 import lombok.Getter;
 
 /**
- * <CODE>ObjectQuery</CODE> implements <tt>ObjectExchanger</tt>.
+ * {@code ObjectQuery} implements {@code ObjectExchanger}.
  *
- * @version 	10 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-//public interface ObjectQuery<E extends NamedObject<?, ?>>
-//    extends Callable<Collection<E>>
-public interface ObjectQuery<N extends NamedObject<?, ?>, T extends N>
-								    //				       extends Callable<Collection<NamedObject<N, T>>>
-				       extends Callable<Collection<T>>
+public interface ObjectQuery<T extends NamedObject<?>>
+				       extends Callable<Collection<? extends T>>
 {
-    public ObjectExchanger<N, T> getExchanger();
-    //public ObjectExchanger<E> getExchanger();
+    public ObjectExchanger<T> getExchanger();
 
-    public QueryParameter<N, T> getParameter();
-    //public QueryParameter<E> getParameter();
+    public QueryParameter<T> getParameter();
 
-    //public Collection<NamedObject<N, T>> getResults();
     public Collection<T> getResults();
-    //public Collection<Collection<E>> getResults();
+    //public Collection<Collection<T>> getResults();
 
-    public void addQueryResultListener(QueryResultListener<N, T> listener);
-    //public void addQueryResultListener(QueryResultListener<E> listener);
+    public void addQueryResultListener(QueryResultListener<T> listener);
     
-    public void removeQueryResultListener(QueryResultListener<N, T> listener);
-    //public void removeQueryResultListener(QueryResultListener<E> listener);
+    public void removeQueryResultListener(QueryResultListener<T> listener);
 }
 

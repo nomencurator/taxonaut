@@ -31,17 +31,16 @@ import java.util.Vector;
 import org.nomencurator.util.ObjectPool;
 
 /**
- * <CODE>Nomencurator</CODE> provides pooled objects
+ * {@code Nomencurator} provides pooled objects
  * with name resolver
 
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	24 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Nomencurator
-//    extends Hashtable 
-    extends HashMap<String, Name<?, ?>>
+    extends HashMap<String, Name<?>>
     implements Serializable
 { 
     private static final long serialVersionUID = 5219702098778493261L;
@@ -71,7 +70,7 @@ public class Nomencurator
 	resolver = new NameResolver();
     }
 
-    public Name<?, ?> put(Name<?, ?> obj)
+    public Name<?> put(Name<?> obj)
     {
 	String key = obj.getLiteral();
 	if(obj.isNominal())
@@ -81,20 +80,20 @@ public class Nomencurator
 	return resolve(obj);
     }
 
-    public Name<?, ?> get(String name)
+    public Name<?> get(String name)
     {
-	Name<?, ?> n = (Name<?, ?>)pool.get(name);
+	Name<?> n = (Name<?>)pool.get(name);
 	if(n == null)
 	    n = (Name)resolver.get(name);
 	return n;
     }
 
-    public Name<?, ?> resolve(Name<?, ?> obj)
+    public Name<?> resolve(Name<?> obj)
     {
 	return resolver.resolve(obj);
     }
 
-    public Name<?, ?> putToResolver(Object key, Name<?, ?> obj)
+    public Name<?> putToResolver(Object key, Name<?> obj)
     {
 	if(!obj.isNominal() || resolver.get(key) != null)
 	    return (NamedObject)resolver.resolve(obj);
@@ -102,17 +101,17 @@ public class Nomencurator
     }
 
 
-    public NamedObject<?, ?> resolve(Object key, Name<?, ?> name)
+    public NamedObject<?> resolve(Object key, Name<?> name)
     {
 	return (NamedObject)resolver.resolve(key, name);
     }
 
-    public NamedObject<?, ?> putUnresolved(Name<?, ?> name)
+    public NamedObject<?> putUnresolved(Name<?> name)
     {
 	return (NamedObject)resolver.put(name.getLiteral(), name);
     }
 
-    public NamedObject<?, ?> getUnresolved(Object key)
+    public NamedObject<?> getUnresolved(Object key)
     {
 	return (NamedObject)resolver.get(key);
     }

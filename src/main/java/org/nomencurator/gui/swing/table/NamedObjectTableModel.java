@@ -43,11 +43,11 @@ import org.nomencurator.model.NameUsage;
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  * @see org.nomencurator.model.NamedObject
  *
- * @version 	27 June 2016
+ * @version 	07 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class NamedObjectTableModel<E extends NamedObject<?, ?>>
-    extends ObjectTableModel<E>
+public abstract class NamedObjectTableModel<T extends NamedObject<?>>
+    extends ObjectTableModel<T>
 {
     private static final long serialVersionUID = -3638313284499918045L;
 
@@ -61,18 +61,18 @@ public abstract class NamedObjectTableModel<E extends NamedObject<?, ?>>
 	super(locale);
     }
 
-    public E getNamedObject(int row)
+    public T getNamedObject(int row)
     {
 	return getObject(row);
     }
 
-    public static <T extends NamedObject<?, ?>> String getNames(Enumeration<T> e)
+    public static <E extends NamedObject<?>> String getNames(Enumeration<E> e)
     {
 	if(e == null || !e.hasMoreElements())
 	    return null;
 	StringBuffer buffer = new StringBuffer();
 	while(e.hasMoreElements()) {
-	    T namedObject = e.nextElement();
+	    E namedObject = e.nextElement();
 	    if(buffer.length() > 0)
 		buffer.append(", ");
 	    buffer.append(namedObject.getLiteral());
@@ -80,13 +80,13 @@ public abstract class NamedObjectTableModel<E extends NamedObject<?, ?>>
 	return buffer.toString();
     }
 
-    public static <T extends NamedObject<?, ?>> String getNames(Iterator<T> e)
+    public static <E extends NamedObject<?>> String getNames(Iterator<E> e)
     {
 	if(e == null || !e.hasNext())
 	    return null;
 	StringBuffer buffer = new StringBuffer();
 	while(e.hasNext()) {
-	    T namedObject = e.next();
+	    E namedObject = e.next();
 	    if(buffer.length() > 0)
 		buffer.append(", ");
 	    buffer.append(namedObject.getLiteral());
@@ -94,14 +94,14 @@ public abstract class NamedObjectTableModel<E extends NamedObject<?, ?>>
 	return buffer.toString();
     }
 
-    public static <T extends NamedObject<?, ?>> String getNames(T[] namedObjects)
+    public static <E extends NamedObject<?>> String getNames(E[] namedObjects)
     {
 	if(namedObjects == null ||
 	   namedObjects.length == 0)
 	    return null;
 
 	StringBuffer buffer = new StringBuffer();
-	for(T namedObject: namedObjects) {
+	for(E namedObject: namedObjects) {
 	    if(namedObject == null)
 		continue;
 	    if(buffer.length() > 0)
@@ -111,14 +111,14 @@ public abstract class NamedObjectTableModel<E extends NamedObject<?, ?>>
 	return buffer.toString();
     }
 
-    public static <T extends NamedObject<?, ?>> String getNames(Collection<T> namedObjects)
+    public static <E extends NamedObject<?>> String getNames(Collection<E> namedObjects)
     {
 	if(namedObjects == null ||
 	   namedObjects.size() == 0)
 	    return null;
 
 	StringBuffer buffer = new StringBuffer();
-	for(T namedObject: namedObjects) {
+	for(E namedObject: namedObjects) {
 	    if(namedObject == null)
 		continue;
 	    if(buffer.length() > 0)

@@ -35,221 +35,226 @@ import java.util.Vector;
 import org.w3c.dom.Element;
 
 /**
- * An implementation of <code>NameUsageNode</code> in Nomencurator
+ * An implementation of {@code NameUsageNode} in Nomencurator
  * data model.  It was referred to as NRnode in the original publication.
- * It wraps a <code>NameUsage</code> for efficient navigation over 
- * annotated <code>NameUsage</code>s.
+ * It wraps a {@code NameUsage} for efficient navigation over
+ * annotated {@code NameUsage}s.
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	23 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface NameUsageNode <N extends NameUsageNode<?, ?>, T extends N>
-					  //public interface NameUsageNode <T>
-    extends NameUsage <N, T>
+public interface NameUsageNode <T extends NameUsageNode<?>>
+    extends NameUsage <T>
 {
     ////protected void initializeReferants();
 
     /**
-     * Returns <CODE>Collection</CODE> of 
-     * relevant <CODE>Annotations</CODE>, or null
-     * if there is no <CODE>Annotations</CODE>
-     * relevant to this <CODE>NameUsageNode</CODE>
+     * Returns {@code Collection} of
+     * relevant {@code Annotations}, or null
+     * if there is no {@code Annotations}
+     * relevant to this {@code NameUsageNode}
      *
-     * @return Collection of relevant <CODE>Annotation</CODE>s
+     * @return Collection of relevant {@code Annotation}s
      */
     public Collection<Annotation> getRelevantAnnotations();
 
     /**
-     * Returns <CODE>Collection</CODE> of 
-     * relevant <CODE>Annotations</CODE> with specified
-     * <CODE>linkType</CODE>, or null
-     * if there is no <CODE>Annotations</CODE> having
-     * <CODE>linkType</CODE>.
+     * Returns {@code Collection} of
+     * relevant {@code Annotations} with specified
+     * {@code linkType}, or null
+     * if there is no {@code Annotations} having
+     * {@code linkType}.
      *
-     * @param linkType link type of <CODE>Annotation</CODE> to be
+     * @param linkType link type of {@code Annotation} to be
      * returned
      *
-     * @return Collection of <CODE>Annotation</CODE>s having
-     * <CODE>linkType</CODE>
+     * @return Collection of {@code Annotation}s having
+     * {@code linkType}
      */
     public Collection<Annotation> getRelevantAnnotations(String linkType);
 
     /**
-     * Adds <CODE>annotation</CODE> to the list of
-     * <CODE>Annotation</CODE>s relevant to the
-     * <CODE>NameUsage</CODE> and provide cross
-     * references between relevant <CODE>NameUsage</CODE>s
+     * Adds {@code annotation} to the list of
+     * {@code Annotation}s relevant to the
+     * {@code NameUsage} and provide cross
+     * references between relevant {@code NameUsage}s
      *
-     * @param annotation <CODE>Annotation</CODE> to be added to
-     * the list of relevant <CODE>Annotation</CODE>s
+     * @param annotation {@code Annotation} to be added to
+     * the list of relevant {@code Annotation}s
      *
-     * @return number of <CODE>NameUsageNode</CODE> added
+     * @return number of {@code NameUsageNode} added
      */
     public int addRelevantAnnotation(Annotation annotation);
 
     /**
-     * Removes <CODE>annotation</CODE> from the list of
-     * <CODE>Annotation</CODE>s relevant to the
-     * <CODE>NameUsage</CODE> and cross
-     * references between relevant <CODE>NameUsage</CODE>s
+     * Removes {@code annotation} from the list of
+     * {@code Annotation}s relevant to the
+     * {@code NameUsage} and cross
+     * references between relevant {@code NameUsage}s
      *
-     * @param annotation <CODE>Annotatation</CODE> to be remvoed
+     * @param annotation {@code Annotatation} to be remvoed
      */
     public boolean removeRelevantAnnotation(Annotation annotation);
 
     /**
-     * Returns <CODE>Collection</CODE> of 
-     * relevant <CODE>NameUsageNode</CODE>s, or null
-     * if there is no <CODE>NameUsageNode</CODE>
-     * relevant to this <CODE>NameUsageNode</CODE>
+     * Returns {@code Collection} of
+     * relevant {@code NameUsageNode}s, or null
+     * if there is no {@code NameUsageNode}
+     * relevant to this {@code NameUsageNode}
      *
-     * @return Collection of relevant <CODE>NameUsageNode</CODE>
+     * @return Collection of relevant {@code NameUsageNode}
      * or null if none
      */
-    //public Collection<NameUsageNode<? extends N, ? extends T>> getRelevantNodes();
-    public Collection<NameUsageNode<N, ? extends T>> getRelevantNodes();
+    public Collection<NameUsageNode<?/* extends T*/>> getRelevantNodes();
 
     /**
-     * Returns <CODE>Collection</CODE> of 
-     * relevant <CODE>NameUsageNode</CODE>s with
-     * <CODE>name</CODE>, or null
-     * if there is no <CODE>NameUsageNode</CODE>
-     * ascribed as <CODE>name</CODE>
+     * Returns {@code Collection} of
+     * relevant {@code NameUsageNode}s with
+     * {@code name}, or null
+     * if there is no {@code NameUsageNode}
+     * ascribed as {@code name}
      *
-     * @param name ascribed name of <CODE>NameUsageNode</CODE>s
+     * @param name ascribed name of {@code NameUsageNode}s
      *
-     * @return Collection of relevant <CODE>NameUsageNode</CODE>
-     * with <CODE>name</CODE> or null if none
+     * @return Collection of relevant {@code NameUsageNode}
+     * with {@code name} or null if none
      */
-    //public Collection<NameUsageNode<? extends N, ? extends T>> getRelevantNodesOfName(String name);
-    public Collection<NameUsageNode<N, ? extends T>> getRelevantNodesOfName(String name);
+    public Collection<NameUsageNode<?/* extends T*/>> getRelevantNodesOfName(String name);
 
     /**
-     * Returns <CODE>Collection</CODE> of 
-     * relevant <CODE>NameUsageNode</CODE>s with
-     * persisntet ID <CODE>id</CODE>, or null
-     * if there is no <CODE>NameUsageNode</CODE>
-     * ascribed as <CODE>name</CODE>.
-     * Class name part of <CODE>id</CODE> will be dropped
-     * when looking for <CODE>NameUsageNode</CODE>s so
-     * persistent ID of either <CODE>NameUsage</CODE>
-     * <CODE>NameUsageNode</CODE> will accepted.
+     * Returns {@code Collection} of
+     * relevant {@code NameUsageNode}s with
+     * persisntet ID {@code id}, or null
+     * if there is no {@code NameUsageNode}
+     * ascribed as {@code name}.
+     * Class name part of {@code id} will be dropped
+     * when looking for {@code NameUsageNode}s so
+     * persistent ID of either {@code NameUsage}
+     * {@code NameUsageNode} will accepted.
      *
-     * @param id persisntet ID of <CODE>NameUsageNode</CODE>s
+     * @param id persisntet ID of {@code NameUsageNode}s
      *
-     * @return Collection of relevant <CODE>NameUsageNode</CODE>
-     * with <CODE>id</CODE> or null if none
+     * @return Collection of relevant {@code NameUsageNode}
+     * with {@code id} or null if none
      */
-    //public Collection<NameUsageNode<? extends N, ? extends T>> getRelevantNodesOfID(String id);
-    public Collection<NameUsageNode<N, ? extends T>> getRelevantNodesOfID(String id);
+    public Collection<NameUsageNode<?/* extends T*/>> getRelevantNodesOfID(String id);
 
     /**
-     * Adds <CODE>NameUsageNode</CODE>s relevant to 
-     * <CODE>NameUsage</CODE> referred to by <CODE>annotation</CODE>
+     * Adds {@code NameUsageNode}s relevant to
+     * {@code NameUsage} referred to by {@code annotation}
      *
-     * @param annotation <CODE>Annotation</CODE> where relevant
-     * <CODE>NameUsage</CODE> should be retrieved
+     * @param annotation {@code Annotation} where relevant
+     * {@code NameUsage} should be retrieved
      *
-     * @param annotation <CODE>Annotation</CODE> to be added
+     * @param annotation {@code Annotation} to be added
      *
-     * @return number of <CODE>NameUsageNode</CODE> added
+     * @return number of {@code NameUsageNode} added
      */
     public int addRelevantNodes(Annotation annotation);
-    
+   
     /**
-     * Adds <CODE>NameUsageNode</CODE>s representing
-     * <CODE>NameUsage</CODE>s enumerated in <CODE>nodes</CODE>
-     * to the list of <CODE>NameUsageNode</CODE> relevant to this,
-     * with pointer to <CODE>annotation</CODE>.
+     * Adds {@code NameUsageNode}s representing
+     * {@code NameUsage}s enumerated in {@code nodes}
+     * to the list of {@code NameUsageNode} relevant to this,
+     * with pointer to {@code annotation}.
      *
-     * @param annotation <CODE>Annotation</CODE> to be added
-     * @param nodes <CODE>Collection</CODE> of <CODE>NameUsage</CODE>
+     * @param annotation {@code Annotation} to be added
+     * @param nodes {@code Collection} of {@code NameUsage}
      * to be added
-     * @param nodeSet <CODE>Set</CODE>  to hold <CODE>NameUsageNode</CODE>s 
-     * relevant to the <CODE>annotation</CODE>
+     * @param nodeSet {@code Set}  to hold {@code NameUsageNode}s
+     * relevant to the {@code annotation}
      *
-     * @return number of <CODE>NameUsageNode</CODE> added
+     * @return number of {@code NameUsageNode} added
      */
-
     public int addRelevantNodes(Annotation annotation,
-				Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nodes,
-				Set<NameUsageNode<N, ? extends T>> nodeSet);
-				//Set<NameUsageNode<? extends N, ? extends T>> nodeSet);
-
-    public int addRelevantNodes(Annotation annotation,
-				Iterator<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nodes,
-				Set<NameUsageNode<N, ? extends T>> nodeSet);
-				//				Set<NameUsageNode<? extends N, ? extends T>> nodeSet);
+				Collection<? extends NameUsage<?>> nodes,
+				Set<NameUsageNode<?>> nodeSet);
 
     /**
-     * Removes <CODE>NameUsageNode</CODE>s relevant to
-     * <CODE>annotation</CODE> from cross
+     * Adds {@code NameUsageNode}s representing
+     * {@code NameUsage}s enumerated in {@code nodes}
+     * to the list of {@code NameUsageNode} relevant to this,
+     * with pointer to {@code annotation}.
+     *
+     * @param annotation {@code Annotation} to be added
+     * @param nodes {@code Iterator} for {@code NameUsage}s
+     * to be added
+     * @param nodeSet {@code Set}  to hold {@code NameUsageNode}s
+     * relevant to the {@code annotation}
+     *
+     * @return number of {@code NameUsageNode} added
+     */
+    public int addRelevantNodes(Annotation annotation,
+				Iterator<? extends NameUsage<?>> nodes,
+				Set<NameUsageNode<?>> nodeSet);
+
+    /**
+     * Removes {@code NameUsageNode}s relevant to
+     * {@code annotation} from cross
      * references between them.
      *
-     * @param annotation to which relevant <CODE>NameUsageNode</CODE>s 
+     * @param annotation to which relevant {@code NameUsageNode}s
      * to be removed
      *
-     * @return number of removed <CODE>NameUsageNode</CODE>s 
+     * @return number of removed {@code NameUsageNode}s
      */
     public int removeRelevantNodes(Annotation annotation);
 
     /**
-     * Removes <CODE>annotation</CODE> from the list of
-     * <CODE>Annotation</CODE>s relevant to then
-     * <CODE>NameUsage</CODE> and cross
-     * references between relevant <CODE>NameUsage</CODE>s
+     * Removes {@code annotation} from the list of
+     * {@code Annotation}s relevant to then
+     * {@code NameUsage} and cross
+     * references between relevant {@code NameUsage}s
      *
-     * @param annotation <CODE>Annotation</CODE> of which 
-     * relevant <CODE>NameUsageNode</CODE> to be remvoed
-     * @param nodes <CODE>Map</CODE> from which 
-     * <CODE>NameUsageNode</CODE> relevant to 
-     * <CODE>annotation</CODE> to be remvoed
+     * @param annotation {@code Annotation} of which
+     * relevant {@code NameUsageNode} to be remvoed
+     * @param nodes {@code Map} from which
+     * {@code NameUsageNode} relevant to
+     * {@code annotation} to be remvoed
      *
      */
-    //public int removeRelevantNodes(Annotation annotation, Map<NameUsageNode<? extends N, ? extends T>, Annotation> nodes);
-    public int removeRelevantNodes(Annotation annotation, Map<NameUsageNode<N, ? extends T>, Annotation> nodes);
+    public int removeRelevantNodes(Annotation annotation, Map<? extends NameUsageNode<?>, Annotation> nodes);
 
     ////protected String convertToNameUsageNodePID(String nameUsagePID)
 
     /**
-     * Returns persistent ID as a <CODE>NameUsage</CODE>,
-     * instead of as <CODE>NameUsageNode</CODE>
+     * Returns persistent ID as a {@code NameUsage},
+     * instead of as {@code NameUsageNode}
      *
-     * @return String persisten ID of this as a <CODE>NameUsage</CODE>
+     * @return String persisten ID of this as a {@code NameUsage}
      */
     public String getNameUsageID();
 
     /**
-     * Converts <CODE>usage</CODE> to <CODE>NameUsageNode</CODE>.
-     * If <CODE>usage</CODE> is an instance of <CODE>NameUsageNode</CODE>,
+     * Converts {@code usage} to {@code NameUsageNode}.
+     * If {@code usage} is an instance of {@code NameUsageNode},
      * it does nothing.
      *
-     * @param usage <CODE>NameUsage</CODE> to be converted.
+     * @param usage {@code NameUsage} to be converted.
      *
-     * @return NameUsageNode representing <CODE>uasge</CODE>
+     * @return NameUsageNode representing {@code uasge}
      */
     //    public NameUsageNode getNameUsageNode(NameUsage usage);
-    public NameUsageNode<N, T> getNameUsageNode(Object object);
+    public NameUsageNode<T> getNameUsageNode(Object object);
 
     /**
-     * Returns <tt>NameUsageNode</tt> proxied by this <tt>NameUsagNode</tt>
+     * Returns {@code NameUsageNode} proxied by this {@code NameUsagNode}
      *
-     * @return NameUsageNode proxied by this <tt>NameUsagNode</tt>
+     * @return NameUsageNode proxied by this {@code NameUsagNode}
      */
-    public NameUsageNode<N, T> getNameUsageNode();
+    public NameUsageNode<T> getNameUsageNode();
 
     /**
-     * Returns <code>NameUsageNode</code> representing higher name usage
+     * Returns {@code NameUsageNode} representing higher name usage
      *
-     * @return <code>NameUsageNode</code> representing higher name usage
+     * @return {@code NameUsageNode} representing higher name usage
      */
-    public NameUsageNode<N, T> getHigherNameUsageNode();
+    public NameUsageNode<T> getHigherNameUsageNode();
 
-    public NameUsageNode<N, T> clone();
+    public NameUsageNode<T> clone();
 
-    public NameUsageNode<N, T> create();
+    public NameUsageNode<T> create();
 
 }
-

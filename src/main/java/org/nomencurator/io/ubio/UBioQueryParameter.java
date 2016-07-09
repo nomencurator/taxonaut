@@ -37,11 +37,11 @@ import lombok.Setter;
 /**
  * {@code UBioQueryParameter} provides query parameter container for UBio.
  *
- * @version 	27 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UBioQueryParameter
-    extends NameUsageQueryParameter<UBioNameUsageNode, UBioNameUsageNode>
+    extends NameUsageQueryParameter<UBioNameUsageNode>
 {
     @Getter
     @Setter

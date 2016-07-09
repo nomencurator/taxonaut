@@ -23,42 +23,44 @@
 
 package org.nomencurator.model;
 
+import java.io.Serializable;
+
 import java.util.List;
 import java.util.Locale;
 
 /**
- * Name is a interface to provide pseudo extension of java.lang.String represnting nameing actions,
+ * {@code Name} is an interface to provide pseudo extension of {@code java.lang.String} represnting nameing actions,
  * i.e. relationshp between a literal and an object designated by the literal.
  *
- * @version 	22 June 2016
+ * @version 	01 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface Name <N extends Name<?,  ?>, T extends N>
-//public interface Name <T>
+public interface Name <T extends Name<?>>
+    extends Serializable
 {
     /** Empty string */
     public static final String EMPTY_STRING = "";
     public static final String ANONYMOUS = EMPTY_STRING;
 
     /**
-     * Gets name in <CODE>String</CODE>
+     * Gets name in {@code String}
      *
      * @return String representing a name
      */
     public String getLiteral();
 
     /**
-     * Gives a name as a <CODE>String</CODE>
+     * Gives a name as a {@code String}
      *
      * @param name String representing the name
      */
     public void setLiteral(String literal);
 
     /**
-     * Gets entity of this <CODE>Name</CODE>.
+     * Gets entity of this {@code Name}.
      * Returns itself if it doesn't have entity separately,
      * or entity if the entity non-null.
-     * If the entity is an instance of <CODE>Name</CODE>,
+     * If the entity is an instance of {@code Name},
      * the method returns the result of recursive application of 
      * this method
      *
@@ -67,21 +69,19 @@ public interface Name <N extends Name<?,  ?>, T extends N>
     public T getEntity();
 
     /**
-     * Sets a <CODE>object</CODE> as the entity of the name
+     * Sets a {@code object} as the entity of the name
      *
      * @param object representing the entity
-     * @exception IllegalArgumentException if <CODE>object</CODE> is this object
+     * @exception IllegalArgumentException if {@code object} is this object
      */
-    //public void setEntity(Name<T> entity);
     public void setEntity(T entity);
-    //public void setEntity(Object entity);
 
     /**
-     * Sets a <CODE>object</CODE> as the entity of the name if it is an instance of type <tt>T</tt>,
+     * Sets a {@code object} as the entity of the name if it is an instance of type <tt>T</tt>,
      * or do nothing.
      *
      * @param object representing the entity
-     * @exception IllegalArgumentException if <CODE>object</CODE> is this object
+     * @exception IllegalArgumentException if {@code object} is this object
      */
     public void setEntity(Object entity);
 
@@ -93,17 +93,17 @@ public interface Name <N extends Name<?,  ?>, T extends N>
     public List<Object> getEntityPath() ;
 
     /**
-     * Returns <CODE>Name</CODE> having no entity object or an eitity instance
-     * of other than <CODE>Name</CODE>.  If the entity of this object
-     * is an instance of <CODE>Name</CODE>, the method returns result
+     * Returns {@code Name} having no entity object or an eitity instance
+     * of other than {@code Name}.  If the entity of this object
+     * is an instance of {@code Name}, the method returns result
      * of recursive application of this method.
      * 
-     * @return Name have no enitity or non-<CODE>Name</CODE> entity
+     * @return Name have no enitity or non-{@code Name} entity
      */
-    public Name<N, T> getName();
+    public Name<T> getName();
 
     /**
-     * Gets synonym in <CODE>String</CODE>,
+     * Gets synonym in {@code String},
      * or null if it is not a synonym
      *
      * @return String representing a name
@@ -145,28 +145,25 @@ public interface Name <N extends Name<?,  ?>, T extends N>
     public Boolean isSynonym();
 
     /**
-     * Returns true if <CODE>name</CODE> is a synonym of this
-     * <CODE>Name</CODE>, or null if unknown.
+     * Returns true if {@code name} is a synonym of this
+     * {@code Name}, or null if unknown.
      *
-     * @param name <CODE>Name</CODE> to be examined
+     * @param name {@code Name} to be examined
      *
      * @return true if <tt>name</tt> is synonym of this.
      */
-    //public Boolean isSynonym(Name<? extends N, ? extends T> name);
-    public Boolean synonym(Name<?, ?> name);
+    public Boolean synonym(Name<?> name);
 
     /**
-     * Returns true if <CODE>name</CODE> is a homonym of this
-     * <CODE>Name</CODE>, i.e. they have the same spelling
+     * Returns true if {@code name} is a homonym of this
+     * {@code Name}, i.e. they have the same spelling
      * but different entity
      *
-     * @param name <CODE>Name</CODE> to be examined
+     * @param name {@code Name} to be examined
      *
-     * @return true if <CODE>name</CODE> is a homonym of this <CODE>Name</CODE>
+     * @return true if {@code name} is a homonym of this {@code Name}
      */
-    //public Boolean isHomonym(Name<? extends N, ? extends T> name);
-    //public Boolean isHomonym(Name<N, ? extends T> name);
-    public Boolean homonym(Name<?, ?> name);
+    public Boolean homonym(Name<?> name);
 
     /**
      * Returns true if the entity is unnamed
@@ -207,7 +204,7 @@ public interface Name <N extends Name<?,  ?>, T extends N>
     //    public Object getLexicon();
 
     /**
-     * Gives <CODE>lexicon</CODE> as the name
+     * Gives {@code lexicon} as the name
      *
      * @param lexicon Object representing a name
      */
@@ -281,9 +278,9 @@ public interface Name <N extends Name<?,  ?>, T extends N>
 
     public boolean isInstance(Object object);
 
-    public Name<N, T> cast(Object object);
+    public Name<T> cast(Object object);
 
-    public Name<N, T> getName(Object object);
+    public Name<T> getName(Object object);
 
     public boolean isAssignableFrom(Object object);
 }

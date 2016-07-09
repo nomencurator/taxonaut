@@ -38,26 +38,26 @@ import lombok.Getter;
  * @version 	29 June 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NamedObjectQuery<N extends NamedObject<?, ?>, T extends N>
-    implements ObjectQuery<N, T>
+public class NamedObjectQuery<T extends NamedObject<?>>
+    implements ObjectQuery<T>
 {
     @Getter
-	protected ObjectExchanger<N, T> exchanger;
+	protected ObjectExchanger<T> exchanger;
 
     @Getter
-	protected QueryParameter<N, T> parameter;
+	protected QueryParameter<T> parameter;
 
-    protected QueryResultListenerAdaptor<N, T> listeners;
+    protected QueryResultListenerAdaptor<T> listeners;
 
     @Getter
 	protected volatile Collection<T> results;
 
-    protected NamedObjectQuery(QueryParameter<N, T> parameter)
+    protected NamedObjectQuery(QueryParameter<T> parameter)
     {
 	this.parameter = parameter;
     }
 
-    public NamedObjectQuery(QueryParameter<N, T> parameter, ObjectExchanger<N, T> exchanger)
+    public NamedObjectQuery(QueryParameter<T> parameter, ObjectExchanger<T> exchanger)
     {
 	this(parameter);
 	this.exchanger = exchanger;
@@ -73,25 +73,25 @@ public class NamedObjectQuery<N extends NamedObject<?, ?>, T extends N>
 	results = exchanger.getObjects(parameter);
 
 	if(listeners != null)
-	    listeners.fireQueryResultEvent(new QueryResultEvent<N, T>(this, 0, 1));
+	    listeners.fireQueryResultEvent(new QueryResultEvent<T>(this, 0, 1));
 
 	return results;
     }
 
-    public void addQueryResultListener(QueryResultListener<N, T> listener)
+    public void addQueryResultListener(QueryResultListener<T> listener)
     {
 	if(listeners == null)
-	    listeners = new QueryResultListenerAdaptor<N, T>();
+	    listeners = new QueryResultListenerAdaptor<T>();
 	listeners.addQueryResultListener(listener);
     }
 
-    public void removeQueryResultListener(QueryResultListener<N, T> listener)
+    public void removeQueryResultListener(QueryResultListener<T> listener)
     {
 	if(listeners != null)
 	    listeners.removeQueryResultListener(listener);
     }
 
-    protected void fireQueryResultEvent(QueryResultEvent<N, T> event)
+    protected void fireQueryResultEvent(QueryResultEvent<T> event)
     {
 	if(listeners != null)
 	    listeners.fireQueryResultEvent(event);

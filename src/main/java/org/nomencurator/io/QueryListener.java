@@ -1,7 +1,7 @@
 /*
  * QueryListener.java: an EventListener handling a QueryEvent
  *
- * Copyright (c) 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -26,12 +26,12 @@ import java.util.EventListener;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>QueryListener</CODE> defines API to receive a <CODE>QueryEvent</CODE>
+ * {@code QueryListener} defines API to receive a {@code QueryEvent}.
  *
- * @version 	10 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface QueryListener<N extends NamedObject<?, ?>, T extends N>
+public interface QueryListener<T extends NamedObject<?>>
     extends EventListener
 {
     /**
@@ -39,5 +39,5 @@ public interface QueryListener<N extends NamedObject<?, ?>, T extends N>
      *
      * @param event <tt>QueryEvent</tt> to handle.
      */
-    public void query(QueryEvent<N, T> event);
+    public void query(QueryEvent<T> event);
 }

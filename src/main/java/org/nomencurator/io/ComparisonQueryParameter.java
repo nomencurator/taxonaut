@@ -37,25 +37,25 @@ import lombok.Setter;
 /**
  * {@code ComparisonQueryParameter} provides query parameter container.
  *
- * @version 	29 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class ComparisonQueryParameter
-    extends  GenericComparisonQueryParameter<NameUsage<?, ?>>
+    extends  GenericComparisonQueryParameter<NameUsage<?>>
 {
     public ComparisonQueryParameter() {
 	super();
     }
 
-    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?, ?>> nameUsages) {
+    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?>> nameUsages) {
 	super(height, depth, nameUsages);
     }
 
-    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?, ?>> nameUsages, boolean pivot) {
+    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?>> nameUsages, boolean pivot) {
 	super(height, depth, nameUsages, pivot);
     }
 
-    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?, ?>> nameUsages, boolean pivot, boolean append) {
+    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?>> nameUsages, boolean pivot, boolean append) {
 	super(height, depth, nameUsages, pivot, append);
     }
 }
@@ -66,45 +66,45 @@ public class ComparisonQueryParameter
  * @version 	10 Sep. 2015
  * @author 	Nozomi `James' Ytow
  */
-/*public*/ class GenericComparisonQueryParameter <N extends NameUsage<?, ?>>
-    extends NameUsageQueryParameter<N, N>
-    implements Collection<N>
+/*public*/ class GenericComparisonQueryParameter <T extends NameUsage<?>>
+    extends NameUsageQueryParameter<T>
+    implements Collection<T>
 {
     @Getter
     @Setter
     /** List of NameUsages to compare */
-    protected List<N> nameUsages;
+    protected List<T> nameUsages;
 
     @Getter
     @Setter
-    /** Determines to pivot or not in creation of <tt>NameTreeModel</tt> */
+    /** Determines to pivot or not in creation of {@code NameTreeModel} */
     protected boolean pivot;
 
     @Getter
     @Setter
-    /** Determines to append to or to create a <tt>NameTreeModel</tt> */
+    /** Determines to append to or to create a {@code NameTreeModel} */
     protected boolean append;
 
     /*public*/ protected GenericComparisonQueryParameter() {
 	this(0, 0, null, false);
     }
 
-    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends N> nameUsages) {
+    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages) {
 	this(height, depth, nameUsages, false);
     }
 
-    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends N> nameUsages, boolean pivot) {
+    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot) {
 	this(height, depth, nameUsages, false, false);
     }
 
-    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends N> nameUsages, boolean pivot, boolean append) {
+    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot, boolean append) {
 	super();
 	setHeight(height);
 	setDepth(depth);
 	if(nameUsages == null || nameUsages.size() == 0)
-	    this.nameUsages = new ArrayList<N>();
+	    this.nameUsages = new ArrayList<T>();
 	else {
-	    this.nameUsages = new ArrayList<N>(nameUsages.size());
+	    this.nameUsages = new ArrayList<T>(nameUsages.size());
 	    this.nameUsages.addAll(nameUsages);
 	}
 	setPivot(pivot);
@@ -112,7 +112,7 @@ public class ComparisonQueryParameter
     }
 
     @Override
-    public boolean add(N nameUsage) {
+    public boolean add(T nameUsage) {
 	    if(!contains(nameUsage))
 		return this.nameUsages.add(nameUsage);
 	    return
@@ -120,9 +120,9 @@ public class ComparisonQueryParameter
     }
 
     @Override
-    public boolean addAll(Collection<? extends N> nameUsages) {
+    public boolean addAll(Collection<? extends T> nameUsages) {
 	boolean result = false;
-	for(N nameUsage : nameUsages) {
+	for(T nameUsage : nameUsages) {
 	    result |= add(nameUsage);
 	}
 	return result;
@@ -144,15 +144,15 @@ public class ComparisonQueryParameter
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean equals(Object object)
     {
 	if(this == object) return true;
 	if(object == null) return false;
 	if(getClass() != object.getClass()) return false;
 
-	GenericComparisonQueryParameter<N> that =
-	    (GenericComparisonQueryParameter<N>) object;
+	@SuppressWarnings("unchecked")
+	GenericComparisonQueryParameter<T> that =
+	    (GenericComparisonQueryParameter<T>) object;
 
 	return super.equals(object)
 	    && Objects.equals(this.nameUsages, that.nameUsages)
@@ -173,7 +173,7 @@ public class ComparisonQueryParameter
     }
 
     @Override
-    public Iterator<N> iterator() {
+    public Iterator<T> iterator() {
 	return this.nameUsages.iterator();
     }
 

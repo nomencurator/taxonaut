@@ -59,11 +59,11 @@ import org.w3c.dom.NodeList;
  * @see org.nomencurator.model.NameUsage
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	05 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Annotation
-    extends AbstractNamedObject <Annotation, Annotation>
+    extends AbstractNamedObject <Annotation>
     implements Serializable
 {
     private static final long serialVersionUID = -8067577727257921739L;
@@ -74,10 +74,10 @@ public class Annotation
     protected String linkType;
 
     /** Vector containing annotator {@code NameUsage}s */
-    protected Collection<NameUsage<?, ?>> annotators;
+    protected Collection<NameUsage<?>> annotators;
 
     /** Vector containing annotatant {@code NameUsage}s */
-    protected Collection<NameUsage<?, ?>> annotatants;
+    protected Collection<NameUsage<?>> annotatants;
 
     /** {@code Appearance} encoding this {@code Annotation} */
     protected Appearance appearance;
@@ -88,15 +88,14 @@ public class Annotation
 	(RuleBasedCollator)Collator.getInstance(Locale.US);
 
     /** <tt>CollectionUtility</tt> to handle <tt>Collection</tt>s */
-    protected static CollectionUtility<NameUsage<?, ?>> utility =
-	new CollectionUtility<NameUsage<?, ?>>();
+    protected static CollectionUtility<NameUsage<?>> utility = new CollectionUtility<NameUsage<?>>();
 
     /**
      * Constructs an empty {@code Annotation} object
      */
     public Annotation()
     {
-	this(DEFAULT_LINK_TYPE, null, new ArrayList<NameUsage<?, ?>>(), new ArrayList<NameUsage<?, ?>>());
+	this(DEFAULT_LINK_TYPE, null, new ArrayList<NameUsage<?>>(), new ArrayList<NameUsage<?>>());
     }
     
     /**
@@ -118,7 +117,7 @@ public class Annotation
      *
      * @param name {@code Name} representation of an {@code Annotation}
      */
-    public Annotation(Name<Annotation, Annotation> name)
+    public Annotation(Name<Annotation> name)
     {
 	//don't use NamedObject(String) constructor
 	this();
@@ -128,17 +127,17 @@ public class Annotation
 	    a = a.getEntity();
 	    setLinkType(a.getLinkType());
 	    setAppearance(a.getAppearance());
-	    annotators  = new HashSet<NameUsage<?, ?>>(a.annotators);
-	    annotatants = new HashSet<NameUsage<?, ?>>(a.annotatants);
+	    annotators  = new HashSet<NameUsage<?>>(a.annotators);
+	    annotatants = new HashSet<NameUsage<?>>(a.annotatants);
 	}
 	else
 	    setPersistentID(name.getLiteral());
     }
 
     /**
-     * Constructs a deep copy of {@CODE annotation}
+     * Constructs a deep copy of {@code annotation}
      *
-     * @param annotation {@CODE Annotation} to be copied deeply
+     * @param annotation {@code Annotation} to be copied deeply
      */
     public Annotation(Annotation annotation)
     {
@@ -151,8 +150,8 @@ public class Annotation
 	setLinkType(annotation.getLinkType());
 	setAppearance(annotation.getAppearance());
 
-	annotators  = new HashSet<NameUsage<?, ?>>(annotation.annotators);
-	annotatants = new HashSet<NameUsage<?, ?>>(annotation.annotatants);
+	annotators  = new HashSet<NameUsage<?>>(annotation.annotators);
+	annotatants = new HashSet<NameUsage<?>>(annotation.annotatants);
     }
   
     /**
@@ -164,21 +163,21 @@ public class Annotation
      * @param annotatants {@code Vector} containing annotated {@code NameUsage}s
      */
     public Annotation(String type, Appearance citation,
-		      Collection<NameUsage<?, ?>> annotators, Collection<NameUsage<?, ?>> annotatants)
+		      Collection<? extends NameUsage<?>> annotators, Collection<? extends NameUsage<?>> annotatants)
     {
 	super();
 	linkType = type;
 	appearance = citation;
 	
-	this.annotators  = new HashSet<NameUsage<?, ?>>(annotators);
-	this.annotatants = new HashSet<NameUsage<?, ?>>(annotatants);
+	this.annotators  = new HashSet<NameUsage<?>>(annotators);
+	this.annotatants = new HashSet<NameUsage<?>>(annotatants);
     }
 
     /**
-     * Constructs an {@CODE Annotaion} object using XML data
-     * given by {@CODE xml}
+     * Constructs an {@code Annotaion} object using XML data
+     * given by {@code xml}
      *
-     * @param xml {@CODE Element} specifying an {@CODE Annotation}
+     * @param xml {@code Element} specifying an {@code Annotation}
      *
      */
     public Annotation(Element xml)
@@ -187,10 +186,10 @@ public class Annotation
     }
 
     /**
-     * Constructs an {@CODE Annotaion} object using XML data
-     * given by {@CODE xml}
+     * Constructs an {@code Annotaion} object using XML data
+     * given by {@code xml}
      *
-     * @param xml {@CODE Element} specifying an {@CODE Annotation}
+     * @param xml {@code Element} specifying an {@code Annotation}
      *
      */
     public Annotation(Element xml, Appearance ap)
@@ -201,8 +200,8 @@ public class Annotation
 	String persistentID = null;
 	int authorCount = 0;
 	boolean toBeResolved = false;
-	List<NameUsage<?, ?>> annotatorBuffer = null;
-	List<NameUsage<?, ?>> annotatantBuffer = null;
+	List<NameUsage<?>> annotatorBuffer = null;
+	List<NameUsage<?>> annotatantBuffer = null;
 
 	for (int j = 0; j < nodeCount; j++) {
 	    Node node = nodeList.item(j);
@@ -242,10 +241,10 @@ public class Annotation
 		}
 		else if(tagName.equals ("from")) {
 		    String pID = getString(element);
-		    NameUsage<?, ?> n = (NameUsage<?, ?>)curator.get(pID);
+		    NameUsage<?> n = (NameUsage<?>)curator.get(pID);
 		    if(n != null) {
 			if(annotatorBuffer == null)
-			    annotatorBuffer = new ArrayList<NameUsage<?, ?>>();
+			    annotatorBuffer = new ArrayList<NameUsage<?>>();
 			//annotatorBuffer.addElement(n);
 			toBeResolved = true;
 		    }
@@ -264,10 +263,10 @@ public class Annotation
 		}
 		else if(tagName.equals ("to")) {
 		    String pID = getString(element);
-		    NameUsage<?, ?> n = (NameUsage<?, ?>)curator.get(pID);
+		    NameUsage<?> n = (NameUsage<?>)curator.get(pID);
 		    if(n != null) {
 			if(annotatantBuffer == null)
-			    annotatantBuffer = new ArrayList<NameUsage<?, ?>>();
+			    annotatantBuffer = new ArrayList<NameUsage<?>>();
 			//annotatantBuffer.addElement(n);
 			toBeResolved = true;
 		    }
@@ -293,11 +292,11 @@ public class Annotation
 	    setLiteral(persistentID); //i.e. other key data are empty
 
 	if(annotatorBuffer != null) {
-	    annotators = new HashSet<NameUsage<?, ?>>(annotatorBuffer);
+	    annotators = new HashSet<NameUsage<?>>(annotatorBuffer);
 	}
 
 	if(annotatantBuffer != null) {
-	    annotatants = new HashSet<NameUsage<?, ?>>(annotatantBuffer);
+	    annotatants = new HashSet<NameUsage<?>>(annotatantBuffer);
 	}
 
 	if(toBeResolved)
@@ -312,8 +311,8 @@ public class Annotation
 	a.setAppearance(getAppearance());
 
 	Annotation source = getEntity();
-	a.annotators = new HashSet<NameUsage<?, ?>>(source.annotators);
-	a.annotatants = new HashSet<NameUsage<?, ?>>(source.annotatants);
+	a.annotators = new HashSet<NameUsage<?>>(source.annotators);
+	a.annotatants = new HashSet<NameUsage<?>>(source.annotatants);
 
 	return a;
     }
@@ -321,16 +320,16 @@ public class Annotation
 
     
     /**
-     * Returns a persistent ID representing this {@CODE Annotation}
-     * with specified  {@CODE separator}.  It contains class name header
-     * if {@CODE withClassName} true.
+     * Returns a persistent ID representing this {@code Annotation}
+     * with specified  {@code separator}.  It contains class name header
+     * if {@code withClassName} true.
      * The subclasses must provide this method.
      *
-     * @param separator {@CODE String} to be used as the field separator
-     * @param withClassName {@CODE boolean} specifying with or without
+     * @param separator {@code String} to be used as the field separator
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing this {@CODE Annotation}
+     * @return String representing this {@code Annotation}
      */
     public String getPersistentID(String separator, boolean withClassName)
     {
@@ -352,7 +351,7 @@ public class Annotation
 	    CollationKey[] annotatorNameKeys = null;
 	    synchronized(annotators) {
 		int size = annotators.size();
-		Iterator<NameUsage<?, ?>> nameUsages = getAnnotators();
+		Iterator<NameUsage<?>> nameUsages = getAnnotators();
 		annotatorNameKeys = new CollationKey[size];
 		for(int i = 0; i < size; i++) {
 		    annotatorNameKeys[i] =
@@ -396,7 +395,7 @@ public class Annotation
      *
      * @return true if merged, or false if not mergiable
      */
-    public boolean merge(NamedObject<?, ?> namedObject)
+    public boolean merge(NamedObject<?> namedObject)
     {
 	if(!(namedObject instanceof Annotation))
 	    return false;
@@ -500,7 +499,7 @@ public class Annotation
      * @return Collection containing annotator {@code NameUsage}s
      * or null if annotator list is empty
      */ 
-    public Iterator<NameUsage<?, ?>> getAnnotators()
+    public Iterator<NameUsage<?>> getAnnotators()
     {
 	Annotation annotation = getEntity();
 	if(annotation != this)
@@ -517,7 +516,7 @@ public class Annotation
      *
      * @param nameUsages {@code Collection} containing annotator {@code NameUsage}s
      */ 
-    public void setAnnotators(Collection<? extends NameUsage<?, ?>> nameUsages)
+    public void setAnnotators(Collection<? extends NameUsage<?>> nameUsages)
     {
 	Annotation annotation = getEntity();
 	if(annotation != this) {
@@ -525,8 +524,8 @@ public class Annotation
 	    return;
 	}
 
-	annotators = new HashSet<NameUsage<?, ?>>(nameUsages);
-	for(NameUsage<?, ?> n : nameUsages) {
+	annotators = new HashSet<NameUsage<?>>(nameUsages);
+	for(NameUsage<?> n : nameUsages) {
 	    n.addAnnotation(this);
 	}
     }
@@ -542,7 +541,7 @@ public class Annotation
      * @return true if {@code nameUsage} added to the list successfully,
      * or false if not.
      */ 
-    public boolean addAnnotator(NameUsage<?, ?> nameUsage)
+    public boolean addAnnotator(NameUsage<?> nameUsage)
     {
 	Annotation annotation = getEntity();
 	if(annotation != this)
@@ -552,7 +551,7 @@ public class Annotation
 	    return false;
 
 	if(annotators == null)
-	    annotators = Collections.synchronizedSet(new HashSet<NameUsage<?, ?>>());
+	    annotators = Collections.synchronizedSet(new HashSet<NameUsage<?>>());
 
 	synchronized(annotators) {
 	    if(annotators.contains(nameUsage))
@@ -569,7 +568,7 @@ public class Annotation
      *
      * @param {@code nameUsage} {@code NameUsage} to be removed from annotator list of this {@code Annotation}s
      */ 
-    public void removeAnnotator(NameUsage<?, ?> nameUsage)
+    public void removeAnnotator(NameUsage<?> nameUsage)
     {
 	Annotation annotation = getEntity();
 	if(annotation != this) {
@@ -601,7 +600,7 @@ public class Annotation
 	if(annotators == null || annotators.isEmpty())
 	    return;
 
-	for(NameUsage<?, ?> n:annotators) {
+	for(NameUsage<?> n:annotators) {
 	    n.removeAnnotation(this);
 	}
 	annotators.clear();
@@ -615,7 +614,7 @@ public class Annotation
      * @return Enumeration containing annotatant {@code NameUsage}s, or
      * null if annotatants list is empty
      */ 
-    public Iterator<NameUsage<?, ?>> getAnnotatants()
+    public Iterator<NameUsage<?>> getAnnotatants()
     {
 	Annotation a = getEntity();
 	if(a != this)
@@ -632,7 +631,7 @@ public class Annotation
      *
      * @param nameUsages {@code Collection} containing annotatnt {@code NameUsage}s
      */ 
-    public void setAnnotatants(Collection<? extends NameUsage<?, ?>> nameUsages)
+    public void setAnnotatants(Collection<? extends NameUsage<?>> nameUsages)
     {
 	Annotation annotation = getEntity();
 	if(annotation != this) {
@@ -640,7 +639,7 @@ public class Annotation
 	    return;
 	}
 
-	annotatants = new HashSet<NameUsage<?, ?>>(nameUsages);
+	annotatants = new HashSet<NameUsage<?>>(nameUsages);
     }
     
     /**
@@ -654,7 +653,7 @@ public class Annotation
      * @return true if {@code nameUsage} added to the list successfully,
      * or false if not.
      */ 
-    public boolean addAnnotatant(NameUsage<?, ?> nameUsage)
+    public boolean addAnnotatant(NameUsage<?> nameUsage)
     {
 	Annotation annotation = getEntity();
 	if(annotation != this)
@@ -664,7 +663,7 @@ public class Annotation
 	    return false;
 
 	if(annotatants == null)
-	    annotatants = Collections.synchronizedSet(new HashSet<NameUsage<?, ?>>());
+	    annotatants = Collections.synchronizedSet(new HashSet<NameUsage<?>>());
 
 	synchronized(annotatants) {
 	    if(annotatants.contains(nameUsage))
@@ -681,7 +680,7 @@ public class Annotation
      *
      * @param {@code nameUsage} {@code NameUsage} to be removed from annotatant list of this {@code Annotation}s
      */ 
-    public void removeAnnotatant(NameUsage<?, ?> nameUsage)
+    public void removeAnnotatant(NameUsage<?> nameUsage)
     {
 	Annotation annotation = getEntity();
 	if(annotation != this) {
@@ -735,14 +734,14 @@ public class Annotation
 	buf.append(appearance);
 	buf.append("</appearance>\n");
 	if(annotators != null) {
-            for(NameUsage<?, ?> n: annotators) {
+            for(NameUsage<?> n: annotators) {
     	        buf.append("<from>");
 		buf.append(n.getPersistentID());
 		buf.append("</from>\n");
 	    }
 	}
 	if(annotatants != null) {
-            for(NameUsage<?, ?> n: annotatants) {
+            for(NameUsage<?> n: annotatants) {
     	        buf.append("<to>");
 		buf.append(n.getPersistentID());
 		buf.append("</to>\n");

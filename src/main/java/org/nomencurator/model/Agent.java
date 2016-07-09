@@ -52,11 +52,11 @@ import org.w3c.dom.NodeList;
  * @see 	org.nomencurator.model.Publication
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	01 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Agent
-    extends AbstractNamedObject<Agent, Agent>
+    extends AbstractNamedObject<Agent>
     implements Serializable, Cloneable
 {
     private static final long serialVersionUID = -4167097712357697231L;
@@ -86,7 +86,7 @@ public class Agent
 
     protected Agent[] memberOf;
 
-    /** <code>Vector} representing publication list of the <code>Person} */
+    /** {@code Vector} representing publication list of the {@code Person} */
     protected Publication[] publications;
 
     /**
@@ -530,7 +530,7 @@ public class Agent
     }
     
     /**
-     * Returns <code>Enumeration} of author's <COCE>Publication}s
+     * Returns {@code Enumeration} of author's {@code Publication}s
      * or null if none
      *
      * @return Enumeration of author's {@code Publication}s
@@ -545,11 +545,11 @@ public class Agent
     }
 
     /**
-     * Sets <code>publications} as <code>Vector} representing author's publication list
+     * Sets {@code publications} as {@code Vector} representing author's publication list
      *
-     * @param publications <code>Vector} representing author's publication list
+     * @param publications {@code Vector} representing author's publication list
      */
-    public void setPublications(Collection<Publication> publications)
+    public void setPublications(Collection<? extends Publication> publications)
     {
 	if(entity != null)
 	    ((Person)getEntity()).setPublications(publications);
@@ -570,12 +570,12 @@ public class Agent
     }
 
     /**
-     * Adds <code>publication} to author's publication list
+     * Adds {@code publication} to author's publication list
      * with returning true if it is added successfully, or false if not.
      *
-     * @param publication <code>Publication} to be added to author's publication list
+     * @param publication {@code Publication} to be added to author's publication list
      *
-     * @return true if <code>publication} was added to the publication list successfully, or false if not.
+     * @return true if {@code publication} was added to the publication list successfully, or false if not.
      */
     public boolean addPublication(Publication publication)
     {
@@ -593,9 +593,9 @@ public class Agent
     }
 
     /**
-     * Removes <code>publication} from author's publication list.
+     * Removes {@code publication} from author's publication list.
      *
-     * @param publication <code>Publication} to be removed from author's publication list
+     * @param publication {@code Publication} to be removed from author's publication list
      */
     public void removePublication(Publication publication)
     {
@@ -682,7 +682,7 @@ public class Agent
      *
      * @return true if merged, or false if not mergiable
      */
-    public boolean merge(NamedObject<?, ?> namedObject)
+    public boolean merge(NamedObject<?> namedObject)
     {
 	if(!(namedObject instanceof Agent))
 	    return false;

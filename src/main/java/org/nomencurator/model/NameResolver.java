@@ -28,7 +28,7 @@ import java.util.HashMap;
  * <CODE>NameResolver</CODE> provides a mechanism to resolve indirect reference
  * by <CODE>Name</CODE>.
  *
- * @version 	24 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameResolver
@@ -51,7 +51,7 @@ public class NameResolver
 	super(initialCapacity, loadFactor);
     }
 
-    public Object put(Name<?, ?> name)
+    public Object put(Name<?> name)
     {
 	return put(name.getLiteral(), name);
     }
@@ -65,7 +65,7 @@ public class NameResolver
 	return super.put(key, value);
     }
 
-    public Object get(Name<?, ?> name)
+    public Object get(Name<?> name)
     {
 	return get(name.getLiteral());
     }
@@ -82,14 +82,14 @@ public class NameResolver
 	return ((Name)o).getEntity();
     }
 
-    public Name<?, ?> resolve(Name<?, ?> name)
+    public Name<?> resolve(Name<?> name)
     {
 	if(name == null)
 	    return name;
 	return resolve(name.getLiteral(), name);
     }
 
-    public Name<?, ?> resolve(Object key, Name<?, ?> name)
+    public Name<?> resolve(Object key, Name<?> name)
     {
 	Object value = get(key);
 	if(value == null ||
@@ -97,7 +97,7 @@ public class NameResolver
 	   !(value instanceof Name))
 	    return null;
 
-	Name<?, ?> unresolved = name.getName(value);
+	Name<?> unresolved = name.getName(value);
 	unresolved.setEntity(name);
 	remove(key);
 	if(name.isNominal()) {

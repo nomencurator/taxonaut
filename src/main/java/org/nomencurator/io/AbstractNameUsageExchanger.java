@@ -40,14 +40,14 @@ import org.nomencurator.model.Rank;
  * {@code AbstractNameUsageExchanger} provides an abstract implementation of
  * {@code NameUsageExchanger}.
  *
- * @version 	29 June. 2016
+ * @version 	09 July. 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T extends N>
-    extends AbstractObjectExchanger<N, T>
-    implements NameUsageExchanger<N, T>
+public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
+    extends AbstractObjectExchanger<T>
+    implements NameUsageExchanger<T>
 {
-    public Collection<T> getObjects(QueryParameter<N, T> queryParameter)
+    public Collection<T> getObjects(QueryParameter<T> queryParameter)
     {
 	if(queryParameter == null)
 	    return null;
@@ -55,7 +55,7 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	if(!(queryParameter instanceof NameUsageQueryParameter) || queryParameter.getQueryMode() == QueryMode.OBJECTS)
 	    return getObjects(queryParameter.getLocalKey(), queryParameter.getMatchingMode());
 
-	NameUsageQueryParameter<N, T> parameter =  (NameUsageQueryParameter<N, T>) queryParameter;
+	NameUsageQueryParameter<T> parameter =  (NameUsageQueryParameter<T>) queryParameter;
 
 	Collection<T> results = null;
 
@@ -92,25 +92,26 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
     }
     
     // FIXME: reconsider argument type
-    @SuppressWarnings("unchecked")
-    protected List<T> getObjects(Collection<NameUsage<?, ?>> nameUsages) {
+    protected List<T> getObjects(Collection<? extends NameUsage<?>> nameUsages) {
 	if(nameUsages == null)
 	    return null;
 	List<T> objects = new ArrayList<T>(nameUsages.size());
-       for(NameUsage<?, ?> nameUsage : nameUsages) {
-	   objects.add((T)nameUsage);
+       for(NameUsage<?> nameUsage : nameUsages) {
+	   @SuppressWarnings("unchecked")
+	       T usage = (T)nameUsage;
+	   objects.add(usage);
 	}
 	return objects;
     }
 
-    public Collection<NameUsage<?, ?>> getNameUsages(String query, Rank rank)
+    public Collection<NameUsage<?>> getNameUsages(String query, Rank rank)
     {
 	return getNameUsages(query, rank, getDefaultMatchingMode(), false, false, false, null);
     }
 
-    public Collection<NameUsage<?, ?>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    public Collection<NameUsage<?>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
-	Collection<NameUsage<?, ?>> nameUsages = null;
+	Collection<NameUsage<?>> nameUsages = null;
 	switch(matchingMode) {
 	case EXACT:
 	    nameUsages = getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
@@ -133,29 +134,29 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	return getNameUsagesPostProcess(nameUsages, matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected abstract Collection<NameUsage<?, ?>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
+    protected abstract Collection<NameUsage<?>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
 
-    protected Collection<NameUsage<?, ?>> getContainerNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<?>> getContainerNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected Collection<NameUsage<?, ?>> getFuzzyNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<?>> getFuzzyNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected Collection<NameUsage<?, ?>> getFullTextNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<?>> getFullTextNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected Collection<NameUsage<?,  ?>> getSuggestedNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<?>> getSuggestedNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected Collection<NameUsage<?, ?>> getNameUsagesPostProcess(Collection<NameUsage<?, ?>> nameUsages, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<?>> getNameUsagesPostProcess(Collection<NameUsage<?>> nameUsages, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return nameUsages;
     }
@@ -236,18 +237,17 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
      * @param nameUsage of interest
      */
 
-    protected abstract void resolveHigherNameUsages(NameUsage<?, ?> nameUsage);
+    protected abstract void resolveHigherNameUsages(NameUsage<?> nameUsage);
 
-    public Collection<NameUsage<?, ?>> getHigher(NameUsage<?, ?> nameUsage)
+    public Collection<NameUsage<?>> getHigher(NameUsage<?> nameUsage)
     {
 	return getHigher(nameUsage, null, 1);
     }
 
-    // FIXME to aviod <?, ?> 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public Collection<NameUsage<?, ?>> getHigher(NameUsage<?, ?> nameUsage, Rank rank, int height)
+    @SuppressWarnings("unchecked")
+    public Collection<NameUsage<?>> getHigher(NameUsage<?> nameUsage, Rank rank, int height)
     {
-	NameUsage<?, ?> usage = nameUsage.getNameUsage();
+	NameUsage<?> usage = nameUsage.getNameUsage();
 	if(usage != nameUsage) {
 	    return getHigher(usage, rank, height);
 	}
@@ -255,7 +255,7 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	if (nameUsage == null)
 	    return null;
 
-	NameUsage<?, ?> current = (NameUsage<?, ?>)nameUsage;
+	NameUsage<?> current = nameUsage;
 	Rank currentRank = current.getRank();
 
 	if(nameUsage != null 
@@ -263,7 +263,8 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	   && height != 0
 	   ) {
 	    resolveHigherNameUsages(current);
-	    NameUsage/*<?, ?>*/ higher = current.getHigherNameUsage();
+	    @SuppressWarnings("rawtypes")
+	    NameUsage higher = current.getHigherNameUsage();
 	    while(higher != null
 		  && isLowerOrUnspecified(currentRank, rank)
 		  && (height < 0 || height > 0)
@@ -278,8 +279,8 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	    }
 	}
 
-	Collection<NameUsage<?, ?>> result = new ArrayList<NameUsage<?, ?>>(1);
-	result.add((NameUsage<?, ?>)current);
+	Collection<NameUsage<?>> result = new ArrayList<>(1);
+	result.add(current);
 
 	return result;
     }
@@ -290,31 +291,31 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
      *
      * @param nameUsage of interest
      */
-    protected abstract void resolveLowerNameUsages(NameUsage<?, ?> nameUsage);
+    protected abstract void resolveLowerNameUsages(NameUsage<?> nameUsage);
 
-    // FIXME to aviod <?, ?> 
-    @SuppressWarnings("unchecked")
-    public List<NameUsage<?, ?>> getLowerNameUsages(NameUsage<?, ?> nameUsage, Rank rank, int depth)
+    // FIXME to aviod <?> 
+    //public List<NameUsage<?>> getLowerNameUsages(NameUsage<?> nameUsage, Rank rank, int depth)
+    public <N extends NameUsage<?>> List<N> getLowerNameUsages(N nameUsage, Rank rank, int depth)
     {
 	if(nameUsage == null)
 	    return null;
 
 	Rank currentRank = nameUsage.getRank();
         if(depth == 0 || (rank != null && ((!rank.equals(Rank.UNRANKED) && rank.equals(currentRank)) || rank.isHigher(currentRank))))
-	    return new ArrayList<NameUsage<?, ?>>();
+	    return new ArrayList<N>();
 	    
 	resolveLowerNameUsages(nameUsage);
 
-	List<NameUsage<?, ?>> lowersUsages = ((NameUsage/*<?, ?>*/)nameUsage).getLowerNameUsages();
-	List<NameUsage<?, ?>> lowers = null;
+	// It is unclear that whey casting is necessary.
+	@SuppressWarnings("unchecked")
+	List<N> lowersUsages = (List<N>)nameUsage.getLowerNameUsages();
+	List<N> lowers = null;
 	if(lowersUsages != null && !lowersUsages.isEmpty()) {
-	    lowers = new ArrayList<NameUsage<?, ?>>(lowersUsages.size());
-	    for (NameUsage<?, ?> lowerUsage : lowersUsages) {
-		NameUsage<?, ?> lower = (NameUsage<?, ?>)lowerUsage;
+	    lowers = new ArrayList<N>(lowersUsages.size());
+	    for (N lowerUsage : lowersUsages) {
+		N lower = lowerUsage;
 		lowers.add(lower);
 		Rank lowerRank = lower.getRank();
-		//if(rank == null || lowerRank == null || rank.equals(Rank.UNRANKED) || lowerRank.equals(Rank.UNRANKED) || lowerRank.equals(rank) || lowerRank.isLower(rank))
-		//if(isLowerOrUnspecified(rank, lowerRank) || lowerRank.equals(rank))
 		if(isHigherOrUnspecified(lowerRank, rank) || lowerRank.equals(rank))
 		    getLowerNameUsages(lower, rank, depth<=0? depth:depth-1);
 	    }
@@ -324,61 +325,61 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
     }
 
 
-    protected List<NameUsage<?, ?>> getNameUsages(Collection<? extends NamedObject<?, ?>> objects) {
+    protected List<NameUsage<?>> getNameUsages(Collection<? extends NamedObject<?>> objects) {
 	if(objects == null)
 	    return null;
-	List<NameUsage<?, ?>> nameUsages = new ArrayList<NameUsage<?, ?>>(objects.size());
-	for (NamedObject<?,  ?> object : objects) {
+	List<NameUsage<?>> nameUsages = new ArrayList<NameUsage<?>>(objects.size());
+	for (NamedObject<?> object : objects) {
 	    if(object instanceof NameUsage) {
-		nameUsages.add((NameUsage<?, ?>)object);
+		nameUsages.add((NameUsage<?>)object);
 	    }
 	}
 	return nameUsages;
     }
 
-    public Collection<NameUsage<?, ?>> getHierarchies(String query)
+    public Collection<NameUsage<?>> getHierarchies(String query)
     {
 	return getHierarchies(getNameUsages(getObjects(query)));
     }
 
-    protected Collection<NameUsage<?, ?>> getHierarchies(Collection<? extends NameUsage<?, ?>> nameUsages)
+    protected Collection<NameUsage<?>> getHierarchies(Collection<? extends NameUsage<?>> nameUsages)
     {
-	List<NameUsage<?, ?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?, ?>>());
-	for (NameUsage<?, ?> nameUsage: nameUsages) {
+	List<NameUsage<?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?>>());
+	for (NameUsage<?> nameUsage: nameUsages) {
 	    hierarchies.addAll(getHierarchies(nameUsage));
 	}
 	return hierarchies;
     }
 
-    public Collection<NameUsage<?, ?>> getHierarchies(NameUsage<?, ?> nameUsage)
+    public Collection<NameUsage<?>> getHierarchies(NameUsage<?> nameUsage)
     {
 	return getPartialHierarchies(nameUsage);
     }
 
     @Override
-    public Collection<NameUsage<?, ?>> integrateHierarchies(Collection<? extends NameUsage<?, ?>> nameUsages)
+    public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages)
     {
-	//List<NameUsage<?, ?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?, ?>>());
-	List<NameUsage<?, ?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?, ?>>());
-	//for (NameUsage<?, ?> nameUsage: nameUsages) {
-	for (NameUsage<?, ?> nameUsage: nameUsages) {
+	//List<NameUsage<?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?>>());
+	List<NameUsage<?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?>>());
+	//for (NameUsage<?> nameUsage: nameUsages) {
+	for (NameUsage<?> nameUsage: nameUsages) {
 	    if(!hierarchies.contains(nameUsage))
 		hierarchies.add(nameUsage);
 	}
 	return hierarchies;
     }
 
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(Collection<? extends NameUsage<?, ?>> nameUsages)
+    public Collection<NameUsage<?>> getPartialHierarchies(Collection<? extends NameUsage<?>> nameUsages)
     {
-	List<NameUsage<?, ?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?, ?>>());
-	for (NameUsage<?, ?> nameUsage: nameUsages) {
+	List<NameUsage<?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?>>());
+	for (NameUsage<?> nameUsage: nameUsages) {
 	    hierarchies.addAll(getPartialHierarchies(nameUsage));
 	}
 	//return integrateHierarchies(hierarchies);
 	return hierarchies;
     }
 
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(NameUsage<?, ?> nameUsage)
+    public Collection<NameUsage<?>> getPartialHierarchies(NameUsage<?> nameUsage)
     {
 	return getPartialHierarchies(nameUsage, 
 				     null,
@@ -387,29 +388,29 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 				     getDefaultDepth());
     }
 
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(NameUsageQueryParameter<?, ?> parameter)
+    public Collection<NameUsage<?>> getPartialHierarchies(NameUsageQueryParameter<?> parameter)
     {
-	NameUsage<?, ?> nameUsage = parameter.getNameUsageFilter();
+	NameUsage<?> nameUsage = parameter.getNameUsageFilter();
 	getLowerNameUsages(nameUsage, parameter.getLower(), parameter.getDepth());
 	return getHigher(nameUsage, parameter.getHigher(), parameter.getHeight());
     }
 
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(NameUsage<?, ?> nameUsage, Rank higher, int height, Rank lower, int depth)
+    public Collection<NameUsage<?>> getPartialHierarchies(NameUsage<?> nameUsage, Rank higher, int height, Rank lower, int depth)
     {
 	getLowerNameUsages(nameUsage, lower, depth);
 	return getHigher(nameUsage, higher, height);
     }
 
-    public Collection<NameUsage<?, ?>> getPartialHierarchies(String query)
+    public Collection<NameUsage<?>> getPartialHierarchies(String query)
     {
-	Collection<NameUsage<?, ?>> usages = getNameUsages(getObjects(query));
+	Collection<NameUsage<?>> usages = getNameUsages(getObjects(query));
 	if(usages == null)
 	    return null;
-	List<NameUsage<?, ?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?, ?>>(usages.size()));
-	for (NameUsage<?, ?> usage: usages) {
-	    Collection<NameUsage<?, ?>> roots = getHierarchies(usage);
+	List<NameUsage<?>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<?>>(usages.size()));
+	for (NameUsage<?> usage: usages) {
+	    Collection<NameUsage<?>> roots = getHierarchies(usage);
 	    if(roots != null && ! roots.isEmpty()){
-		for (NameUsage<?, ?> root : roots) {
+		for (NameUsage<?> root : roots) {
 		    if(root != null)
 			hierarchies.add(root);
 		}
@@ -422,46 +423,46 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	return hierarchies;
     }
 
-    public Collection<NameUsage<?, ?>> getRoots(NameUsage<?, ?> nameUsage)
+    public Collection<NameUsage<?>> getRoots(NameUsage<?> nameUsage)
     {
 	return getPartialHierarchies(nameUsage, null, FULL_HEIGHT, null, 0);
     }
 
-    public Collection<NameUsage<?, ?>> getRoots(String query)
+    public Collection<NameUsage<?>> getRoots(String query)
     {
 	return getRoots(getNameUsages(getObjects(query)));
     }
 
-    public Collection<NameUsage<?, ?>> getRoots(Collection<? extends NameUsage<?, ?>> nameUsages)
+    public Collection<NameUsage<?>> getRoots(Collection<? extends NameUsage<?>> nameUsages)
     {
-	List<NameUsage<?, ?>> roots = Collections.synchronizedList(new ArrayList<NameUsage<?, ?>>());
-	for (NameUsage<?, ?> nameUsage: nameUsages) {
+	List<NameUsage<?>> roots = Collections.synchronizedList(new ArrayList<NameUsage<?>>());
+	for (NameUsage<?> nameUsage: nameUsages) {
 	    roots.addAll(getRoots(nameUsage));
 	}
 	return roots;
     }
 
     @Override
-    public Collection<NameUsage<?, ?>> getDescendentNames(NameUsage<?, ?> nameUsage) {
+    public Collection<NameUsage<?>> getDescendentNames(NameUsage<?> nameUsage) {
 	if(nameUsage == null)
 	    return null;
 
-	List<NameUsage<?, ?>> nameUsages = new ArrayList<NameUsage<?, ?>>();
+	List<NameUsage<?>> nameUsages = new ArrayList<NameUsage<?>>();
 
-	Collection<NameUsage<?, ?>> descendents = getLowerNameUsages(nameUsage, null, FULL_DEPTH);
+	Collection<NameUsage<?>> descendents = getLowerNameUsages(nameUsage, null, FULL_DEPTH);
 
 	if(descendents == null)
 	    return nameUsages;
 
 	Set<String> names = new HashSet<String>();
-	for (NameUsage<?, ?> descendent : descendents) {
+	for (NameUsage<?> descendent : descendents) {
 	    names.add(descendent.getLiteral());
 	}
 	descendents.clear();
 	descendents = null;
 
 	for(String name : names) {
-	    Collection<NameUsage<?, ?>> result = getExactNameUsages(name, null, false, false, false, null);
+	    Collection<NameUsage<?>> result = getExactNameUsages(name, null, false, false, false, null);
 	    if(result != null) {
 		nameUsages.addAll(result);
 		result.clear();
@@ -473,20 +474,20 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	return nameUsages;
     }
 
-    public Collection<NameUsage<?, ?>> getDescendentNames(String query) {
+    public Collection<NameUsage<?>> getDescendentNames(String query) {
 	if(query == null || query.length() == 0)
 	    return null;
 
-	List<NameUsage<?, ?>> nameUsages = new ArrayList<NameUsage<?, ?>>();
+	List<NameUsage<?>> nameUsages = new ArrayList<NameUsage<?>>();
 
-	Collection<NameUsage<?, ?>> seeds = getExactNameUsages(query, null, false, false, false, null);
+	Collection<NameUsage<?>> seeds = getExactNameUsages(query, null, false, false, false, null);
 	if(seeds == null)
 	    return nameUsages;
 
-	Set<NameUsage<?, ?>> nameUsageSet = new HashSet<NameUsage<?, ?>>();
+	Set<NameUsage<?>> nameUsageSet = new HashSet<NameUsage<?>>();
 
-	for (NameUsage<?, ?> seed : seeds) {
-	    Collection<NameUsage<?, ?>> result = getDescendentNames(seed);
+	for (NameUsage<?> seed : seeds) {
+	    Collection<NameUsage<?>> result = getDescendentNames(seed);
 
 	    if(result != null) {
 		nameUsageSet.addAll(result);
@@ -504,20 +505,20 @@ public abstract class AbstractNameUsageExchanger<N extends NameUsage<?, ?>, T ex
 	return nameUsages;
     }
 
-    public Collection<NameUsage<?, ?>> getRelevantNameUsages(String query) {
+    public Collection<NameUsage<?>> getRelevantNameUsages(String query) {
 	if(query == null || query.length() == 0)
 	    return null;
 	
-	List<NameUsage<?, ?>> nameUsages = new ArrayList<NameUsage<?, ?>>();
+	List<NameUsage<?>> nameUsages = new ArrayList<NameUsage<?>>();
 	
-	Collection<NameUsage<?, ?>> seeds = getExactNameUsages(query, null, false, false, false, null);
+	Collection<NameUsage<?>> seeds = getExactNameUsages(query, null, false, false, false, null);
 	if(seeds == null)
 	    return nameUsages;
 	
-	Set<NameUsage<?, ?>> nameUsageSet = new HashSet<NameUsage<?, ?>>();
+	Set<NameUsage<?>> nameUsageSet = new HashSet<NameUsage<?>>();
 	
-	for (NameUsage<?, ?> seed : seeds) {
-	    Collection<NameUsage<?, ?>> result = getRelevantNameUsages(seed);
+	for (NameUsage<?> seed : seeds) {
+	    Collection<NameUsage<?>> result = getRelevantNameUsages(seed);
 	    
 	    if(result != null) {
 		nameUsageSet.addAll(result);

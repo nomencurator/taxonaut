@@ -28,23 +28,23 @@ import org.nomencurator.model.NamedObject;
 /**
  * {@code MultiplexNamedObjectQuery} implements {@code ObjectExchange}.
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class MultiplexNamedObjectQuery<N extends NamedObject<?, ?>>
-    extends AbstractMultiplexQuery<N, N>
+public class MultiplexNamedObjectQuery<T extends NamedObject<?>>
+    extends AbstractMultiplexQuery<T>
 {
-    protected NamedObjectQuery<N, N> createQuery(QueryParameter<N, N> parameter, ObjectExchanger<N, N> source)
+    protected NamedObjectQuery<T> createQuery(QueryParameter<T> parameter, ObjectExchanger<T> source)
     {
-	return new NamedObjectQuery<N, N>(parameter, source);
+	return new NamedObjectQuery<T>(parameter, source);
     }
 
-    public MultiplexNamedObjectQuery(QueryParameter<N, N> parameter, Collection<? extends ObjectExchanger<N, N>> sources)
+    public MultiplexNamedObjectQuery(QueryParameter<T> parameter, Collection<? extends ObjectExchanger<T>> sources)
     {
 	super(parameter, sources);
     }
 
-    public MultiplexNamedObjectQuery(Collection<? extends NamedObjectQuery<N, N>> queries)
+    public MultiplexNamedObjectQuery(Collection<? extends NamedObjectQuery<T>> queries)
     {
 	super(queries);
     }

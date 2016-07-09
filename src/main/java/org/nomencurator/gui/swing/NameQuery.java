@@ -30,9 +30,9 @@ import org.nomencurator.model.NameUsage;
 import org.nomencurator.model.Rank;
 
 /**
- * <code>NameQuery</code> provides an interface representing a query relevant to names.
+ * {@code NameQuery} provides an interface representing a query relevant to names.
  *
- * @version 	27 Sep. 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface NameQuery
@@ -52,13 +52,13 @@ public interface NameQuery
     public Locale getLocale();
 
     /**
-     * Search for <CODE>NameUsage</CODE> of given <CODE>rank</CODE>,
-     * <CODE>name</CODE>, <CODE>authority</CODE> and <CODE>year</CODE>,
-     * and returns result message <CODE>String</CODE>.
+     * Search for {@code NameUsage} of given {@code rank},
+     * {@code name}, {@code authority} and {@code year},
+     * and returns result message {@code String}.
      */
     public String getNames(String name, Rank rank, String authority, String year, MatchingMode queryType);
 
-    //public String getNames(NameUsage<?, ?>[] names, String rank, String name, String authority, String year, MatchingMode queryType);
+    //public String getNames(NameUsage<?>[] names, String rank, String name, String authority, String year, MatchingMode queryType);
 
-    public String getNames(Collection<? extends NameUsage<?, ?>> names, String name, Rank rank, String authority, String year, MatchingMode queryType);
+    public String getNames(Collection<? extends NameUsage<?>> names, String name, Rank rank, String authority, String year, MatchingMode queryType);
 }

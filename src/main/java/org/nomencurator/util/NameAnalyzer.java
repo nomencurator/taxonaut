@@ -1,7 +1,7 @@
 /*
  * NameAnalyzer.java:  a utility crass to analyze taxon name
  *
- * Copyright (c) 2003, 2004, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2004, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -34,9 +34,9 @@ import org.nomencurator.model.vocabulary.NomenclatureCode;
 import org.nomencurator.model.vocabulary.NamingConvention;
 
 /**
- * <code>NameAnalyzer</code> provides utility methods to analize taxon names
+ * {@code NameAnalyzer}> provides utility methods to analize taxon names
  *
- * @version 	16 July 2015
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameAnalyzer
@@ -196,12 +196,12 @@ public class NameAnalyzer
 	return name.substring(0, index);
     }
 
-    public static String getBaseName(NameUsage<?, ?> usage, NamingConvention convention)
+    public static String getBaseName(NameUsage<?> usage, NamingConvention convention)
     {
 	return getBaseName(usage.getLiteral(), usage.getRankLiteral(), convention);
     }
 
-    public static String getBaseName(NameUsage<?, ?> usage)
+    public static String getBaseName(NameUsage<?> usage)
     {
 	NamingConvention convention = null;
 	Locale code = usage.getLocale();

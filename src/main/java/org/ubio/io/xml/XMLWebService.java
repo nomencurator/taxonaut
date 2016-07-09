@@ -79,7 +79,7 @@ import org.ubio.io.NamebankSearchResult;
  * {@code XMLWebService} provides a set of utility methods
  * to access to uBio using XML Webservices.
  *
- * @version 	27 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class XMLWebService
@@ -1426,12 +1426,12 @@ public class XMLWebService
 	return query.toString();
     }
 
-    public List<? extends NameUsage<?, ?>> getSynonymList(String classificationBankID)
+    public List<? extends NameUsage<?>> getSynonymList(String classificationBankID)
     {
 	return getSynonymList(getQueryResult(synonymListQuery(classificationBankID)));
     }
 
-    protected List<? extends NameUsage<?, ?>> getSynonymList(XMLStreamReader xml)
+    protected List<? extends NameUsage<?>> getSynonymList(XMLStreamReader xml)
     {
 	return null;
     }

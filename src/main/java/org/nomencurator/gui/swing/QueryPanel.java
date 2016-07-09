@@ -90,10 +90,10 @@ import org.nomencurator.resources.ResourceKey;
  * {@code QueryPanel} provides components to specify a filter to search data sources.
  * It dispatches a {@code QueryEvent} representing a query filter.
  *
- * @version 	29 June 2016
+ * @version 	02 Julu 2016
  * @author 	Nozomi `James' Ytow
  */
-public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
+public class QueryPanel<T extends NamedObject<?>>
     extends JPanel
     implements ActionListener,
 	       ChangeListener,
@@ -145,7 +145,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
 
     // FIXME: It should be generalised to accept any NamedObject, or provide queryManagers for each type
     // e.g. NameUsage, Publication, Agent....
-    protected QueryManager<N, T, ObjectExchanger<N, T>> queryManager;
+    protected QueryManager<T, ObjectExchanger<T>> queryManager;
 
     protected QueryMessages messages;
 
@@ -181,7 +181,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    public QueryPanel(QueryListener<N, T> listener)
+    public QueryPanel(QueryListener<T> listener)
     {
 	this(Locale.getDefault(), listener);
     }
@@ -192,7 +192,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    public QueryPanel(Locale locale, QueryListener<N, T> listener)
+    public QueryPanel(Locale locale, QueryListener<T> listener)
     {
 	super(new GridBagLayout());
 	incrementalSearch = false;
@@ -346,7 +346,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
 	revalidate();
     }
 
-    public void addQueryListener(QueryListener<N, T> listener)
+    public void addQueryListener(QueryListener<T> listener)
     {
 	if(listener == null)
 	    return;
@@ -357,7 +357,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
 	listeners.add(QueryListener.class, listener);
     }
 
-    public void removeQueryListener(QueryListener<N, T> listener)
+    public void removeQueryListener(QueryListener<T> listener)
     {
 	if(listener == null || listeners == null)
 	    return;
@@ -366,7 +366,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
     }
 
     @SuppressWarnings("unchecked")
-    protected void fireQueryEvent(QueryEvent<N, T> queryEvent)
+    protected void fireQueryEvent(QueryEvent<T> queryEvent)
     {
 	if(queryEvent == null || listeners == null)
 	    return;
@@ -374,7 +374,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
 	Object[] listenersArray = listeners.getListenerList();
 	for (int i = listenersArray.length-2; i>=0; i-=2) {
 	    if (listenersArray[i]==QueryListener.class) {
-		((QueryListener<N, T>)listenersArray[i+1]).query(queryEvent);
+		((QueryListener<T>)listenersArray[i+1]).query(queryEvent);
 	    }
 	}
     }
@@ -436,7 +436,7 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
 	}
     }	
 
-    protected QueryEvent<N, T> composeQuery()
+    protected QueryEvent<T> composeQuery()
     {
 	Object selection = queryType.getSelectedItem();
 	if(selection == null)
@@ -452,18 +452,18 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
 	
     }
 
-    protected QueryEvent<N, T> composeAgentQuery()
+    protected QueryEvent<T> composeAgentQuery()
     {
 	return null;
     }
 
-    protected QueryEvent<N, T> composePublicationQuery()
+    protected QueryEvent<T> composePublicationQuery()
     {
 	return null;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    protected QueryEvent<N, T> composeNameUsageQuery()
+    protected QueryEvent<T> composeNameUsageQuery()
     {
 	String literal = queryField.getText();
 	if(literal == null || literal.length() == 0)
@@ -500,12 +500,12 @@ public class QueryPanel<N extends NamedObject<?, ?>, T extends N>
 
 
     //public ObjectExchanger getQueryManager()
-    public QueryManager<N, T, ObjectExchanger<N, T>> getQueryManager()
+    public QueryManager<T, ObjectExchanger<T>> getQueryManager()
     {
 	return queryManager;
     }
 
-    public void setQueryManager(QueryManager<N, T, ObjectExchanger<N, T>> queryManager)
+    public void setQueryManager(QueryManager<T, ObjectExchanger<T>> queryManager)
     {
 	/*
 	if(this.queryManager != null)

@@ -1,5 +1,5 @@
 /*
- * NameUsagePanel.java:  an abstract class providing a GUI to
+ * NameUsagePanel.java: an abstract class providing a GUI to
  * NamedObject of Nomencurator
  *
  * Copyright (c) 2014, 2015 Nozomi `James' Ytow
@@ -28,20 +28,20 @@ import org.nomencurator.model.DefaultNameUsage;
 import org.nomencurator.model.NameUsage;
 
 /**
- * <CODE>NameUsagePanel</CODE> provides a GUI to access to
- * a <CODE>NameUsage</CODE> instance
+ * {@code NameUsagePanel} provides a GUI to access to
+ * a {@code NameUsage} instance
  *
  * @version 	15 July 2015
  * @author 	Nozomi `James' Ytow
  */
 public class NameUsagePanel
-    extends AbstractNameUsagePanel<NameUsage<?, ?>>
+    extends AbstractNameUsagePanel<NameUsage<?>>
 {
     private static final long serialVersionUID = -7062028044711547579L;
 
     /**
-     * Constructs a <CODE>NameUsagePanel</CODE> for a new
-     * <CODE>NameUsage</CODE> using default Locale
+     * Constructs a {@code NameUsagePanel} for a new
+     * {@code NameUsage} using default Locale
      */
     public NameUsagePanel()
     {
@@ -49,25 +49,25 @@ public class NameUsagePanel
     }
 
     /**
-     * Constructs a <CODE>NameUsagePanel</CODE> for
-     * <CODE>nameusage</CODE> using default Locale
+     * Constructs a {@code NameUsagePanel} for
+     * {@code nameusage} using default Locale
      *
-     * @param nameusage <CODE>NameUsage</CODE> to be handled by this 
-     * <CODE>NameUsagePanel</CODE>
+     * @param nameusage {@code NameUsage} to be handled by this 
+     * {@code NameUsagePanel}
      *
      */
-    public NameUsagePanel(NameUsage<?, ?> nameUsage)
+    public NameUsagePanel(NameUsage<?> nameUsage)
     {
 	super(nameUsage);
     }
 
     /**
-     * Constructs a <CODE>NameUsagePanel</CODE> for a new
-     * <CODE>NameUsage</CODE> using <CODE>locale</CODE>
+     * Constructs a {@code NameUsagePanel} for a new
+     * {@code NameUsage} using {@code locale}
      *
-     * @param locale <CODE>Locale</CODE> to be used to to
+     * @param locale {@code Locale} to be used to to
      * provides messages and layout of components in this
-     * <CODE>NameUsagePanel</CODE>
+     * {@code NameUsagePanel}
      */
     public NameUsagePanel(Locale locale)
     {
@@ -75,34 +75,34 @@ public class NameUsagePanel
     }
 
     /**
-     * Constructs a <CODE>NameUsagePanel</CODE> for
-     * <CODE>nameusage</CODE> using <CODE>locale</CODE>
+     * Constructs a {@code NameUsagePanel} for
+     * {@code nameusage} using {@code locale}
      *
-     * @param nameusage <CODE>NameUsage</CODE> to be handled by this 
-     * <CODE>NameUsagePanel</CODE>
+     * @param nameusage {@code NameUsage} to be handled by this 
+     * {@code NameUsagePanel}
      *
-     * @param locale <CODE>Locale</CODE> to be used to to
+     * @param locale {@code Locale} to be used to to
      * provides messages and layout of components in this
-     * <CODE>NameUsagePanel</CODE>
+     * {@code NameUsagePanel}
      */
-    public NameUsagePanel(NameUsage<?, ?> nameUsage,
+    public NameUsagePanel(NameUsage<?> nameUsage,
 		       Locale locale)
     {
 	super(nameUsage, locale);
     }
 
     /**
-     * Constructs a <CODE>NameUsagePanel</CODE> for
-     * <CODE>nameusage</CODE> using <CODE>locale</CODE>
+     * Constructs a {@code NameUsagePanel} for
+     * {@code nameusage} using {@code locale}
      *
-     * @param nameusage <CODE>NameUsage</CODE> to be handled by this 
-     * <CODE>NameUsagePanel</CODE>
+     * @param nameusage {@code NameUsage} to be handled by this 
+     * {@code NameUsagePanel}
      *
-     * @param locale <CODE>Locale</CODE> to be used to to
+     * @param locale {@code Locale} to be used to to
      * provides messages and layout of components in this
-     * <CODE>NameUsagePanel</CODE>
+     * {@code NameUsagePanel}
      */
-    public NameUsagePanel(NameUsage<?, ?> nameUsage,
+    public NameUsagePanel(NameUsage<?> nameUsage,
 		       Locale locale, boolean isDialog)
     {
 	super(nameUsage, locale, isDialog);
@@ -115,12 +115,12 @@ public class NameUsagePanel
 	return nameUsagePanel;
     }
 
-    protected NameUsage<?, ?> duplicate()
+    protected NameUsage<?> duplicate()
     {
 	return new DefaultNameUsage(getNamedObject());
     }
 
-    protected NameUsage<?, ?> createNamedObject()
+    protected NameUsage<?> createNamedObject()
     {
 	return new DefaultNameUsage();
     }

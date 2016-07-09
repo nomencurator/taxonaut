@@ -1,7 +1,7 @@
 /*
  * TypeStatus.java:  an enumeration of type status
  *
- * Copyright (c) 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -26,7 +26,7 @@ import lombok.Getter;
 /**
  * Enumeration of nomenclature codes
  *
- * @version 	16 July 2015
+ * @version 	05 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public enum TypeStatus
@@ -53,6 +53,11 @@ public enum TypeStatus
     ISOTYPE("isotype",null),
     LECTOTYPE("lectotype",null),
     NEOTYPE("neotype",null),
+    /**
+     * A constant indicates non-specimen type, i.e. type taxon.
+     * The word "nominotype" was taken from ICZN 4th ed. 
+     * Art. 37, 44, 47 and 61.2.
+     */
     NOMINOTYPE("nominotype",null),
     ORIGINALMATERIAL("original material",null),
     PARALECTOTYPE("paralectotype",null),
@@ -61,7 +66,8 @@ public enum TypeStatus
     SYNTYPE("syntype",null),
     TOPOTYPE("topotype",null),
     TYPE_SERIES("type series",null),
-    TYPE_HOST("type host",null)
+    TYPE_HOST("type host",null),
+    UNDEFINED("undefined",null)
     ;
 
     @Getter
@@ -72,5 +78,27 @@ public enum TypeStatus
     TypeStatus(String typeStatus, String description) {
 	this.typeStatus = typeStatus;
 	this.description = description;
+    }
+
+    /**
+     * Convert {@code typeStatus} to a {@code TypeStatus},
+     * or null if {@code typeStatus} is null.
+     *
+     * @param typeStatus a {@code String} representing name of type status.
+     * @return TypeStatus of given name, or TyeStatus.UNDEFINED if the name is
+     * not listed in {@code TypeStatus}.
+     */
+    public static TypeStatus typeStatus(String typeStatus)
+    {
+	TypeStatus status = null;
+	if (typeStatus != null && typeStatus.length() > 0) {
+	    try {
+		status = valueOf(typeStatus);
+	    }
+	    catch (IllegalArgumentException e) {
+		status = UNDEFINED;
+	    }
+	}
+	return status;
     }
 }

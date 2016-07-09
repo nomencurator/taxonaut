@@ -25,19 +25,18 @@ package org.nomencurator.model;
 import org.w3c.dom.Element;
 
 /**
- * An implementation of <code>NameUsageNode</code> in Nomencurator
+ * An implementation of {@code NameUsageNode} in Nomencurator
  * data model.  It was referred to as NRnode in the original publication.
- * It wraps a <code>NameUsage</code> for efficient navigation over 
- * annotated <code>NameUsage</code>s.
+ * It wraps a {@code NameUsage} for efficient navigation over 
+ * annotated {@code NameUsage}s.
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	23 June 2016
+ * @version 	07 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class DefaultNameUsageNode
-//    extends AbstractNameUsageNode <NameUsageNode>
-    extends AbstractNameUsageNode <DefaultNameUsageNode, DefaultNameUsageNode>
+    extends AbstractNameUsageNode <DefaultNameUsageNode>
 {
     private static final long serialVersionUID = 2180614523366443021L;
 
@@ -46,29 +45,29 @@ public class DefaultNameUsageNode
 	return new DefaultNameUsageNode();
     }
 
-    /** Constructs an "empty" <code>NameUsageNode</code> */
+    /** Constructs an "empty" {@code NameUsageNode} */
     public DefaultNameUsageNode()
     {
 	super();
     }
 
     /**
-     * Constructs a <COCE>NameUsageNode</CODE> using
-     * existing <CODE>NameUsage</CODE>
+     * Constructs a <COCE>NameUsageNode} using
+     * existing {@code NameUsage}
      *
-     * @param nameUsage existing <CODE>NameUsage</CODE>
+     * @param nameUsage existing {@code NameUsage}
      * to be pointed by this object
      */
-    public DefaultNameUsageNode(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    public DefaultNameUsageNode(NameUsage<?> nameUsage)
     {
 	super(nameUsage);
     }
 
     /**
-     * Constructs an "empty" <code>NameUsageNode</code>
-     * appeared in <CODE>appearance</CODE>
+     * Constructs an "empty" {@code NameUsageNode}
+     * appeared in {@code appearance}
      *
-     * @param appearance <CODE>Appearance</CODE> where the name used
+     * @param appearance {@code Appearance} where the name used
      */
     public DefaultNameUsageNode(Appearance apperance)
     {
@@ -76,8 +75,8 @@ public class DefaultNameUsageNode
     }
 
     /**
-     * Constructs a <code>NameUsageNode</code> object having
-     * <code>persistentID</code> as its representation,
+     * Constructs a {@code NameUsageNode} object having
+     * {@code persistentID} as its representation,
      */
     public DefaultNameUsageNode(String persistentID)
     {
@@ -85,39 +84,39 @@ public class DefaultNameUsageNode
     }
 
     /**
-     * Constructs a <code>NameUsageNode</code> based on
-     * <code>nameUsage</code>
+     * Constructs a {@code NameUsageNode} based on
+     * {@code nameUsage}
      */
-    public DefaultNameUsageNode(Name<DefaultNameUsageNode, ? extends DefaultNameUsageNode> nameUsage)
+    public DefaultNameUsageNode(Name<? extends DefaultNameUsageNode> nameUsage)
     {
 	super(nameUsage);
     }
 
     /**
-     * Constructs a <CODE>NameUsage</CODE> by giving
+     * Constructs a {@code NameUsage} by giving
      * its attributes.
      *
-     * @param rank <CODE>String</CODE> indicating name of rank
-     * @param name <CODE>String</CODE> indicating ascribed name
-     * @param auth <CODE>Name</CODE> of authoritative name usage
-     * @param rec  <CODE>Name</CODE> of recording name usage
-     * @param type boolean, true if the <CODE>NameUsage</CODE> is name bearing type
-     * @param higher <CODE>Name</CODE> of higher taxon
-     * @param lower array of lower taxa's <CODE>Name</CODE>s
+     * @param rank {@code String} indicating name of rank
+     * @param name {@code String} indicating ascribed name
+     * @param auth {@code Name} of authoritative name usage
+     * @param rec  {@code Name} of recording name usage
+     * @param type boolean, true if the {@code NameUsage} is name bearing type
+     * @param higher {@code Name} of higher taxon
+     * @param lower array of lower taxa's {@code Name}s
      */
-    public DefaultNameUsageNode(String rank, String name,
-			 Name<DefaultNameUsageNode, DefaultNameUsageNode> auth, Name<DefaultNameUsageNode, DefaultNameUsageNode> rec,
+    public <N extends DefaultNameUsageNode> DefaultNameUsageNode(String rank, String name,
+			 Name<N> auth, Name<N> rec,
 			 boolean type,
-			 Name<DefaultNameUsageNode, DefaultNameUsageNode> higher, Name<DefaultNameUsageNode, DefaultNameUsageNode> [] lower)
+			 Name<N> higher, Name<N> [] lower)
     {
 	super(rank, name, auth, rec, type, higher, lower);
     }
 
     /**
-     * Constructs an <CODE>NameUage</CODE> object using XML data
-     * given by <CODE>xml</CODE>
+     * Constructs an {@code NameUage} object using XML data
+     * given by {@code xml}
      *
-     * @param xml <CODE>Element</CODE> specifying a <CODE>NameUsage</CODE>
+     * @param xml {@code Element} specifying a {@code NameUsage}
      *
      */
     public DefaultNameUsageNode(Element xml)
@@ -126,11 +125,11 @@ public class DefaultNameUsageNode
     }
 
     /**
-     * Constructs an <CODE>NameUage</CODE> object using XML data
-     * given by <CODE>xml</CODE>
+     * Constructs an {@code NameUage} object using XML data
+     * given by {@code xml}
      *
-     * @param xml <CODE>Element</CODE> specifying a <CODE>NameUsage</CODE>
-     * @param appearance <CODE>Appearance</CODE> where the name used
+     * @param xml {@code Element} specifying a {@code NameUsage}
+     * @param appearance {@code Appearance} where the name used
      */
     public DefaultNameUsageNode(Element xml, Appearance ap)
     {
@@ -138,51 +137,23 @@ public class DefaultNameUsageNode
     }
 
     protected DefaultNameUsageNode createNameUsageNode()
-    //protected NameUsageNode<DefaultNameUsageNode, DefaultNameUsageNode> createNameUsageNode()
     {
 	return new DefaultNameUsageNode();
     }
 
-    /*
-    protected NameUsage<DefaultNameUsageNode, DefaultNameUsageNode> createNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
-    {
-	return createNameUsageNode(nameUsage);
-    }
-    */
-
-    //protected DefaultNameUsageNode createNameUsageNode(NameUsage<DefaultNameUsageNode, DefaultNameUsageNode> nameUsage)
-    protected DefaultNameUsageNode createNameUsageNode(NameUsage<?, ?> nameUsage)
-    //protected NameUsageNode<DefaultNameUsageNode, DefaultNameUsageNode> createNameUsageNode(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    protected DefaultNameUsageNode createNameUsageNode(NameUsage<?> nameUsage)
     {
 	return new DefaultNameUsageNode(nameUsage);
     }
 
     protected DefaultNameUsageNode createNameUsageNode(String persistentID)
-    //protected NameUsageNode<DefaultNameUsageNode, DefaultNameUsageNode> createNameUsageNode(String persistentID)
     {
 	return new DefaultNameUsageNode(persistentID);
     }
 
-    protected AbstractNameUsage<DefaultNameUsageNode, DefaultNameUsageNode> createNameUsage()
+    protected AbstractNameUsage<DefaultNameUsageNode> createNameUsage()
     {
-	//	return (NameUsage<DefaultNameUsageNode, DefaultNameUsageNode>)createNameUsageNode();
 	return createNameUsageNode();
     }
 
-    /*
-    protected NameUsage<DefaultNameUsageNode, DefaultNameUsageNode> createNameUsage(Name<?, ?> nameUsage)
-    {
-	if(nameUsage instanceof DefaultNameUsageNode)
-	    return (NameUsage<DefaultNameUsageNode, DefaultNameUsageNode>)createNameUsageNode(getNameUsage(nameUsage));
-	else
-	    return createNameUsageNode();
-    }
-    */
-
-    /*
-    protected NameUsage<DefaultNameUsageNode, DefaultNameUsageNode> createNameUsage(String persistentID)
-    {
-	return (NameUsage<DefaultNameUsageNode, DefaultNameUsageNode>)createNameUsageNode(persistentID);
-    }
-    */
 }

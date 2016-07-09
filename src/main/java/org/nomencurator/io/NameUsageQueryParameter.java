@@ -33,39 +33,39 @@ import lombok.Setter;
 
 
 /**
- * <CODE>NameUsageQueryParameter</CODE> provides query parameter container.
+ * {@code NameUsageQueryParameter} provides query parameter container.
  *
- * @version 	22 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NameUsageQueryParameter <N extends NameUsage<?, ?>, T extends N>
-    extends QueryParameter <N, T>
+public class NameUsageQueryParameter <T extends NameUsage<?>>
+    extends QueryParameter <T>
 {
-    /** String representing the literal of <tt>NameUsage</tt> to retrieve */
+    /** String representing the literal of {@code NameUsage} to retrieve */
     protected String literal;
 
-    /** String representing the rank of <tt>NameUsage</tt> to retrieve */
+    /** String representing the rank of {@code NameUsage} to retrieve */
     protected Rank rank;
 
 
     @Getter
     @Setter
-    /** levels of higher <tt>NameUsage</tt>s to retrieve in int */
+    /** levels of higher {@code NameUsage}s to retrieve in int */
     protected int height;
 
     @Getter
     @Setter
-    /** levels of higher <tt>NameUsage</tt>s to retrieve in <tt>Rank</tt>*/
+    /** levels of higher {@code NameUsage}s to retrieve in {@code Rank}*/
     protected Rank higher;
 
     @Getter
     @Setter
-    /** depth of lower <tt>NameUsage</tt>s to retrieve in int */
+    /** depth of lower {@code NameUsage}s to retrieve in int */
     protected int depth;
 
     @Getter
     @Setter
-    /** depth of lower <tt>NameUsage</tt>s to retrieve in <tt>Rank</tt>*/
+    /** depth of lower {@code NameUsage}s to retrieve in {@code Rank}*/
     protected Rank lower;
 
 
@@ -88,8 +88,8 @@ public class NameUsageQueryParameter <N extends NameUsage<?, ?>, T extends N>
 	if(object == null) return false;
 	if(getClass() != object.getClass()) return false;
 
-	NameUsageQueryParameter<?, ?> that =
-	    (NameUsageQueryParameter<?, ?>) object;
+	NameUsageQueryParameter<?> that =
+	    (NameUsageQueryParameter<?>) object;
 
 	return super.equals(object)
 	    && Objects.equals(this.literal, that.literal)
@@ -124,11 +124,11 @@ public class NameUsageQueryParameter <N extends NameUsage<?, ?>, T extends N>
 	this(null, null, 0, 0, null, null, Boolean.FALSE, MatchingMode.EXACT, QueryMode.OBJECTS, false, false, false, null);
     }
 
-    public NameUsageQueryParameter(NameUsage<N, T> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale) {
+    public NameUsageQueryParameter(NameUsage<T> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale) {
 	this(filter, 0, 0, synchronous, matchingMode, queryMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    public NameUsageQueryParameter(NameUsage<N, T> filter, int height, int depth, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean inlcudeBasionyms, boolean inlcudeSynonyms, boolean includeVernaculars, Locale locale) {
+    public NameUsageQueryParameter(NameUsage<T> filter, int height, int depth, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean inlcudeBasionyms, boolean inlcudeSynonyms, boolean includeVernaculars, Locale locale) {
 	super(filter, synchronous, matchingMode, queryMode);
 	if(filter != null) {
 	    setLiteral(filter.getLiteral());
@@ -186,7 +186,7 @@ public class NameUsageQueryParameter <N extends NameUsage<?, ?>, T extends N>
 	this.rank = rank;
     }
 
-    public void setFilter(NameUsage<N, T> filter)
+    public void setFilter(NameUsage<T> filter)
     {
 	if(filter != null) {
 	    setLiteral(null);
@@ -196,8 +196,8 @@ public class NameUsageQueryParameter <N extends NameUsage<?, ?>, T extends N>
 	super.setFilter(filter);
     }
 
-    public NameUsage<?, ?> getNameUsageFilter()
+    public NameUsage<?> getNameUsageFilter()
     {
-	return (NameUsage<?, ?>)getFilter();
+	return (NameUsage<?>)getFilter();
     }
 }

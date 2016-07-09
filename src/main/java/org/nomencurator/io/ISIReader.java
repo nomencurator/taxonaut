@@ -45,7 +45,7 @@ import org.nomencurator.model.DefaultNameUsage;
  * @see <A HREF="http://isibasic.com/help/helpprn.html#exporting">http://isibasic.com/help/helpprn.html#exporting</A>
  * @see org.nomencurator.model.Publication
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class ISIReader
@@ -173,7 +173,7 @@ public static String ER 	End of record
 	List<Publication> publications = new ArrayList<>();
 	List<Agent> authors = new ArrayList<>();
 	List<Object> institutions = new ArrayList<>();
-	List<NameUsage<?, ?>> nameUsages = new ArrayList<>();
+	List<NameUsage<?>> nameUsages = new ArrayList<>();
 	List<Object> relationships = new ArrayList<>();
 
 	//	if(getField()[0][0].equals;

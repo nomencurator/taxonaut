@@ -94,10 +94,10 @@ import org.nomencurator.gui.swing.table.RelevantNameUsageTableModel;
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  * @see org.nomencurator.model.NameUsage
  *
- * @version 	28 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractNameUsagePanel<T extends NameUsage<?, ?>>
+public abstract class AbstractNameUsagePanel<T extends NameUsage<?>>
     extends NamedObjectPanel<T>
     implements ListSelectionListener
 {
@@ -696,7 +696,7 @@ public abstract class AbstractNameUsagePanel<T extends NameUsage<?, ?>>
 	if(!(object instanceof NameUsage))
 	    return;
 
-	NameUsage<?, ?> nameUsage =object;
+	NameUsage<?> nameUsage =object;
 	literal.setText(nameUsage.getLiteral());
 	sensu.setText(nameUsage.getAuthority());
 

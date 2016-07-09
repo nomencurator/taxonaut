@@ -35,11 +35,11 @@ import lombok.Setter;
 /**
  * {@code NameUsageAttributeComparator|} is a {@code TableCellRenderer} to render a {@code NameTree}.
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameUsageAttributeComparator
-    implements Comparator<NameUsage<?, ?>>
+    implements Comparator<NameUsage<?>>
 {
     @Getter protected boolean nullFirst;
 
@@ -102,7 +102,7 @@ public class NameUsageAttributeComparator
 	    Comparator.nullsLast(Collator.getInstance()).compare(s1, s2) ;
     }
 
-    protected String getAuthority(NameUsage<?, ?> nameUsage)
+    protected String getAuthority(NameUsage<?> nameUsage)
     {
 	String authority = nameUsage.getAuthority();
 	if (authority == null) {
@@ -113,7 +113,7 @@ public class NameUsageAttributeComparator
 	return authority;
     }
 
-    public int compare(NameUsage<?, ?> n1, NameUsage<?, ?> n2)
+    public int compare(NameUsage<?> n1, NameUsage<?> n2)
     {
 	switch (attribute) {
 	case YEAR:

@@ -1,7 +1,7 @@
 /*
  * NamedNode.java: an interface for rough set operation
  *
- * Copyright (c) 2002, 2003, 2005, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2002, 2003, 2005, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -27,14 +27,10 @@ import java.util.Map;
 
 import javax.swing.tree.TreeNode;
 
-import org.nomencurator.model.NameUsage;
-
-//import org.nomencurator.util.Map;
-
 /**
  * {@code NamedNode} provides an interface for rough set operation
  *
- * @version 	21 Nov. 2015
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface NamedNode<T extends NamedNode<?>>
@@ -43,121 +39,121 @@ public interface NamedNode<T extends NamedNode<?>>
     public static String SEPARATOR = "_";
 
     /**
-     * Returns name of the <tt>TreeNode</tt> with rank prior to the name literal separeted by a <tt>SEPARATOR</tt>.
+     * Returns name of the {@code TreeNode} with rank prior to the name literal separeted by a {@code SEPARATOR}.
      *
-     * @return concatinated rank and name literal separeted by a <tt>SEPARATOR</tt>
+     * @return concatinated rank and name literal separeted by a {@code SEPARATOR}
      */ 
     public String getRankedName();
 
     /**
-     * Retruns name literal of the <tt>TreeNode</tt>
+     * Retruns name literal of the {@code TreeNode}
      *
-     * @return name literal of the <tt>TreeNode</tt>
+     * @return name literal of the {@code TreeNode}
      */
     public String getLiteral();
     
     /**
-     * Returnes number of child nodes matched with those of <tt>node</tt>
-     * within given <tt>depth</tt> recursively, or less if depth of under either the
-     * <tt>NamedNode</tt> or the <tt>node</tt> is smaller than <tt>depth</tt>.
+     * Returnes number of child nodes matched with those of {@code node}
+     * within given {@code depth} recursively, or less if depth of under either the
+     * {@code NamedNode} or the {@code node} is smaller than {@code depth}.
      *
-     * @param node <tt>NamedNode</tt> to be matched with.
+     * @param node {@code NamedNode} to be matched with.
      * @param depth to count number of child nodes recursively, or -1 to count
      * until leaf nodes.
      */
     public int getMatchedChildrenCount(NamedNode<?> node, int depth);
 
     /**
-     * Adds given <tt>NamedNode</tt> to the positive Rough set of the <tt>NemdNode</tt>
+     * Adds given {@code NamedNode} to the positive Rough set of the {@code NemdNode}
      *
-     * @param node <tt>NamedNode</tt> to be add to the positive Rough set of the <tt>NemdNode</tt>.
+     * @param node {@code NamedNode} to be add to the positive Rough set of the {@code NemdNode}.
      */
     public void addIncludant(NamedNode<?> node);
 
     /**
-     * Removes given <tt>NamedNode</tt> from the positive Rough set of the <tt>NemdNode</tt>
+     * Removes given {@code NamedNode} from the positive Rough set of the {@code NemdNode}
      *
-     * @param node <tt>NamedNode</tt> to be removed from the positive Rough set of the <tt>NemdNode</tt>.
+     * @param node {@code NamedNode} to be removed from the positive Rough set of the {@code NemdNode}.
      */
     public void removeIncludant(NamedNode<?> node);
 
     /**
-     * Returns the positive Rough set of the <tt>NemdNode</tt> as mapping from names to <tt>NemdNode</tt>.
+     * Returns the positive Rough set of the {@code NemdNode} as mapping from names to {@code NemdNode}.
      *
-     * @return Map<String, NamedNode> representing the positive Rough set of the <tt>NemdNode</tt>
+     * @return Map<String, NamedNode> representing the positive Rough set of the {@code NemdNode}
      */
     public Map<String, NamedNode<?>> getIncludants();
 
     /**
-     * Removes all <tt>NamedNode<tt>s from the  positive Rough set of the <tt>NemdNode</tt>.
+     * Removes all {@code NamedNode{@code s from the  positive Rough set of the {@code NemdNode}.
      */
     public void clearIncludants();
 
     /**
-     * Adds given <tt>NamedNode</tt> to the negative Rough set of the <tt>NemdNode</tt>
+     * Adds given {@code NamedNode} to the negative Rough set of the {@code NemdNode}
      *
-     * @param node <tt>NamedNode</tt> to be add to the negative Rough set of the <tt>NemdNode</tt>.
+     * @param node {@code NamedNode} to be add to the negative Rough set of the {@code NemdNode}.
      */
     public void addExcludant(NamedNode<?> node);
 
     /**
-     * Removes given <tt>NamedNode</tt> from the negative Rough set of the <tt>NemdNode</tt>
+     * Removes given {@code NamedNode} from the negative Rough set of the {@code NemdNode}
      *
-     * @param node <tt>NamedNode</tt> to be removed from the negative Rough set of the <tt>NemdNode</tt>.
+     * @param node {@code NamedNode} to be removed from the negative Rough set of the {@code NemdNode}.
      */
     public void removeExcludant(NamedNode<?> node);
 
     /**
-     * Returns the negative Rough set of the <tt>NemdNode</tt> as mapping from names to <tt>NemdNode</tt>.
+     * Returns the negative Rough set of the {@code NemdNode} as mapping from names to {@code NemdNode}.
      *
-     * @return Map<String, NamedNode<?>> representing the negative Rough set of the <tt>NemdNode</tt>
+     * @return Map<String, NamedNode<?>> representing the negative Rough set of the {@code NemdNode}
      */
     public Map<String, NamedNode<?>> getExcludants();
 
     /**
-     * Removes all <tt>NamedNode<tt>s from the  negative Rough set of the <tt>NemdNode</tt>.
+     * Removes all {@code NamedNode{@code s from the  negative Rough set of the {@code NemdNode}.
      */
     public void clearExcludants();
     
     /**
-     * Returns true if <tt>node</tt> is compatible with this <tt>NamedNode</tt>, i.e. there is no <tt>NamedNode</tt> common
-     * in positive set of one <tt>NamedNode</tt>  and negative set of the other.
+     * Returns true if {@code node} is compatible with this {@code NamedNode}, i.e. there is no {@code NamedNode} common
+     * in positive set of one {@code NamedNode}  and negative set of the other.
      *
-     * @param node <tt>NamedNode</tt> of interest
-     * @return true if <tt>node</tt> is compatible with this <tt>NamedNode</tt>
+     * @param node {@code NamedNode} of interest
+     * @return true if {@code node} is compatible with this {@code NamedNode}
      */
     public boolean isCompatible(NamedNode<?> node);
 
     /**
-     * Returns mapping containing <tt>NamedNode</tt>s which fall in both the positive set of one
-     * <tt>NamedNode</tt> and the negativet set of the other, indexed by their names.
+     * Returns mapping containing {@code NamedNode}s which fall in both the positive set of one
+     * {@code NamedNode} and the negativet set of the other, indexed by their names.
      *
-     * @param node another <tt>NamedNode</tt> of interest
-     * @return Map<String, NamedNode<?>> containing <tt>NemdNode</tt>s which fall in both the positive set of one <tt>NamedNode</tt> and the negativet set of the other, indexed by their names
+     * @param node another {@code NamedNode} of interest
+     * @return Map<String, NamedNode<?>> containing {@code NemdNode}s which fall in both the positive set of one {@code NamedNode} and the negativet set of the other, indexed by their names
      */
     public Map<String, NamedNode<?>> getCrossSection(NamedNode<?> node);
 
     /**
-     * Returns a list of mappings containing <tt>NamedNode</tt>s which fall in intersections of
-     * either positives set pair or negative sets pair of  <tt>NamedNode</tt> object having
-     * this method and <tt>node</tt>.
+     * Returns a list of mappings containing {@code NamedNode}s which fall in intersections of
+     * either positives set pair or negative sets pair of  {@code NamedNode} object having
+     * this method and {@code node}.
      * Returend positive and negative pair represents a relaxed concept comparing with concpets
      * evaluated.
      *
-     * @param node one of <tt>NamedNode</tt>s to be evaluated.
-     * @return List of Map<String, NamedNode> reprsenting shared subest of postive and negative sents of <tt>NemdNode</tt>s to be examined.
+     * @param node one of {@code NamedNode}s to be evaluated.
+     * @return List of Map<String, NamedNode> reprsenting shared subest of postive and negative sents of {@code NemdNode}s to be examined.
      */
     public List<Map<String, NamedNode<?>>> getIntersection(NamedNode<?> node);
 
     /**
-     * Returns a list of mappings containing <tt>NamedNode</tt>s which fall in unions of
-     * either positives set pair or negative sets pair of  <tt>NamedNode</tt> object having
-     * this method and <tt>node</tt>.
+     * Returns a list of mappings containing {@code NamedNode}s which fall in unions of
+     * either positives set pair or negative sets pair of  {@code NamedNode} object having
+     * this method and {@code node}.
      * Returend positive and negative pair represents a narrower concept comparing with concpets
      * evaluated.
      *
-     * @param node one of <tt>NamedNode</tt>s to be evaluated.
-     * @return List of Map<String, NamedNode> reprsenting superset of postive and negative sents of <tt>NemdNode</tt>s to be examined.
+     * @param node one of {@code NamedNode}s to be evaluated.
+     * @return List of Map<String, NamedNode> reprsenting superset of postive and negative sents of {@code NemdNode}s to be examined.
      */
     public List<Map<String, NamedNode<?>>> getUnion(NamedNode<?> node);
 
@@ -176,42 +172,42 @@ public interface NamedNode<T extends NamedNode<?>>
     public int getHeight();
 
     /**
-     * Returnes parent node of the <tt>NamedNode</tt>,
+     * Returnes parent node of the {@code NamedNode},
      * some node having a name on the parental chain if the parent node is unnamed,
      * or null if none node on the prental chain has name or if the 
-     * <tt>NamedNode</tt> is the root node.
+     * {@code NamedNode} is the root node.
      */
     public NamedNode<?> getNamedParent();
 
     /**
-     * Returns a child <tt>NamedNode</tt> having <tt>name</tt>
+     * Returns a child {@code NamedNode} having {@code name}
      * or null if this does not have such child node.
      *
-     * @param name of child <tt>NamedNode</tt> to look for
+     * @param name of child {@code NamedNode} to look for
      *
-     * @return NamedNode having <tt>name</tt> or null if not found.
+     * @return NamedNode having {@code name} or null if not found.
      */
     public T getChild(String name);
 
     /**
-     * Returns an ancestoral <tt>NamedNode</tt> having <tt>name</tt>
+     * Returns an ancestoral {@code NamedNode} having {@code name}
      * or null if this does not have such node on its path.  It tries 
-     * <tt>getRankedName</tt> method at fisrt, then <tt>getLiteral</tt>.
+     * {@code getRankedName} method at fisrt, then {@code getLiteral}.
      *
-     * @param name of ancestoral <tt>NamedNode</tt> to look for
+     * @param name of ancestoral {@code NamedNode} to look for
      *
-     * @return NamedNode having <tt>name</tt> or null if not found.
+     * @return NamedNode having {@code name} or null if not found.
      */
     public T getAncestor(String name);
 
     /**
-     * Returns a collection of child <tt>NamedNode</tt>s having <tt>name</tt>
+     * Returns a collection of child {@code NamedNode}s having {@code name}
      * or null if this node is a leaf node.  If the node does not have such
      * a name but not a leaf, returns a collection of zero size.
      *
-     * @param name of child <tt>NamedNode</tt> to look for
+     * @param name of child {@code NamedNode} to look for
      *
-     * @return array of NamedNode having <tt>name</tt>,
+     * @return array of NamedNode having {@code name},
      * or null if this is a leaf node.
      */
     public Collection<T> getChildren(String name);

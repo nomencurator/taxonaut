@@ -35,9 +35,9 @@ import javax.swing.tree.TreeNode;
 import org.nomencurator.model.NameUsage;
 
 /**
- * <code>UnitedNameTreeNode</code> wrapping a <code>NameUsage</code>
+ * {@code UnitedNameTreeNode} wrapping a {@code NameUsage}
  *
- * @version 	26 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UnitedNameTreeNode
@@ -45,13 +45,13 @@ public class UnitedNameTreeNode
 {
     private static final long serialVersionUID = 1555933091687612569L;
 
-    /** <CODE>Vector</CODE> of parents if it has multiple parents,
+    /** {@code List} of parents if it has multiple parents,
 	i.e. there is an inconsistency on this node */
     protected ArrayList<UnitedNameTreeNode> parents;
 
     protected ArrayList<NameTreeNode> mappedNodes;
 
-    public UnitedNameTreeNode(NameUsage<?, ?> name)
+    public UnitedNameTreeNode(NameUsage<?> name)
     {
 	super();
 	setRankedName(name.getRankedName(true));

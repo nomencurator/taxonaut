@@ -55,28 +55,28 @@ import org.w3c.dom.NodeList;
  * @see 	org.nomencurator.model.Publication
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	05 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Appearance
-    extends AbstractNamedObject<Appearance, Appearance>
+    extends AbstractNamedObject<Appearance>
     implements Serializable
 {
     private static final long serialVersionUID = -7215421366823290810L;
 
     /**
-     * <code>Vector</code> of <code>NameUsage</code>s
-     * encoded by this <code>Appearance</code> object</code>
+     * {@code Collection} of {@code NameUsage}s
+     * encoded by this {@code Appearance} object}
      */
-    protected Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nameUsages;
+    protected Collection<NameUsage<?>> nameUsages;
 
     /**
-     * <code>Vector</code> of <code>Annotation</code>s
-     * encoded by this <code>Appearance</code> object</code>
+     * {@code Collection} of {@code Annotation}s
+     * encoded by this {@code Appearance} object}
      */
     protected Collection<Annotation> annotations;
 
-    /** <code>Publication</code> where the appearance appeared */
+    /** {@code Publication} where the appearance appeared */
     protected Publication publication;
 
     /** Index of page(s) in persistentID */
@@ -106,23 +106,23 @@ public class Appearance
     public static final int PID_ITEMS = LAST_PAGE;
 
     /** 
-     * <code>String</code> represents the page where
+     * {@code String} represents the page where
      * the appearance appeared in the publication
      */
     protected String page;
      
     /**
-     * <code>String</code> represents the lines on the page
+     * {@code String} represents the lines on the page
      * where the appearance appeared.
      * It may represent either single line or a range.
      */
     protected String lines;
 
-    /** <code>String</code> represents appearance of names itself */
+    /** {@code String} represents appearance of names itself */
     protected String appearance;
 
     /**
-     * Constructs an empty <code>Appearance</code> object
+     * Constructs an empty {@code Appearance} object
      */
     public Appearance()
     {
@@ -138,10 +138,10 @@ public class Appearance
     }
 
     /**
-     * Constructs an <code>Appearance</code> having
-     * <code>name</code> as its name, i.e. perisitent ID
+     * Constructs an {@code Appearance} having
+     * {@code name} as its name, i.e. perisitent ID
      *
-     * @param name <code>String</code> representing its name,
+     * @param name {@code String} representing its name,
      * i.e. perisitent ID
      */
     public Appearance(String name)
@@ -150,11 +150,11 @@ public class Appearance
     }
 
     /**
-     * Constructs a copy of given <code>name</code>. 
+     * Constructs a copy of given {@code name}. 
      *
-     * @param name <code>Name</code> representation of an <code>Appearance</code>.  It can be either an <tt>Appearance</tt> or a <tt>NameUsage</tt>.
+     * @param name {@code Name} representation of an {@code Appearance}.  It can be either an <tt>Appearance</tt> or a <tt>NameUsage</tt>.
      */
-    public Appearance(Name<?, ?> name)
+    public Appearance(Name<?> name)
     {
 	//don't use NamedObject(String) constructor
 	this();
@@ -177,10 +177,10 @@ public class Appearance
     }
 
     /**
-     * Constructs an <code>Appearance</code> in
-     * <CODE>publication</CODE>
+     * Constructs an {@code Appearance} in
+     * {@code publication}
      *
-     * @param publication <code>Publication</code> where
+     * @param publication {@code Publication} where
      * this appeared
      */
     public Appearance(Publication publication)
@@ -190,17 +190,17 @@ public class Appearance
     }
 
     /**
-     * Constructs a non-trivial <code>Appearance</code>.
+     * Constructs a non-trivial {@code Appearance}.
      *
-     * @param publication <code>Publication</code> where
+     * @param publication {@code Publication} where
      * this appeared
      */
     public Appearance(Publication publication,
 		      String page,
 		      String lines,
 		      String appearance,
-		      Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nameUsages,
-		      Collection<Annotation> annotations) 
+		      Collection<? extends NameUsage<?>> nameUsages,
+		      Collection<? extends Annotation> annotations) 
     {
 	this(publication, page, lines, appearance);
 	setNameUsages(nameUsages);
@@ -208,16 +208,16 @@ public class Appearance
     }
 
     /**
-     * Constructs a non-trivial <code>Appearance</code>.
+     * Constructs a non-trivial {@code Appearance}.
      *
-     * @param publication <code>Publication</code> where
+     * @param publication {@code Publication} where
      * this appeared
      */
     public Appearance(Publication publication,
 		      String page,
 		      String lines,
 		      String appearance,
-		      NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>[] nameUsages,
+		      NameUsage<?>[] nameUsages,
 		      Annotation[] annotations)
     {
 	this(publication, page, lines, appearance);
@@ -225,9 +225,9 @@ public class Appearance
 	setAnnotations(annotations);
     }
     /**
-     * Constructs a non-trivial <code>Appearance</code>.
+     * Constructs a non-trivial {@code Appearance}.
      *
-     * @param publication <code>Publication</code> where
+     * @param publication {@code Publication} where
      * this appeared
      */
     public Appearance(Publication publication,
@@ -248,10 +248,10 @@ public class Appearance
     }
 
     /**
-     * Constructs an <CODE>Appearance</CODE> object using XML data
-     * given by <CODE>xml</CODE>
+     * Constructs an {@code Appearance} object using XML data
+     * given by {@code xml}
      *
-     * @param xml <CODE>Element</CODE> specifying an <CODE>Appearance</CODE>
+     * @param xml {@code Element} specifying an {@code Appearance}
      *
      */
     public Appearance(Element xml)
@@ -260,10 +260,10 @@ public class Appearance
     }
 
     /**
-     * Constructs an <CODE>Appearance</CODE> object using XML data
-     * given by <CODE>xml</CODE>
+     * Constructs an {@code Appearance} object using XML data
+     * given by {@code xml}
      *
-     * @param xml <CODE>Element</CODE> specifying an <CODE>Appearance</CODE>
+     * @param xml {@code Element} specifying an {@code Appearance}
      *
      */
     public Appearance(Element xml, Publication pub)
@@ -274,7 +274,7 @@ public class Appearance
 	String persistentID = null;
 	int authorCount = 0;
 	boolean toBeResolved = false;
-	List<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nameUsageList= null;
+	List<NameUsage<?>> nameUsageList= null;
 	List<Annotation> annotationList = null;
 
 	for (int j = 0; j < nodeCount; j++) {
@@ -334,10 +334,10 @@ public class Appearance
 		}
 		else if(tagName.equals ("nameusage")) {
 		    String pID = getString(element);
-		    NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> n = (NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>)curator.get(pID);
+		    NameUsage<?> n = (NameUsage<?>)curator.get(pID);
 		    if(n != null) {
 			if(nameUsageList== null)
-			    nameUsageList= new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>();
+			    nameUsageList= new ArrayList<NameUsage<?>>();
 			nameUsageList.add(n);
 			//addNameUsage(n);
 			toBeResolved = true;
@@ -377,16 +377,16 @@ public class Appearance
     }
 
     /**
-     * Returns a persistent ID representing this <CODE>Appearance</CODE>
-     * with specified  <CODE>separator</CODE>.  It contains class name header
-     * if <CODE>withClassName</CODE> true.
+     * Returns a persistent ID representing this {@code Appearance}
+     * with specified  {@code separator}.  It contains class name header
+     * if {@code withClassName} true.
      * The subclasses must provide this method.
      *
-     * @param separator <CODE>String</CODE> to be used as the field separator
-     * @param withClassName <CODE>boolean</CODE> specifying with or without
+     * @param separator {@code String} to be used as the field separator
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing this <CODE>Appearance</CODE>
+     * @return String representing this {@code Appearance}
      */
     public String getPersistentID(String separator, boolean withClassName)
     {
@@ -427,15 +427,15 @@ public class Appearance
     }
 
     /**
-     * Merges <code>namedObject</code> with this <code>Appearance</code>
+     * Merges {@code namedObject} with this {@code Appearance}
      * if possible, but not yet implemented.
      * It returns true if merged.
      *
-     * @param namedObject a <code>NamedObject</code> to be merged
+     * @param namedObject a {@code NamedObject} to be merged
      *
      * @return true if merged, or false if not mergiable
      */
-    public boolean merge(NamedObject<?, ?> namedObject)
+    public boolean merge(NamedObject<?> namedObject)
     {
 	if(!(namedObject instanceof Appearance))
 	    return false;
@@ -443,9 +443,9 @@ public class Appearance
     }
     
     /**
-     * Parses a <code>line</code> and sets values of this object accordint to it
+     * Parses a {@code line} and sets values of this object accordint to it
      *
-     * @param line <code>String</code> containing fragment of data to be set
+     * @param line {@code String} containing fragment of data to be set
      */
     public void parseLine(String line)
     {
@@ -465,7 +465,7 @@ public class Appearance
     }
     
     /**
-     * Returns <code>String</code> representing appearance.
+     * Returns {@code String} representing appearance.
 
      * appearance extractor
      * when appearance is not yet given,
@@ -485,9 +485,9 @@ public class Appearance
     }
 
     /**
-     * Sets <code>appearance</code> as name appearance
+     * Sets {@code appearance} as name appearance
      *
-     * @param appearance <code>String</code> to be set
+     * @param appearance {@code String} to be set
      */
     public void setAppearance(String appearance)
     {
@@ -509,7 +509,7 @@ public class Appearance
      * when page is not yet given.
      * Once extracted, it will be used in later request.
      *
-     * @return page <code>String</code> representing page
+     * @return page {@code String} representing page
      */
     public String getPages()
     {
@@ -535,9 +535,9 @@ public class Appearance
     }
 
     /**
-     * Sets <code>page</code>
+     * Sets {@code page}
      *
-     * @param page <code>String</code> to be set as page
+     * @param page {@code String} to be set as page
      */
     public void setPages(String page)
     {
@@ -553,9 +553,9 @@ public class Appearance
     
 
     /**
-     * Returns <code>String</code> representing lines where names are appeared.
+     * Returns {@code String} representing lines where names are appeared.
      *
-     * @return <code>String</code> representing lines where names are appeared.
+     * @return {@code String} representing lines where names are appeared.
      */
     public String getLines()
     {
@@ -581,9 +581,9 @@ public class Appearance
     }
 
     /**
-     * Sets <code>lines</code>
+     * Sets {@code lines}
      *
-     * @param lines <code>String</code> to be set as lines
+     * @param lines {@code String} to be set as lines
      */
     public void setLines(String lines)
     {
@@ -598,7 +598,7 @@ public class Appearance
     }
 
     /**
-     * Returns <code>Publication</code> containing this appearance
+     * Returns {@code Publication} containing this appearance
      * @return Publication containing this appearance
      */
     public Publication getPublication()
@@ -612,7 +612,7 @@ public class Appearance
     /**
      * Sets publication as the container of this appearance.
      *
-     * @param publication <code>Publication</code> to be set as the container of this appearance
+     * @param publication {@code Publication} to be set as the container of this appearance
      */
     public void setPublication(Publication publication)
     {
@@ -653,10 +653,10 @@ public class Appearance
     }
     
     /**
-     * Returns <code>Enumeration</code> of <code>Annotation</code>s
+     * Returns {@code Enumeration} of {@code Annotation}s
      * on the page in lines, or null if none
      *
-     * @return Enumearation of <code>Annotation</code>s 
+     * @return Enumearation of {@code Annotation}s 
      * on the page in lines, or null if none
      */
     public Collection<Annotation> getAnnotations()
@@ -675,10 +675,10 @@ public class Appearance
     }
 
     /**
-     * Sets annotations as the <code>Annotation</code> list
-     * @param annotation <code>Vector</code> representing <code>Annotation</code> list
+     * Sets annotations as the {@code Annotation} list
+     * @param annotation {@code Vector} representing {@code Annotation} list
      */
-    public void setAnnotations(Enumeration<Annotation> annotations)
+    public void setAnnotations(Enumeration<? extends Annotation> annotations)
     {
 	List<Annotation> annotationList = null;
 	if(annotations != null) {
@@ -692,10 +692,10 @@ public class Appearance
     }
     
     /**
-     * Sets annotations as the <code>Annotation</code> list
-     * @param annotation <code>Collection</code> representing <code>Annotation</code> list
+     * Sets annotations as the {@code Annotation} list
+     * @param annotation {@code Collection} representing {@code Annotation} list
      */
-    public void setAnnotations(Collection<Annotation> annotations)
+    public void setAnnotations(Collection<? extends Annotation> annotations)
     {
 	Appearance appearance = getEntity();
 	if(appearance != this) {
@@ -709,7 +709,7 @@ public class Appearance
 	if(annotations == null || annotations.isEmpty())
 	    return;
 
-	synchronized(annotations) {
+	synchronized(this.annotations) {
 	    if(this.annotations == null)
 		this.annotations = Collections.synchronizedList(new ArrayList<Annotation>(annotations));
 	    else
@@ -724,8 +724,8 @@ public class Appearance
     }
   
     /**
-     * Sets annotations as the <code>Annotation</code> list
-     * @param annotation <code>Vector</code> representing <code>Annotation</code> list
+     * Sets annotations as the {@code Annotation} list
+     * @param annotation {@code Vector} representing {@code Annotation} list
      */
     public void setAnnotations(Annotation[] annotations)
     {
@@ -753,10 +753,10 @@ public class Appearance
     }
   
     /**
-     * Add <code>annotation</code> to <code>Annotation</code> list
+     * Add {@code annotation} to {@code Annotation} list
      * if it is not contained in the list.
      *
-     * @param annotation <code>Annotation</code> to be added
+     * @param annotation {@code Annotation} to be added
      */
     public boolean addAnnotation(Annotation annotation)
     {
@@ -785,9 +785,9 @@ public class Appearance
     }
 
     /**
-     * Remove <code>annotation</code> from <code>Annotation</code> list
+     * Remove {@code annotation} from {@code Annotation} list
      *
-     * @param annotation <code>Annotation</code> to be added
+     * @param annotation {@code Annotation} to be added
      */
     public boolean removeAnnotation(Annotation annotation)
     {
@@ -828,35 +828,37 @@ public class Appearance
     }
   
     /**
-     * Returns <code>Enumeration</code> of <code>NameUsage</code>s
-     * appeared on the page in lines, or null if none
+     * Returns unmodifiable {@code Collection} of {@code NameUsage}s
+     * appeared on the page in lines.
      *
-     * @return <code>Vector</code> representing <code>NameUsage</code> list
+     * @return {@code Collection} containing {@code NameUsage}s
      * appeared on the page in lines, or null if none
      */
-    public Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> getNameUsages()
+    public Collection<NameUsage<?>> getNameUsages()
     {
 	Appearance appearance = getEntity();
 	if(appearance != this) {
 	    return appearance.getNameUsages();
 	}
 
+	Collection<NameUsage<?>> collection = null;
 	if(this.nameUsages != null && !this.nameUsages.isEmpty())
-	    return new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>(nameUsages);
+	    collection = Collections.unmodifiableCollection(nameUsages);
 	else
-	    return new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>(0);
+	    collection = Collections.emptyList();
+	return collection;
     }
     
     /**
-     * Sets nameUsages as <code>NameUsage</code> list
+     * Sets nameUsages as {@code NameUsage} list
      *
-     * @param nameRecrods <code>Vector</code> representing <code>NameUsage</code> List
+     * @param nameRecrods {@code Vector} representing {@code NameUsage} List
      */
-    public void setNameUsages(Enumeration<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nameUsages)
+    public void setNameUsages(Enumeration<? extends NameUsage<?>> nameUsages)
     {
-	List<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nameUsageList= null;
+	List<NameUsage<?>> nameUsageList= null;
 	if(nameUsages != null) {
-	    nameUsageList = new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>();
+	    nameUsageList = new ArrayList<NameUsage<?>>();
 	    while(nameUsages.hasMoreElements()) {
 		nameUsageList.add(nameUsages.nextElement());
 	    }
@@ -866,11 +868,11 @@ public class Appearance
     }
 
     /**
-     * Sets nameUsages as <code>NameUsage</code> list
+     * Sets nameUsages as {@code NameUsage} list
      *
-     * @param nameRecrods <code>Vector</code> representing <code>NameUsage</code> List
+     * @param nameRecrods {@code Vector} representing {@code NameUsage} List
      */
-    public void setNameUsages(Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nameUsages)
+    public void setNameUsages(Collection<? extends NameUsage<?>> nameUsages)
     {
 	Appearance appearance = getEntity();
 	if(appearance != this) {
@@ -884,21 +886,21 @@ public class Appearance
 	    return;
 
 	if(this.nameUsages == null)
-	    this.nameUsages = Collections.synchronizedList(new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>(nameUsages));
+	    this.nameUsages = Collections.synchronizedList(new ArrayList<NameUsage<?>>(nameUsages));
 	else
 	    this.nameUsages.addAll(nameUsages);
 
-	for(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage : nameUsages) {
+	for(NameUsage<?> nameUsage : nameUsages) {
 	    nameUsage.setAppearance(this);
 	}
     }
 
     /**
-     * Sets nameUsages as <code>NameUsage</code> list
+     * Sets nameUsages as {@code NameUsage} list
      *
-     * @param nameRecrods <code>Vector</code> representing <code>NameUsage</code> List
+     * @param nameRecrods {@code Vector} representing {@code NameUsage} List
      */
-    public void setNameUsages(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>[] nameUsages)
+    public void setNameUsages(NameUsage<?>[] nameUsages)
     {
 	Appearance appearance = getEntity();
 	if(appearance != this) {
@@ -912,25 +914,25 @@ public class Appearance
 	    return;
 
 	if(this.nameUsages == null)
-	    this.nameUsages = Collections.synchronizedList(new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>(nameUsages.length));
+	    this.nameUsages = Collections.synchronizedList(new ArrayList<NameUsage<?>>(nameUsages.length));
 
-	for(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage : nameUsages) {
+	for(NameUsage<?> nameUsage : nameUsages) {
 	    addNameUsage(nameUsage);
 	}
     }
 
     /**
-     * Add <code>nameUsage</code> to <code>NameUsage</code> list
+     * Add {@code nameUsage} to {@code NameUsage} list
      * with returning true if it is not contained in the list.
      * Otherwise it returs false without re-addition of 
-     * <code>nameUsage</code> to the list
+     * {@code nameUsage} to the list
      *
-     * @param nameUsage <code>NameUsage</code> to be added
+     * @param nameUsage {@code NameUsage} to be added
      *
-     * @return true if <code>nameUsage</code> added to the list successfully,
+     * @return true if {@code nameUsage} added to the list successfully,
      * or false if not.
      */
-    public boolean addNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    public boolean addNameUsage(NameUsage<?> nameUsage)
     {
 	Appearance appearance = getEntity();
 	if(appearance != this) {
@@ -941,7 +943,7 @@ public class Appearance
 	    return false;
 
 	if(this.nameUsages == null)
-	    this.nameUsages = Collections.synchronizedList(new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>());
+	    this.nameUsages = Collections.synchronizedList(new ArrayList<NameUsage<?>>());
 
 	boolean result = false;
 	synchronized(this.nameUsages) {
@@ -956,11 +958,11 @@ public class Appearance
     }
   
     /**
-     * Removes <CODE>nameUsage</CODE> from the list of <CODE>NameUsage</CODE>s
+     * Removes {@code nameUsage} from the list of {@code NameUsage}s
      *
-     * @param nameUsage <CODE>NameUsage</CODE> to be removed from the list of <CODE>NameUsage</CODE>s
+     * @param nameUsage {@code NameUsage} to be removed from the list of {@code NameUsage}s
      */
-    public void removeNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    public void removeNameUsage(NameUsage<?> nameUsage)
     {
 	Appearance appearance = getEntity();
 	if(appearance != this) {
@@ -976,7 +978,7 @@ public class Appearance
     }
 
     /**
-     * Clear the list of <CODE>NameUsage</CODE>s
+     * Clear the list of {@code NameUsage}s
      */
     public void removeNameUsages()
     {
@@ -990,7 +992,7 @@ public class Appearance
 	    return;
 
 	synchronized(this.nameUsages) {
-	    for(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage : nameUsages) {
+	    for(NameUsage<?> nameUsage : nameUsages) {
 		nameUsage.setAppearance(null);
 	    }
 	}
@@ -999,9 +1001,9 @@ public class Appearance
     }
 
     /**
-     * Returns an expression of this <code>Appearance</code> as XML <code>String</code>
+     * Returns an expression of this {@code Appearance} as XML {@code String}
      *
-     * @return XML String of this <code>Appearance</code>
+     * @return XML String of this {@code Appearance}
      */
     public String toXML()
     {
@@ -1029,7 +1031,7 @@ public class Appearance
 	    }
 	    
 	    if(nameUsages != null) {
-		for(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage : nameUsages)
+		for(NameUsage<?> nameUsage : nameUsages)
 		    buf.append("<nameusage>" + nameUsage.getPersistentID() + "</nameusage>\n");
 	    }
 
@@ -1045,10 +1047,10 @@ public class Appearance
     }
     
     /**
-     * Returns XML <code>String</code> of the all related <code>NamedObject</code>s
+     * Returns XML {@code String} of the all related {@code NamedObject}s
      *
-     * @return XML <code>String</code> representing all <code>NamedObject</code>s
-     * relationg to this <code>Appearance</code>
+     * @return XML {@code String} representing all {@code NamedObject}s
+     * relationg to this {@code Appearance}
      */
     public String toRelatedXMLString()
     {
@@ -1067,7 +1069,7 @@ public class Appearance
 	    
 	    // create XML of the NameUsages
 	    if(nameUsages != null) {
-		for(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage : nameUsages) {
+		for(NameUsage<?> nameUsage : nameUsages) {
 		    buf.append(nameUsage.toXML());
 		}
 	    }
@@ -1083,16 +1085,16 @@ public class Appearance
     }
 
     /**
-     * Sets valuse of this <CODE>NamedObject</CODE> to
-     * <CODE>statement</CODE> using <CODE>connection</CODE>.
-     * from specified <CODE>index</CODE> of the <CODE>statement</CODE>
+     * Sets valuse of this {@code NamedObject} to
+     * {@code statement} using {@code connection}.
+     * from specified {@code index} of the {@code statement}
      *
-     * @param statement <CODE>PraredStatement</CODE> to which
-     * value of the this <CODE>NamedObject</CODE> to be set
-     * @param connection <CODE>NamedObjectConnection</CODE>
+     * @param statement {@code PraredStatement} to which
+     * value of the this {@code NamedObject} to be set
+     * @param connection {@code NamedObjectConnection}
      * to be used to set values
-     * @param index <CODE>int</CODE> from where values to be set
-     * into the <CODE>statement</CODE>
+     * @param index {@code int} from where values to be set
+     * into the {@code statement}
      *
      * @return int index of the next parameter to be set if there is
      *
@@ -1122,9 +1124,9 @@ public class Appearance
     }
 
     /**
-     * Returns a summarized expression of this <CODE>NamedObject</CODE>
+     * Returns a summarized expression of this {@code NamedObject}
      *
-     * @return String representing summary of this <CODE>NamedObject</CODE>
+     * @return String representing summary of this {@code NamedObject}
      */
     public String getSummary()
     {

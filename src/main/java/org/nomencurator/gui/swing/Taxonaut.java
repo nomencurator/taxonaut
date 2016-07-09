@@ -1,5 +1,5 @@
 /*
- * Taxonaut.java:  a java based GUI for Nomencurator
+ * Taxonaut.java: a java based GUI for Nomencurator
  *
  * Copyright (c) 2002, 2003, 2004, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
@@ -131,15 +131,15 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	28 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class Taxonaut<T extends NameUsage<?, ?>>
+public class Taxonaut<T extends NameUsage<?>>
     extends JApplet
     implements ChangeListener,
 	       ListSelectionListener,
-	       QueryListener<T, T>,
-	       QueryResultListener<T, T>,
+	       QueryListener<T>,
+	       QueryResultListener<T>,
 	       TreeSelectionListener
 {
     private static final long serialVersionUID = -8305009500981105134L;
@@ -183,9 +183,9 @@ public class Taxonaut<T extends NameUsage<?, ?>>
     /** <tt>JTabbledPane</tt> to swith between <tt>Compoennt<tt>s showing detail of query results */
     protected JTabbedPane detailTabs;
 
-    protected NameUsageQueryPanel<T, T> nameUsageQueryPanel;
+    protected NameUsageQueryPanel<T> nameUsageQueryPanel;
 
-    protected RankQueryPanel<T, T> localQueryPanel;
+    protected RankQueryPanel<T> localQueryPanel;
 
     protected NameListPane<T> nameListPane;
  
@@ -211,7 +211,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 
     protected LanguageMenu languageMenu;
 
-    protected QueryManager<T, T, NameUsageExchanger<T, T>> queryManager;
+    protected QueryManager<T, NameUsageExchanger<T>> queryManager;
     //protected ObjectExchanger queryManager;
 
     protected QueryMessages queryMessages;
@@ -219,14 +219,14 @@ public class Taxonaut<T extends NameUsage<?, ?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "2.99";
+    private static String version = "3.0";
 
     @Getter
     private static String softwareName = "Taxonaut";
 
     protected String uBioKey;
 
-    protected MultiplexNameUsageQuery<T, T> queryThread;
+    protected MultiplexNameUsageQuery<T> queryThread;
 
     protected Collection<JComponent> components;
 
@@ -306,10 +306,10 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	components.add(statusLabel);
 	components.add(progress);
 
-	nameUsageQueryPanel = new NameUsageQueryPanel<T, T>(this);
+	nameUsageQueryPanel = new NameUsageQueryPanel<T>(this);
 	components.add(nameUsageQueryPanel);
 
-	localQueryPanel = new RankQueryPanel<T, T>(this);
+	localQueryPanel = new RankQueryPanel<T>(this);
 	components.add(localQueryPanel);
 
 	/*
@@ -365,7 +365,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	author.addPublication(publication);
 	//Appearance appearance = new Appearance(publication);
 	Appearance appearance = new Appearance();
-	NameUsage<?, ?> nameUsage = new DefaultNameUsageNode(appearance);
+	NameUsage<?> nameUsage = new DefaultNameUsageNode(appearance);
 
 	publicationPanel = new PublicationPanel(publication);
 	appearancePanel = new AppearancePanel(appearance);
@@ -412,7 +412,6 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	return tabs;
     }
 
-
     /**
      * Layouts GUI components.
      */
@@ -438,13 +437,13 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	*/
     }
 
-    protected QueryManager<T, T, NameUsageExchanger<T, T>> prepareQueryMnager()
+    protected QueryManager<T, NameUsageExchanger<T>> prepareQueryMnager()
     {
 	NameUsageQueryManager <T> manager = new NameUsageQueryManager<T>();
 	// FIXME
 	// make it to be compiled
 	// org.nomencurator.io.gbif.NubExchanger is incompatible with 
-	// org.nomencurator.io.NameUsageExchanger<org.nomencurator.model.NameUsage<?,?>,org.nomencurator.model.NameUsage<?,?>>
+	// org.nomencurator.io.NameUsageExchanger<org.nomencurator.model.NameUsage<?>,org.nomencurator.model.NameUsage<?>>
 	// even though org.nomencurator.io.gbif.NubExchanger 
 	// extends AbstractNameUsageExchanger<NubNameUsage, NubNameUsage> 
 	//manager.addSource(new NubExchanger());
@@ -452,7 +451,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	return manager;
     }
 
-    public void setQueryManager(QueryManager<T, T, NameUsageExchanger<T, T>> queryManager)
+    public void setQueryManager(QueryManager<T, NameUsageExchanger<T>> queryManager)
     {
 	this.queryManager = queryManager;
 	/*
@@ -466,7 +465,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 
     }
 
-    public QueryManager<T, T, NameUsageExchanger<T, T>> getQueryManager()
+    public QueryManager<T, NameUsageExchanger<T>> getQueryManager()
     {
 	return queryManager;
     }
@@ -682,7 +681,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
     }
 
     @SuppressWarnings({"rawtypes","unchecked"})
-    public void query(QueryEvent/*<T, T>*/ event)
+    public void query(QueryEvent/*<T>*/ event)
     {
 	if(event == null || queryManager == null)
 	    return;
@@ -690,20 +689,20 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	Object source = event.getSource();
 
 	if(source == nameUsageQueryPanel) {
-	    QueryParameter/*<T, T>*/ parameter = event.getQueryParameter();
-	    NameUsageQueryParameter/*<T, T>*/ queryParameter = null;
+	    QueryParameter/*<T>*/ parameter = event.getQueryParameter();
+	    NameUsageQueryParameter/*<T>*/ queryParameter = null;
 	    if (parameter instanceof NameUsageQueryParameter)
-		queryParameter = (NameUsageQueryParameter/*<T, T>*/)parameter;
+		queryParameter = (NameUsageQueryParameter/*<T>*/)parameter;
 	    String queryLiteral = queryParameter == null? null : queryParameter.getLiteral();
 
 	    NubExchanger exchanger = new NubExchanger();
 	    ((NameTableModel)nameListPane.getNameList().getModel()).clear();
-	    Collection<NamedObject<NubNameUsage, NubNameUsage>> results = 
+	    Collection<NamedObject<NubNameUsage>> results = 
 		exchanger.getObjects(event.getQueryParameter());
 	    
-	    Collection<NameUsage<?, ?>> nameUsages = new ArrayList<>(results.size());
-	    for(NamedObject<NubNameUsage, NubNameUsage> result : results) {
-		nameUsages.add((NameUsage<?, ?>)result);
+	    Collection<NameUsage<?>> nameUsages = new ArrayList<>(results.size());
+	    for(NamedObject<NubNameUsage> result : results) {
+		nameUsages.add((NameUsage<?>)result);
 	    }
 
 	    statusLabel.setText(queryMessages.getMessage(nameUsages.size(), new Object[]{queryLiteral}));
@@ -727,7 +726,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	*/
 	}
 	else if(source == localQueryPanel) {
-	    QueryParameter/*<T, T>*/ p = event.getQueryParameter();
+	    QueryParameter/*<T>*/ p = event.getQueryParameter();
 	    if(p instanceof NameUsageQueryParameter && alignerTree != null) {
 		NameUsageQueryParameter parameter = (NameUsageQueryParameter)p;
 		//statusLabel.setText(alignerTree.getNames(parameter.getLiteral(), parameter.getRank(), null, null, parameter.getMatchingMode()));
@@ -747,16 +746,16 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 		    }
 		}
 
-		Collection<NameUsage<?, ?>> nameUsages = 
+		Collection<NameUsage<?>> nameUsages = 
 		    new NubExchanger().integrateHierarchies(((ComparisonQueryParameter)queryParameter).getNameUsages());
-		List<NameUsage<?, ?>> rootNodes = new ArrayList<NameUsage<?, ?>>();
+		List<NameUsage<?>> rootNodes = new ArrayList<NameUsage<?>>();
 		Set<String> nameLiterals = new HashSet<String>();
-		for(NameUsage<?, ?> nameUsage : nameUsages) { 
+		for(NameUsage<?> nameUsage : nameUsages) { 
 		    rootNodes.addAll(getSelectedRoots(nameUsage));
 		    nameLiterals.add(nameUsage.getLiteral());
 		}
 		// FIXME to be more general
-		Collection<NameUsage<?, ?>> integrated =
+		Collection<NameUsage<?>> integrated =
 		    new NubExchanger().integrateHierarchies(rootNodes);
 		UnitedNameTreeModel unitedTreeModel = new UnitedNameTreeModel(integrated.size() + 1);
 
@@ -764,7 +763,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 		progress.setMaximum(integrated.size());
 		progress.setMinimum(0);
 		statusLayout.show(statusPanel, PROGRESS_BAR);
-		for(NameUsage<?, ?> rootNode : integrated) { 
+		for(NameUsage<?> rootNode : integrated) { 
 		    NameTreeModel nameTreeModel =new NameTreeModel(rootNode);
 		    if(nameTreeModel != null) {
 			progress.setValue(++i);
@@ -908,9 +907,9 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	}
     }
 
-    protected MultiplexNameUsageQuery<T, T> getHierarchy = null;
+    protected MultiplexNameUsageQuery<T> getHierarchy = null;
 
-    protected List<MultiplexNameUsageQuery<T, T>> getHierarchies = null;
+    protected List<MultiplexNameUsageQuery<T>> getHierarchies = null;
 
     public void valueChanged(ListSelectionEvent event)
     {
@@ -928,7 +927,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	    }
 	    else if (count == 1) {
 		int index = nameList.convertRowIndexToModel(nameList.getSelectedRow());
-		NameUsage<?, ?> nameUsage = nameListModel.getNamedObject(index);
+		NameUsage<?> nameUsage = nameListModel.getNamedObject(index);
 		nameUsagePanel.setNamedObject(nameUsage);
 		detailText.setText(nameUsage.getDetail());
 		//detailText.setEditable(nameUsage.isEditable());
@@ -948,28 +947,28 @@ public class Taxonaut<T extends NameUsage<?, ?>>
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-	protected Collection<NameUsage<?, ?>> getSelectedRoots(NameUsage<?, ?> nameUsage)
+	protected Collection<NameUsage<?>> getSelectedRoots(NameUsage<?> nameUsage)
 	//protected Collection<T> getSelectedRoots(T nameUsage)
     {
 	if(nameUsage == null || nameListPane == null)
 	    return null;
 
-	/*T*/NameUsage<?, ?> n = nameUsage.getNameUsage();
+	/*T*/NameUsage<?> n = nameUsage.getNameUsage();
 	if(n != null && n != nameUsage)
 	    nameUsage = n;
 
-	NameUsageQueryParameter/*<T, T>*/ queryParameter = 
+	NameUsageQueryParameter/*<T>*/ queryParameter = 
 	    nameListPane.getQueryParameter(nameUsage);
 
 	//FIXME for generalisation to support other data sources
-	Collection<NamedObject<NubNameUsage, NubNameUsage>> results =
+	Collection<NamedObject<NubNameUsage>> results =
 	    new NubExchanger().getObjects(queryParameter);
 
-	List<NameUsage<?, ?>> toReturn = new ArrayList<NameUsage<?, ?>>();
-	//List<T> toReturn = new ArrayList<NameUsage<?, ?>>();
-	for(NamedObject<NubNameUsage, NubNameUsage> result : results) {
+	List<NameUsage<?>> toReturn = new ArrayList<NameUsage<?>>();
+	//List<T> toReturn = new ArrayList<NameUsage<?>>();
+	for(NamedObject<NubNameUsage> result : results) {
 	    if(result instanceof NameUsage)
-		toReturn.add((NameUsage<?, ?>)result);
+		toReturn.add((NameUsage<?>)result);
 	    //toReturn.add((T)result);
 	}
 
@@ -978,27 +977,27 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    protected NameTreeModel getSelectedTreeModel(NameUsage<?, ?> nameUsage)
+    protected NameTreeModel getSelectedTreeModel(NameUsage<?> nameUsage)
     {
 	if(nameUsage == null || nameListPane == null)
 	    return null;
 
-	NameUsage<?, ?> n = nameUsage.getNameUsage();
+	NameUsage<?> n = nameUsage.getNameUsage();
 	if(n != null && n != nameUsage)
 	    nameUsage = n;
 
-	NameUsageQueryParameter/*<T, T>*/ queryParameter = 
+	NameUsageQueryParameter/*<T>*/ queryParameter = 
 	    nameListPane.getQueryParameter(nameUsage);
 
 	//FIXME for generalisation to support other data sources
 	NubExchanger exchanger = new NubExchanger();
-	Collection<NamedObject<NubNameUsage, NubNameUsage>> results = 
+	Collection<NamedObject<NubNameUsage>> results = 
 	    exchanger.getObjects(queryParameter);
 	if(results == null || results.isEmpty()) {
 	    return null;
 	}
 	NameTreeModel nameTreeModel = 
-	    new NameTreeModel((NameUsage<?, ?>)results.iterator().next());
+	    new NameTreeModel((NameUsage<?>)results.iterator().next());
 	nameTreeModel.setViewName(nameUsage.getViewName());
 
 	return nameTreeModel;
@@ -1024,16 +1023,16 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 
     // FIXME
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public void queryReturned(QueryResultEvent/*<T, T>*/ event)
+    public void queryReturned(QueryResultEvent/*<T>*/ event)
     {
 	if(event == null)
 	    return;
 
 	synchronized(queryThread) {
-	    Collection<NamedObject<?,?>> results = event.getResults();
+	    Collection<NamedObject<?>> results = event.getResults();
 	    if(results != null && !results.isEmpty()) {
-		Iterator<NamedObject<?,?>> iterator = results.iterator();
-		NamedObject<?, ?> object = iterator.next();
+		Iterator<NamedObject<?>> iterator = results.iterator();
+		NamedObject<?> object = iterator.next();
 		if(object instanceof Agent) {
 		    agentResults(results);
 		}
@@ -1079,19 +1078,19 @@ public class Taxonaut<T extends NameUsage<?, ?>>
 	*/
     }    
 
-    protected void agentResults(Collection<NamedObject<?, ?>> results)
+    protected void agentResults(Collection<NamedObject<?>> results)
     {
     }
 
-    protected void anottationtResults(Collection<NamedObject<?, ?>> results)
+    protected void anottationtResults(Collection<NamedObject<?>> results)
     {
     }
 
-    protected void publicationtResults(Collection<NamedObject<?, ?>> results)
+    protected void publicationtResults(Collection<NamedObject<?>> results)
     {
     }
 
-    protected void nameUsageResults(Collection<NamedObject<?, ?>> results)
+    protected void nameUsageResults(Collection<NamedObject<?>> results)
     {
     }
 
@@ -1161,7 +1160,7 @@ public class Taxonaut<T extends NameUsage<?, ?>>
         JDialog.setDefaultLookAndFeelDecorated(true);
 
 	JFrame frame = new JFrame("Taxonaut version 3.0");
-	Taxonaut<NameUsage<?, ?>> taxoNote = new Taxonaut<NameUsage<?, ?>>();
+	Taxonaut<NameUsage<?>> taxoNote = new Taxonaut<NameUsage<?>>();
 	frame.getContentPane().add(taxoNote);
 
 

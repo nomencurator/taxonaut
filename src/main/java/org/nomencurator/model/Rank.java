@@ -41,7 +41,7 @@ import lombok.Getter;
 /**
  * Rank provides rank tracking without parsing name of rank
  *
- * @version 	21 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Rank
@@ -186,17 +186,17 @@ public class Rank
     };
 
     /**
-     * <code>Hashtable</code> to hold <code>Rank</code>s
+     * {@code Hashtable} to hold {@code Rank}s
      */
     static Map<String, Rank> ranks = new HashMap<String, Rank>();
 
     /**
-     * <code>Hashtable</code> to hold abbreviations of rank name
+     * {@code Hashtable} to hold abbreviations of rank name
      */
     static Map<String, String> abbreviations = new HashMap<String, String>();
 
     /**
-     * <code>Vector</code> to hold <code>Rank</code>s
+     * {@code Vector} to hold {@code Rank}s
      */
     static List<Rank> sortedRanks = Collections.synchronizedList(new ArrayList<Rank>());
 
@@ -206,8 +206,8 @@ public class Rank
 
     static {
 	/*
-	 * Put deafult <code>Rank</code>s to the <code>Hashtable</code>
-	 * with making links to upper and lower <code>Rank</code>s
+	 * Put deafult {@code Rank}s to the {@code Hashtable}
+	 * with making links to upper and lower {@code Rank}s
 	 */
 	int rankIndex = 0;
 	Rank currentRank = new Rank(fullyLinkedNames[rankIndex][0]);
@@ -228,8 +228,8 @@ public class Rank
 	sortedRanks.add(currentRank);
 
 	/*
-	 * Create and put partially linked <code>Rank</code>s to the
-	 * <code>Hashtable</code>
+	 * Create and put partially linked {@code Rank}s to the
+	 * {@code Hashtable}
 	 */
 	for(rankIndex = 0; rankIndex < partiallyLinkedHigherRankName.length; rankIndex++) {
 	    currentRank = new Rank(partiallyLinkedHigherRankName[rankIndex][0], null, null);
@@ -261,8 +261,8 @@ public class Rank
 	}
 
 	/*
-	 * Create and put equivalent <code>Rank</code>s to the
-	 * <code>Hashtable</code>
+	 * Create and put equivalent {@code Rank}s to the
+	 * {@code Hashtable}
 	 */
 	for(rankIndex = 0; rankIndex < equivalents.length; rankIndex++) {
 	    currentRank = new Rank(equivalents[rankIndex][0], 
@@ -310,7 +310,7 @@ public class Rank
 
 
     /**
-     * Constructs a species <code>Rank</code> as default.
+     * Constructs a species {@code Rank} as default.
      */
     public Rank()
     {
@@ -319,8 +319,8 @@ public class Rank
     }
 
     /**
-     * Constructs a <code>Rank</code> with given <code>name</code>
-     * pointing itself as both higher and lower <code>Rank</code>
+     * Constructs a {@code Rank} with given {@code name}
+     * pointing itself as both higher and lower {@code Rank}
      *
      * @param name name of the rank
      */
@@ -330,8 +330,8 @@ public class Rank
     }
 
     /**
-     * Constructs a <code>Rank</code> with given <code>name</code>
-     * pointing itself as both higher and lower <code>Rank</code>
+     * Constructs a {@code Rank} with given {@code name}
+     * pointing itself as both higher and lower {@code Rank}
      *
      * @param name name of the rank
      */
@@ -379,11 +379,11 @@ public class Rank
     }
 
     /**
-     * Construts a <code>Rank</code> with given <code>name</code>
-     * pointing to an <code>equivalent</code> <code>Rank</code>
+     * Construts a {@code Rank} with given {@code name}
+     * pointing to an {@code equivalent} {@code Rank}
      *
      * @param name name of the rank
-     * @param equivalent equivalent <code>Rank</code>
+     * @param equivalent equivalent {@code Rank}
      */
     public Rank(String name, Rank equivalent)
     {
@@ -391,13 +391,13 @@ public class Rank
     }
 
     /**
-     * Construts a <code>Rank</code> with given <code>name</code>
-     * pointing to <code>higher</code> and <code>lower</code>
-     * <code>Rank</code>s
+     * Construts a {@code Rank} with given {@code name}
+     * pointing to {@code higher} and {@code lower}
+     * {@code Rank}s
      *
      * @param name name of the rank
-     * @param higher higher <code>Rank</code>
-     * @param lower lower <code>Rank</code>
+     * @param higher higher {@code Rank}
+     * @param lower lower {@code Rank}
      */
     public Rank(String name, Rank higher, Rank lower)
     {
@@ -405,14 +405,14 @@ public class Rank
     }
 
     /**
-     * Construts a <code>Rank</code> with given <code>name</code>
-     * pointing to <code>higher</code>, <code>lower</code> and
-     * <code>equivalent</code> <code>Rank</code>s
+     * Construts a {@code Rank} with given {@code name}
+     * pointing to {@code higher}, {@code lower} and
+     * {@code equivalent} {@code Rank}s
      *
      * @param name name of the rank
-     * @param higher higher <code>Rank</code>
-     * @param lower lower <code>Rank</code>
-     * @param equivalent equivalent <code>Rank</code>
+     * @param higher higher {@code Rank}
+     * @param lower lower {@code Rank}
+     * @param equivalent equivalent {@code Rank}
      */
     public Rank(String name, Rank higher, Rank lower, Rank equivalent)
     {
@@ -423,8 +423,8 @@ public class Rank
     }
 
     /**
-     * Replaces a <code>Rank</code> in the <code>Hashtable</code>
-     * with given <code>rank</code>
+     * Replaces a {@code Rank} in the {@code Hashtable}
+     * with given {@code rank}
      *
      * @param rank to be replaced
      *
@@ -471,7 +471,7 @@ public class Rank
     }
 
     /**
-     * Removes <code>rank</code> from the <code>Hashtable</code>
+     * Removes {@code rank} from the {@code Hashtable}
      *
      * @param rank to be removed
      *
@@ -487,9 +487,9 @@ public class Rank
     }
 
     /**
-     * Removes <code>Rank</code> having <code>rankName</code> from the <code>Hashtable</code>
+     * Removes {@code Rank} having {@code rankName} from the {@code Hashtable}
      *
-     * @param rankName name of <code>Rank</code> to be removed
+     * @param rankName name of {@code Rank} to be removed
      *
      */
     public static void remove(String rankName)
@@ -498,11 +498,11 @@ public class Rank
     }
 
     /**
-     * Returns a <code>Rank</code> of given <code>name</code>
-     * in the <code>Hashtable</code>
+     * Returns a {@code Rank} of given {@code name}
+     * in the {@code Hashtable}
      *
-     * @return a <code>Rank</code> of given <code>name</code> or null
-     * if no <code>Rank</code> in the <code>Hashtable</code> has the <code>name</code>.
+     * @return a {@code Rank} of given {@code name} or null
+     * if no {@code Rank} in the {@code Hashtable} has the {@code name}.
      */
     public static Rank get(String name)
     {
@@ -573,8 +573,8 @@ public class Rank
     }
 
     /**
-     * Sets name to be given <code>name</code>
-     * and replace <code>Rank</code> in the <code>Hashtable</code> 
+     * Sets name to be given {@code name}
+     * and replace {@code Rank} in the {@code Hashtable} 
      * keyed by the name to this
      *
      * @param name to be set
@@ -600,9 +600,9 @@ public class Rank
     }
 
     /**
-     * Returns the name of the <code>Rank</code>
+     * Returns the name of the {@code Rank}
      *
-     * @return name <code>String</code> of the <code>Rank</code>
+     * @return name {@code String} of the {@code Rank}
      */
     public String getName()
     {
@@ -610,8 +610,8 @@ public class Rank
     }
 
     /**
-     * Sets abbreviation to be given <code>abbreviation</code>
-     * and replace <code>Rank</code> in the <code>Hashtable</code> 
+     * Sets abbreviation to be given {@code abbreviation}
+     * and replace {@code Rank} in the {@code Hashtable} 
      * keyed by the abbreviation to this
      *
      * @param abbreviation to be set
@@ -628,9 +628,9 @@ public class Rank
     }
 
     /**
-     * Returns the abbreviation of the <code>Rank</code>
+     * Returns the abbreviation of the {@code Rank}
      *
-     * @return abbreviation <code>String</code> of the <code>Rank</code>
+     * @return abbreviation {@code String} of the {@code Rank}
      */
     public String getAbbreviation()
     {
@@ -648,9 +648,9 @@ public class Rank
     }
 
     /**
-     * Sets higher rank to be given <code>higher</code> <code>Rank</code>.
+     * Sets higher rank to be given {@code higher} {@code Rank}.
      *
-     * @param higher <code>Rank</code>
+     * @param higher {@code Rank}
      */
     public void setHigher(Rank higher)
     {
@@ -658,10 +658,10 @@ public class Rank
     }
 
     /**
-     * Returns higher rank of this <code>Rank</code>.
+     * Returns higher rank of this {@code Rank}.
      *
-     * @return higher <code>Rank</code>, of null if no
-     * <code>Rank</code> is pointed as higher <code>Rank</code>
+     * @return higher {@code Rank}, of null if no
+     * {@code Rank} is pointed as higher {@code Rank}
      */
     public Rank getHigher()
     {
@@ -669,9 +669,9 @@ public class Rank
     }
 
     /**
-     * Sets lower rank to be given <code>lower</code> <code>Rank</code>.
+     * Sets lower rank to be given {@code lower} {@code Rank}.
      *
-     * @param lower <code>Rank</code>
+     * @param lower {@code Rank}
      */
     public void setLower(Rank lower)
     {
@@ -679,10 +679,10 @@ public class Rank
     }
 
     /**
-     * Returns lower rank of this <code>Rank</code>.
+     * Returns lower rank of this {@code Rank}.
      *
-     * @return lower <code>Rank</code>, of null if no
-     * <code>Rank</code> is pointed as lower <code>Rank</code>
+     * @return lower {@code Rank}, of null if no
+     * {@code Rank} is pointed as lower {@code Rank}
      */
     public Rank getLower()
     {
@@ -690,9 +690,9 @@ public class Rank
     }
 
     /**
-     * Sets equivalent rank to be given <code>equivalent</code> <code>Rank</code>.
+     * Sets equivalent rank to be given {@code equivalent} {@code Rank}.
      *
-     * @param equivalent <code>Rank</code>
+     * @param equivalent {@code Rank}
      */
     public void setEquivalent(Rank equivalent)
     {
@@ -700,10 +700,10 @@ public class Rank
     }
 
     /**
-     * Returns a <code>Rank</code> equivalent to this <code>Rank</code>.
+     * Returns a {@code Rank} equivalent to this {@code Rank}.
      *
-     * @return <code>Rank</code> equivalent to this, or null if no
-     * <code>Rank</code> is equivalent to this
+     * @return {@code Rank} equivalent to this, or null if no
+     * {@code Rank} is equivalent to this
      */
     public Rank getEquivalent()
     {
@@ -721,9 +721,9 @@ public class Rank
     }
 
     /**
-     * Sets <CODE>coverage</CODE> as coverage by Codes
+     * Sets {@code coverage} as coverage by Codes
      *
-     * @param coverage <CODE>int</CODE> indicating coverage by Codes
+     * @param coverage {@code int} indicating coverage by Codes
      */
     public void setCodeCoverage(int coverage)
     {
@@ -731,7 +731,7 @@ public class Rank
     }
 
     /**
-     * Returns int indicating naming convention of th <CODE>Rank</CODE>
+     * Returns int indicating naming convention of th {@code Rank}
      *
      * @return int indicating naming convention
      */
@@ -741,9 +741,9 @@ public class Rank
     }
 
     /**
-     * Sets <CODE>convention</CODE> as naming convention for the <CODE>Rank</CODE>
+     * Sets {@code convention} as naming convention for the {@code Rank}
      *
-     * @param convention <CODE>int</CODE> indicating naming convention
+     * @param convention {@code int} indicating naming convention
      */
     public void setNamingConvention(int convention)
     {
@@ -752,12 +752,12 @@ public class Rank
 
 
     /**
-     * Returns true if the <CODE>Rank</CODE> is
-     * covered by <CODE>code</CODE>
+     * Returns true if the {@code Rank} is
+     * covered by {@code code}
      *
-     * @param code <CODE>int</CODE> indicating a Code
+     * @param code {@code int} indicating a Code
      *
-     * @return ture if the <CODE>Rank</CODE> is covered by <CODE>code</CODE>
+     * @return ture if the {@code Rank} is covered by {@code code}
      */
     public boolean isCovered(int code)
     {
@@ -797,15 +797,15 @@ public class Rank
     }
 
     /**
-     * Returns <CODE>String</CODE> representing name ending
-     * for taxa of the <CODE>Rank</CODE> in given
-     * <CODE>convention</CODE>, or null if it is not available.
+     * Returns {@code String} representing name ending
+     * for taxa of the {@code Rank} in given
+     * {@code convention}, or null if it is not available.
      *
-     * @param convention <CODE>int</CODE> representing a naming convention
+     * @param convention {@code int} representing a naming convention
      *
      * @return String representing name ending
-     * for taxa of the <CODE>Rank</CODE> in
-     * <CODE>convention</CODE>, or null
+     * for taxa of the {@code Rank} in
+     * {@code convention}, or null
      * if it is not available.
      */
     public String getEnding(int convention)
@@ -837,15 +837,15 @@ public class Rank
     }
 
     /**
-     * Returns <CODE>String</CODE> representing name ending
-     * for taxa of the <CODE>Rank</CODE> in given
-     * <CODE>convention</CODE>, or null if it is not available.
+     * Returns {@code String} representing name ending
+     * for taxa of the {@code Rank} in given
+     * {@code convention}, or null if it is not available.
      *
-     * @param convention <CODE>int</CODE> representing a naming convention
+     * @param convention {@code int} representing a naming convention
      *
      * @return String representing name ending
-     * for taxa of the <CODE>Rank</CODE> in
-     * <CODE>convention</CODE>, or null
+     * for taxa of the {@code Rank} in
+     * {@code convention}, or null
      * if it is not available.
      */
     public void setEnding(String ending, int convention)
@@ -877,10 +877,10 @@ public class Rank
     }
 
     /**
-     * Returns whether this is fully linked to both higher and lower <code>Rank</code>s.
-     * It also tries its equivalent <code>Rank</code> if given.
+     * Returns whether this is fully linked to both higher and lower {@code Rank}s.
+     * It also tries its equivalent {@code Rank} if given.
      *
-     * @return true if both higher and lower <code>Rank</code> are non null,
+     * @return true if both higher and lower {@code Rank} are non null,
      * or false if either is null
      */
     public boolean isFullyLinkedRank()
@@ -895,9 +895,9 @@ public class Rank
     }
 
     /**
-     * Returns nearest fully linked <code>Rank</code>
+     * Returns nearest fully linked {@code Rank}
      *
-     * @return nearest fully linked <code>Rank</code>
+     * @return nearest fully linked {@code Rank}
      */
     public Rank getFullyLinkedRank()
     {
@@ -916,9 +916,9 @@ public class Rank
     }
 
     /**
-     * Returns nearest fully linked <code>Rank</code>
+     * Returns nearest fully linked {@code Rank}
      *
-     * @return nearest fully linked <code>Rank</code>
+     * @return nearest fully linked {@code Rank}
      */
     public Rank getNonOptionalHigherRank()
     {
@@ -942,9 +942,9 @@ public class Rank
     }
 
     /**
-     * Returns nearest fully linked <code>Rank</code>
+     * Returns nearest fully linked {@code Rank}
      *
-     * @return nearest fully linked <code>Rank</code>
+     * @return nearest fully linked {@code Rank}
      */
     public Rank getNonOptionalLowerRank()
     {
@@ -989,11 +989,11 @@ public class Rank
     }
 
     /**
-     * Returns whether this is higher than <code>rank</code>
+     * Returns whether this is higher than {@code rank}
      *
-     * @param rank name of <code>Rank</code> to be compared
+     * @param rank name of {@code Rank} to be compared
      *
-     * @return true if this is higher than given <code>rank</code>
+     * @return true if this is higher than given {@code rank}
      */
     public boolean isHigher(String rank)
     {
@@ -1001,11 +1001,11 @@ public class Rank
     }
 
     /**
-     * Returns whether this is higher than given <code>rank</code>
+     * Returns whether this is higher than given {@code rank}
      *
      * @param rank to be compared
      *
-     * @return true if this is higher than given <code>rank</code>
+     * @return true if this is higher than given {@code rank}
      */
     public boolean isHigher(Rank rank)
     {
@@ -1039,11 +1039,11 @@ public class Rank
     }
 
     /**
-     * Returns whether this is lower than given <code>rank</code>
+     * Returns whether this is lower than given {@code rank}
      *
      * @param rank name to be compared
      *
-     * @return true if this is lower than given <code>rank</code>
+     * @return true if this is lower than given {@code rank}
      */
     public boolean isLower(String rank)
     {
@@ -1051,11 +1051,11 @@ public class Rank
     }
 
     /**
-     * Returns whether this is lower than given <code>rank</code>
+     * Returns whether this is lower than given {@code rank}
      *
      * @param rank to be compared
      *
-     * @return true if this is lower than given <code>rank</code>
+     * @return true if this is lower than given {@code rank}
      */
     public boolean isLower(Rank rank)
     {
@@ -1090,12 +1090,12 @@ public class Rank
 
     /**
      * Returns descending path from highest rank to
-     * given <code>rank</code>
+     * given {@code rank}
      *
      * @param rank to be tracked from top rank
      *
-     * @return an Array of <code>Rank</code> indicating path from top to
-     * given <code>rank</code>
+     * @return an Array of {@code Rank} indicating path from top to
+     * given {@code rank}
      */
     public static Rank[] getRankPath(Rank rank)
     {
@@ -1159,9 +1159,9 @@ public class Rank
 
 
     /**
-     * Returnes an array of rank names appropriate to <code>TextListModel</code>.
+     * Returnes an array of rank names appropriate to {@code TextListModel}.
      * 
-     * @return Array of <code>String</code> representing rank names appropriate to <code>TextListModel</code>.
+     * @return Array of {@code String} representing rank names appropriate to {@code TextListModel}.
      */
     public static final String[][] getRankNameArray()
     {
@@ -1175,7 +1175,7 @@ public class Rank
     }
 
     /**
-     * Returns <code>String</code> representing rank name
+     * Returns {@code String} representing rank name
      *
      * @return String representing rank name
      */
@@ -1185,9 +1185,9 @@ public class Rank
     }
 
     /**
-     * Adds <code>observer</code> to <code>Observer</code> list
+     * Adds {@code observer} to {@code Observer} list
      * 
-     * @param observer <code>Observer</code> to be added to the list
+     * @param observer {@code Observer} to be added to the list
      */
     public void addObserver(Observer observer)
     {
@@ -1195,9 +1195,9 @@ public class Rank
     }
 
     /**
-     * Removes <code>observer</code> from <code>Observer</code> list
+     * Removes {@code observer} from {@code Observer} list
      * 
-     * @param observer <code>Observer</code> to be removed from the list
+     * @param observer {@code Observer} to be removed from the list
      */
     public void deleteObserver(Observer observer)
     {
@@ -1205,10 +1205,10 @@ public class Rank
     }
 
     /**
-     * Adds <code>observer</code> to <code>Observer</code> list
+     * Adds {@code observer} to {@code Observer} list
      * observing this
      * 
-     * @param observer <code>Observer</code> to be added to the list
+     * @param observer {@code Observer} to be added to the list
      */
     public void addObserver(RankObserver observer)
     {
@@ -1216,10 +1216,10 @@ public class Rank
     }
 
     /**
-     * Removes <code>observer</code> from <code>Observer</code> list
+     * Removes {@code observer} from {@code Observer} list
      * observing this
      * 
-     * @param observer <code>Observer</code> to be removed from the list
+     * @param observer {@code Observer} to be removed from the list
      */
     public void deleteObserver(RankObserver observer)
     {
@@ -1227,9 +1227,9 @@ public class Rank
     }
 
     /**
-     * Returns highest <code>Rank</code>
+     * Returns highest {@code Rank}
      *
-     * @return <code>Rank</code> at top of rank hierarchy
+     * @return {@code Rank} at top of rank hierarchy
      */
     public static Rank getHighest()
     {
@@ -1237,9 +1237,9 @@ public class Rank
     }
 
     /**
-     * Returns a List of sorted <CODE>Rank</CODE>s
+     * Returns a List of sorted {@code Rank}s
      *
-     * @return List of sorted <CODE>Rank</CODE>s
+     * @return List of sorted {@code Rank}s
      */
     public static final List<Rank> getSortedRanks()
     {
@@ -1247,9 +1247,9 @@ public class Rank
     }
 
     /**
-     * Returns an array of sorted <CODE>Rank</CODE>s
+     * Returns an array of sorted {@code Rank}s
      *
-     * @return array of sorted <CODE>Rank</CODE>s
+     * @return array of sorted {@code Rank}s
      */
     public static Rank[] getSortedArray()
     {
@@ -1260,10 +1260,10 @@ public class Rank
     }
 
     /**
-     * Returns an array of <CODE>String</CODE>s
-     * representing sorted <CODE>Rank</CODE>s' name
+     * Returns an array of {@code String}s
+     * representing sorted {@code Rank}s' name
      *
-     * @return array of <CODE>Rank</CODE>s' name
+     * @return array of {@code Rank}s' name
      */
     public static String[] getRankNames()
     {
@@ -1277,11 +1277,11 @@ public class Rank
     }
 
     /**
-     * Returns the <CODE>Observerable</CODE> observing
-     * <CODE>Rank</CODE> providing a satic proxy to observe
-     * <CODE>Rank</CODE>
+     * Returns the {@code Observerable} observing
+     * {@code Rank} providing a satic proxy to observe
+     * {@code Rank}
      *
-     * @return Observable observing <CODE>Rank</CODE>
+     * @return Observable observing {@code Rank}
      */
     public static Observable getRankObserver()
     {
@@ -1345,7 +1345,7 @@ public class Rank
 	return null;
     }
 
-    public static String getRank(NameUsage<?, ?> usage)
+    public static String getRank(NameUsage<?> usage)
     {
 	if(usage != null) {
 	    Rank rank = usage.getRank();

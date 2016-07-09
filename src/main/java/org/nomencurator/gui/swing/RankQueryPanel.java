@@ -91,11 +91,11 @@ import org.nomencurator.gui.vocabulary.QueryPanelElement;
  * {@code RankQueryPanel} provides components to specify a filter to search data sources.
  * It dispatches a {@code QueryEvent} representing a query filter.
  *
- * @version 	24 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class RankQueryPanel<N extends NameUsage<?, ?>, T extends N>
-    extends AbstractQueryPanel<N, T>
+public class RankQueryPanel<T extends NameUsage<?>>
+    extends AbstractQueryPanel<T>
 {
     private static final long serialVersionUID = 8532843090203758723L;
 
@@ -126,7 +126,7 @@ public class RankQueryPanel<N extends NameUsage<?, ?>, T extends N>
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    public RankQueryPanel(QueryListener<N, T> listener)
+    public RankQueryPanel(QueryListener<T> listener)
     {
 	this(Locale.getDefault(), listener);
     }
@@ -137,7 +137,7 @@ public class RankQueryPanel<N extends NameUsage<?, ?>, T extends N>
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    public RankQueryPanel(Locale locale, QueryListener<N, T> listener)
+    public RankQueryPanel(Locale locale, QueryListener<T> listener)
     {
 	super(locale, listener);
     }
@@ -188,7 +188,7 @@ public class RankQueryPanel<N extends NameUsage<?, ?>, T extends N>
 
     //FIXME: type parameters of NameUsageQueryParameter
     @SuppressWarnings("rawtypes")
-    protected QueryEvent<N, T> composeQuery()
+    protected QueryEvent<T> composeQuery()
     {
 	String literal = queryField.getText();
 	if(literal == null || literal.length() == 0)
@@ -210,7 +210,7 @@ public class RankQueryPanel<N extends NameUsage<?, ?>, T extends N>
 	else {
 	    rank = Rank.get(selection.toString());
 	}
-	return new NameUsageQueryEvent<N, T>(this, new NameUsageQueryParameter<N, T>(literal, rank, null));
+	return new NameUsageQueryEvent<T>(this, new NameUsageQueryParameter<T>(literal, rank, null));
     }
 
 }

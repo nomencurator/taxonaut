@@ -1,7 +1,7 @@
 /*
  * AbstractQueryManager.java: an interface to manage multiple ObjectExchangers
  *
- * Copyright (c) 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -29,39 +29,30 @@ import java.util.List;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>AbstractQueryManager</CODE> manages queries to multiple
- * <CODE>DataExchanger</CODE>s
+ * {@code AbstractQueryManager} manages queries to multiple
+ * {@code DataExchanger}s
  *
- * @version 	08 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractQueryManager <N extends NamedObject<?, ?>, T extends N, 
-//										   E extends NamedObject<N, T>,
-											     X extends ObjectExchanger<N, T>//,
-											     //P extends QueryParameter<N, T>
-											     //Q extends ObjectQuery<N, T>
-											     >
-    implements QueryManager<N, T, X>
-//public abstract class AbstractQueryManager <E extends NamedObject<?, ?>, X extends ObjectExchanger<E>>
-//    implements QueryManager<E, X>
+public abstract class AbstractQueryManager <T extends NamedObject<?>,
+						      X extends ObjectExchanger<T>//,
+								//P extends QueryParameter<T>
+								//Q extends ObjectQuery<T>
+								>
+    implements QueryManager<T, X>
 {
-    //protected List<X> sources;
     protected Collection<X> sources;
-    //protected Collection<? exntends ObjectExchanger<?, ?>> sources;
 
     protected boolean synchronous;
     
     public synchronized boolean addSource(X source)
-	//public synchronized boolean addSource(ObjectExchanger<?, ?> source)
     {
 	boolean result = false;
 	if(source != null) {
 	    if(sources == null)
 		sources = Collections.synchronizedList(new ArrayList<X>());
-	    //sources = Collections.synchronizedList(new ArrayList<ObjectExchanger<?, ?>>());
 	    synchronized (sources) {
-		// source.addQueryResultListener(this);
-		// source.setDefaultMatchingMode(getDefaultMatchingMode());
 		result |= sources.add(source);
 	    }
 	}
@@ -69,13 +60,11 @@ public abstract class AbstractQueryManager <N extends NamedObject<?, ?>, T exten
     }
 
     public synchronized boolean removeSource(X source)
-	//public synchronized boolean removeSource(ObjectExchanger<?, ?> source)
     {
 	boolean result = false;
 	if(source != null) {
 	    synchronized (sources) {
 		result |= sources.remove(source);
-		// source.removeQueryResultListener(this);
 	    }
 	}
 

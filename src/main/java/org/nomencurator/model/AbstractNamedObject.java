@@ -78,22 +78,22 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * <CODE>NamedObject</CODE> provides an interface to handle <CODE>Object</CODE>
- * compativle with its name represented not by <CODE>String</CODE>
- * but by <CODE>Name</CODE>, because final class <CODE>java.lang.String</CODE>
+ * {@code NamedObject} provides an interface to handle {@code Object}
+ * compativle with its name represented not by {@code String}
+ * but by {@code Name}, because final class {@code java.lang.String}
  * can not be extended.
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  * @see org.nomencurator.model.Name
  * @see java.lang.String
  *
- * @version 	23 June 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extends N>
-    extends AbstractName <N, T>
-    implements NamedObject <N, T>,
-	       SQLSerializable<N, T>,
+public abstract class AbstractNamedObject <T extends NamedObject<?>>
+    extends AbstractName <T>
+    implements NamedObject <T>,
+	       SQLSerializable<T>,
 	       XMLSerializable,
 	       Serializable
 {
@@ -130,13 +130,12 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     protected String localKey;
 
     /** Source of this data. */
-    protected NamedObject<?, ?> source;
-    //protected NamedObject<N> source;
+    protected NamedObject<?> source;
 
     /** Appropriate identifier of whom contributed this data. */
     protected String contributor;
 
-    /** <CODE>Timestamp</CODE> when the data last updated */
+    /** {@code Timestamp} when the data last updated */
     protected Timestamp lastUpdated;
 
     /** Flag indicating editable or not */
@@ -172,8 +171,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     protected Set<String> objectIDs;
 
-    protected NamedObject<N, ? extends T>[] sources;
-    //protected NamedObject[] sources;
+    protected Collection<NamedObject<?>> sources;
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -183,20 +181,20 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 	
 	if(getClass() != object.getClass()) return false;
 
-	final AbstractNamedObject<N, T> other = (AbstractNamedObject<N, T>) object;
+	final AbstractNamedObject<T> that = (AbstractNamedObject<T>) object;
 	return super.equals(object)
-	    && Objects.equals(this.localKey, other.localKey)
-	    && Objects.equals(this.source, other.source)
-	    && Objects.equals(this.contributor, other.contributor)
-	    && Objects.equals(this.lastUpdated, other.lastUpdated)
-	    && Objects.equals(this.editable, other.editable)
-	    && Objects.equals(this.modified, other.modified)
-	    && Objects.equals(this.copyright, other.copyright)
-	    && Objects.equals(this.verbatim, other.verbatim)
-	    && Objects.equals(this.scope, other.scope)
-	    && Objects.equals(this.notes, other.notes)
-	    && Objects.equals(this.objectIDs, other.objectIDs)
-	    && Objects.equals(this.sources, other.sources)
+	    && Objects.equals(this.localKey, that.localKey)
+	    && Objects.equals(this.source, that.source)
+	    && Objects.equals(this.contributor, that.contributor)
+	    && Objects.equals(this.lastUpdated, that.lastUpdated)
+	    && Objects.equals(this.editable, that.editable)
+	    && Objects.equals(this.modified, that.modified)
+	    && Objects.equals(this.copyright, that.copyright)
+	    && Objects.equals(this.verbatim, that.verbatim)
+	    && Objects.equals(this.scope, that.scope)
+	    && Objects.equals(this.notes, that.notes)
+	    && Objects.equals(this.objectIDs, that.objectIDs)
+	    && Objects.equals(this.sources, that.sources)
 	    ;
     }
 
@@ -218,7 +216,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 			    );
     }
 
-    protected static List<List<String>> getNameLists(final Collection<? extends NamedObject<?, ?>> a, final Collection<? extends NamedObject<?, ?>> b)
+    protected static List<List<String>> getNameLists(final Collection<? extends NamedObject<?>> a, final Collection<? extends NamedObject<?>> b)
     {
 	List<List<String>> list = new ArrayList<List<String>>(2);
 	list.add(getSortedNameList(a));
@@ -226,13 +224,13 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 	return list;
     }
 
-    protected static List<String> getSortedNameList(final Collection<? extends NamedObject<?, ?>> collection) {
+    protected static List<String> getSortedNameList(final Collection<? extends NamedObject<?>> collection) {
 	if(collection == null)
 	    return new ArrayList<String>(0);
 
 	List<String> list = new ArrayList<String>(collection.size());
 
-	for(NamedObject<?, ?> object : collection) {
+	for(NamedObject<?> object : collection) {
 	    list.add(object.getPersistentID());
 	}
 
@@ -242,7 +240,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Constructs an empty <CODE>NamedObject</CODE>
+     * Constructs an empty {@code NamedObject}
      * Only the subclasses may call this constructor.
      */
     protected AbstractNamedObject()
@@ -251,8 +249,8 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Constructs an <CODE>NamedObject</CODE> having
-     * given <CODE>name</CODE> as <CODE>String</CODE> representation.
+     * Constructs an {@code NamedObject} having
+     * given {@code name} as {@code String} representation.
      */
     protected AbstractNamedObject(String name)
     {
@@ -260,8 +258,8 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Constructs an <CODE>NamedObject</CODE> having
-     * given <CODE>name</CODE> as <CODE>String</CODE> representation.
+     * Constructs an {@code NamedObject} having
+     * given {@code name} as {@code String} representation.
      */
     protected AbstractNamedObject(String name, boolean editable)
     {
@@ -272,8 +270,8 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     
 
     /**
-     * Constructs an <CODE>NamedObject</CODE> having
-     * given <CODE>name</CODE> as <CODE>String</CODE> representation.
+     * Constructs an {@code NamedObject} having
+     * given {@code name} as {@code String} representation.
      */
     protected AbstractNamedObject(ResultSet result)
 	throws SQLException
@@ -311,9 +309,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     @SuppressWarnings({"unchecked"})
-    private NamedObject<N, T> castNamedObject(NamedObject<N, ? extends T> namedObject)
+    private NamedObject<T> castNamedObject(NamedObject<? extends T> namedObject)
     {
-	return (NamedObject<N, T>)namedObject;
+	return (NamedObject<T>)namedObject;
     }
 
     public String getLocalKey()
@@ -338,9 +336,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Returns a persistent ID representing this <CODE>NamedObject</CODE>
+     * Returns a persistent ID representing this {@code NamedObject}
      *
-     * @return String representing this <CODE>NamedObject</CODE>
+     * @return String representing this {@code NamedObject}
      */
     public String getPersistentID()
     {
@@ -354,13 +352,13 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns a persistent ID representing this <CODE>NamedObject</CODE>.
-     * It contains class name header if <CODE>withClassName</CODE> true.
+     * Returns a persistent ID representing this {@code NamedObject}.
+     * It contains class name header if {@code withClassName} true.
      *
-     * @param withClassName <CODE>boolean</CODE> specifying with or without
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing this <CODE>NamedObject</CODE>
+     * @return String representing this {@code NamedObject}
      */
     public String getPersistentID(boolean withClassName)
     {
@@ -377,12 +375,12 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Returns a persistent ID representing this <CODE>NamedObject</CODE>
-     * with specified  <CODE>separator</CODE>
+     * Returns a persistent ID representing this {@code NamedObject}
+     * with specified  {@code separator}
      *
-     * @param separator <CODE>String</CODE> to be used as the field separator
+     * @param separator {@code String} to be used as the field separator
      *
-     * @return String representing this <CODE>NamedObject</CODE>
+     * @return String representing this {@code NamedObject}
      */
     public String getPersistentID(String separator)
     {
@@ -393,24 +391,24 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Returns a persistent ID representing this <CODE>NamedObject</CODE>
-     * with specified  <CODE>separator</CODE>.  It contains class name header
-     * if <CODE>withClassName</CODE> true.
+     * Returns a persistent ID representing this {@code NamedObject}
+     * with specified  {@code separator}.  It contains class name header
+     * if {@code withClassName} true.
      * The subclasses must provide this method.
      *
-     * @param separator <CODE>String</CODE> to be used as the field separator
-     * @param withClassName <CODE>boolean</CODE> specifying with or without
+     * @param separator {@code String} to be used as the field separator
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing this <CODE>NamedObject</CODE>
+     * @return String representing this {@code NamedObject}
      */
     public abstract String getPersistentID(String separator, boolean withClassName);
 
     /**
-     * Returns persistent ID representing an empty <CODE>NamedObject</CODE>.
+     * Returns persistent ID representing an empty {@code NamedObject}.
      * The subclasses must provide this method.
      *
-     * @return String representing persistent ID of an empty <CODE>NamedObject</CODE>.
+     * @return String representing persistent ID of an empty {@code NamedObject}.
      */
     public String getEmptyPersistentID()
     {
@@ -418,14 +416,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns persistent ID having <CODE>seprators</CODE> underscores
+     * Returns persistent ID having {@code seprators} underscores
      * after class name header.
      *
-     * @param separator <CODE>String</CODE> to be used as the field separator
-     * @param withClassName <CODE>boolean</CODE> specifying with or without
+     * @param separator {@code String} to be used as the field separator
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing persistent ID of an empty <CODE>NamedObject</CODE>.
+     * @return String representing persistent ID of an empty {@code NamedObject}.
      */
     protected String getEmptyPersistentID(String separator, boolean withClassName)
     {
@@ -434,12 +432,12 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
 
     /**
-     * Returns persistent ID having <CODE>seprators</CODE> underscores
+     * Returns persistent ID having {@code seprators} underscores
      * after class name header.
      *
      * @param separators number of field separators appear in the persistent ID
      *
-     * @return String representing persistent ID of an empty <CODE>NamedObject</CODE>.
+     * @return String representing persistent ID of an empty {@code NamedObject}.
      */
     protected String getEmptyPersistentID(int separators)
     {
@@ -447,14 +445,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns persistent ID having <CODE>seprators</CODE> underscores
+     * Returns persistent ID having {@code seprators} underscores
      * after class name header.
      *
      * @param separators number of field separators appear in the persistent ID
-     * @param withClassName <CODE>boolean</CODE> specifying with or without
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing persistent ID of an empty <CODE>NamedObject</CODE>.
+     * @return String representing persistent ID of an empty {@code NamedObject}.
      */
     protected String getEmptyPersistentID(int separators, boolean withClassName)
     {
@@ -462,13 +460,13 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns persistent ID having <CODE>seprators</CODE> underscores
+     * Returns persistent ID having {@code seprators} underscores
      * after class name header.
      *
      * @param separators number of field separators appear in the persistent ID
-     * @param separator <CODE>String</CODE> to be used as the field separator
+     * @param separator {@code String} to be used as the field separator
      *
-     * @return String representing persistent ID of an empty <CODE>NamedObject</CODE>.
+     * @return String representing persistent ID of an empty {@code NamedObject}.
      */
     protected String getEmptyPersistentID(int separators, String separator)
     {
@@ -476,15 +474,15 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns persistent ID having <CODE>seprators</CODE> underscores
+     * Returns persistent ID having {@code seprators} underscores
      * after class name header.
      *
      * @param separators number of field separators appear in the persistent ID
-     * @param separator <CODE>String</CODE> to be used as the field separator
-     * @param withClassName <CODE>boolean</CODE> specifying with or without
+     * @param separator {@code String} to be used as the field separator
+     * @param withClassName {@code boolean} specifying with or without
      * class name header
      *
-     * @return String representing persistent ID of an empty <CODE>NamedObject</CODE>.
+     * @return String representing persistent ID of an empty {@code NamedObject}.
      */
     protected String getEmptyPersistentID(int separators, String separator, boolean withClassName)
     {
@@ -507,9 +505,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     //public abstract int getFieldSepartorsCount();
     
     /**
-     * Returns persistent ID representing this <CODE>NamedObject</CODE>.
+     * Returns persistent ID representing this {@code NamedObject}.
      *
-     * @return String representing persistent ID of this <CODE>NamedObject</CODE>.
+     * @return String representing persistent ID of this {@code NamedObject}.
      */
     public void setPersistentID(String pid)
     {
@@ -520,7 +518,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns <CODE>String</CODE> containing class name and
+     * Returns {@code String} containing class name and
      * class name separator, i.e. header of persistent ID.
      *
      * @return String persistentID header
@@ -531,7 +529,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns <CODE>StringBuffer</CODE> containing class name and
+     * Returns {@code StringBuffer} containing class name and
      * class name separator as a seed of persistent ID.
      *
      * @return StringBuffer containing persistentID header
@@ -544,9 +542,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Returns <CODE>String</CODE> representation of this <CODE>Object</CODE>
+     * Returns {@code String} representation of this {@code Object}
      * 
-     * @return <CODE>String</CODE> representing this <CODE>Object</CODE>
+     * @return {@code String} representing this {@code Object}
      */
     public String toString()
     {
@@ -554,13 +552,13 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Returns true if <CODE>ojbectName</CODE> rpresents an instance of
+     * Returns true if {@code ojbectName} rpresents an instance of
      * the class, or false if it isn't, including null. 
      *
-     * @param objectName "name" <CODE>String</CODE> representation of
-     * a <CODE>NamedObject</CODE>
+     * @param objectName "name" {@code String} representation of
+     * a {@code NamedObject}
      *
-     * @return true if <CODE>ojbectName</CODE> rpresents an instance of
+     * @return true if {@code ojbectName} rpresents an instance of
      * the class, or false if it isn't, including null. 
      */  
     protected boolean isA(String objectName)
@@ -572,16 +570,16 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Returns true if <CODE>ojbectName</CODE> rpresents an instance of
+     * Returns true if {@code ojbectName} rpresents an instance of
      * the class, or false if it isn't, including null. 
      *
-     * @param objectName "name" <CODE>DelegateString</CODE> representation of
-     * a <CODE>NamedObject</CODE>
+     * @param objectName "name" {@code DelegateString} representation of
+     * a {@code NamedObject}
      *
-     * @return true if <CODE>ojbectName</CODE> rpresents an instance of
+     * @return true if {@code ojbectName} rpresents an instance of
      * the class, or false if it isn't, including null. 
      */  
-    protected boolean isA(Name<?, ?> objectName)
+    protected boolean isA(Name<?> objectName)
     {
 	if(objectName == null)
 	    return false;
@@ -591,19 +589,19 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
     
     /**
-     * Parse <CODE>line</CODE> and set values of this object
-     * if the <CODE>line</CODE> represents them appropriately.
+     * Parse {@code line} and set values of this object
+     * if the {@code line} represents them appropriately.
      *
-     * @param line <CODE>String</CODE> representing values of this object
+     * @param line {@code String} representing values of this object
      */
     //public abstract void parseLine(String line);
     
     /**
-     * Returns contents of a <CODE>line</CODE>
+     * Returns contents of a {@code line}
      *
-     * @param line <CODE>String</CODE> containing values of this object
+     * @param line {@code String} containing values of this object
      *
-     * @return <CODE>String</CODE> representing values of this object
+     * @return {@code String} representing values of this object
      */
     protected String peal(String line)
     {
@@ -621,28 +619,27 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     @Override
-    public NamedObject<N, T> getNamedObject()
+    public NamedObject<T> getNamedObject()
     {
 	if(entity == null || !isAssignableFrom(entity))
 	    //!(entity instanceof NamedObject))
 	    return this;
 
-	//return ((NamedObject<N, T>)entity).getNamedObject();
+	//return ((NamedObject<T>)entity).getNamedObject();
 	return getNamedObject(entity).getNamedObject();
     }
     
     /**
-     * Puts this object to <CODE>nomencurator</CODE>, an object repository.
-     * Returns this if equivalent object is not in <CODE>nomencurator</CODE>,
-     * or the equivalent object found in <CODE>nomencurator</CODE>.
+     * Puts this object to {@code nomencurator}, an object repository.
+     * Returns this if equivalent object is not in {@code nomencurator},
+     * or the equivalent object found in {@code nomencurator}.
      *
      * @param nomencurator an object repository
      *
-     * @return this if no equivalent object is not in <CODE>nomencurator</CODE>,
-     * or the equivalent object found in <CODE>nomencurator</CODE>
+     * @return this if no equivalent object is not in {@code nomencurator},
+     * or the equivalent object found in {@code nomencurator}
      */
-    @SuppressWarnings({"unchecked"})
-    public NamedObject<?, ?> putTo(Nomencurator nomencurator)
+    public NamedObject<?> putTo(Nomencurator nomencurator)
     {
 	
 	String pid = getPersistentID();
@@ -653,10 +650,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 	    return this;
 	}
 	
-	NamedObject<N, T> tnr = null;
-	Name<?, ?> name = nomencurator.get(pid);
-	if(isAssignableFrom(name))
-	    tnr = (NamedObject<N, T>)name;
+	NamedObject<T> tnr = null;
+	Name<?> name = nomencurator.get(pid);
+	if(isAssignableFrom(name)) {
+	    // safe cast because it is assignable
+	    @SuppressWarnings({"unchecked"})
+		NamedObject<T> tmp = (NamedObject<T>)name;
+	    tnr = tmp;
+	}
 	if(tnr == this)
 	    return this;
 	
@@ -760,14 +761,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns contents of persisnte ID <CODE>pid</CODE>,
-     * i.e. returns substring after the first <CODE>classNameSeparator</CODE>.
-     * If <CODE>pid</CODE> does not contain <CODE>classNameSeparator</CODE>,
-     * it returns <CODE>pid</CODE> itself.
+     * Returns contents of persisnte ID {@code pid},
+     * i.e. returns substring after the first {@code classNameSeparator}.
+     * If {@code pid} does not contain {@code classNameSeparator},
+     * it returns {@code pid} itself.
      *
      * @param pid persistent ID from where contents extracted.
      *
-     * @return contents of given persistent ID, or <CODE>pid</CODE> itself
+     * @return contents of given persistent ID, or {@code pid} itself
      * if it is not a persistent ID.
      */
     static public String getPersistentIDContents(String pid)
@@ -783,29 +784,29 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Gets name in <CODE>String</CODE>
+     * Gets name in {@code String}
      *
      * @return String representing a name
      */
     public String getLiteral(){ return getPersistentID();}
 
     /**
-     * Establishes mutual linkage between <CODE>NamedObject</CODE>s.
+     * Establishes mutual linkage between {@code NamedObject}s.
      *
-     * @param o1 a <CODE>NamedObject</CODE> to be linked
-     * @param v1 a <CODE>List</CODE> of <CODE>NamedObject</CODE>s
-     * to contain <CODE>o1</CODE>.  It is assumed to owned by <CODE>o2</CODE>
-     * @param o2 a <CODE>NamedObject</CODE> to be linked
-     * @param v2 a <CODE>List</CODE> of <CODE>NamedObject</CODE>s
-     * to contain <CODE>o2</CODE>.  It is assumed to owned by <CODE>o1</CODE>
+     * @param o1 a {@code NamedObject} to be linked
+     * @param v1 a {@code List} of {@code NamedObject}s
+     * to contain {@code o1}.  It is assumed to owned by {@code o2}
+     * @param o2 a {@code NamedObject} to be linked
+     * @param v2 a {@code List} of {@code NamedObject}s
+     * to contain {@code o2}.  It is assumed to owned by {@code o1}
      *
-     * @return int result code where 0 indicates both <CODE>NamedObject</CODE>s
-     * were put to <CODE>List</CODE>s, 1 or 2 indicates eithor <CODE>o1</CODE>
-     * or <CODE>o2</CODE> was not addetd to the <CODE>List</CODE>, 3 indicates
-     * no <CODE>NamedObject</CODE> was added, -1 indicates both <CODE>List</CODE>s
+     * @return int result code where 0 indicates both {@code NamedObject}s
+     * were put to {@code List}s, 1 or 2 indicates eithor {@code o1}
+     * or {@code o2} was not addetd to the {@code List}, 3 indicates
+     * no {@code NamedObject} was added, -1 indicates both {@code List}s
      * are null.
      */
-    int mutualAdd(AbstractNamedObject<?, ?> o1, List<AbstractNamedObject<?, ?>> v1, AbstractNamedObject<?, ?> o2, List<AbstractNamedObject<?, ?>> v2) 
+    int mutualAdd(AbstractNamedObject<?> o1, List<AbstractNamedObject<?>> v1, AbstractNamedObject<?> o2, List<AbstractNamedObject<?>> v2) 
     {
 	if(v1 == null && v2 == null)
 	    return -1;
@@ -830,22 +831,22 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Releases mutual linkage between <CODE>NamedObject</CODE>s.
+     * Releases mutual linkage between {@code NamedObject}s.
      *
-     * @param o1 a <CODE>NamedObject</CODE> to be unlinked
-     * @param v1 a <CODE>List</CODE> of <CODE>NamedObject</CODE>s
-     * to remove <CODE>o1</CODE> from it.  It is assumed to owned by <CODE>o2</CODE>
-     * @param o2 a <CODE>NamedObject</CODE> to be unlinked
-     * @param v2 a <CODE>List</CODE> of <CODE>NamedObject</CODE>s
-     * to remove <CODE>o2</CODE> from it.  It is assumed to owned by <CODE>o1</CODE>
+     * @param o1 a {@code NamedObject} to be unlinked
+     * @param v1 a {@code List} of {@code NamedObject}s
+     * to remove {@code o1} from it.  It is assumed to owned by {@code o2}
+     * @param o2 a {@code NamedObject} to be unlinked
+     * @param v2 a {@code List} of {@code NamedObject}s
+     * to remove {@code o2} from it.  It is assumed to owned by {@code o1}
      *
-     * @return int result code where 0 indicates both <CODE>NamedObject</CODE>s
-     * were removed from <CODE>List</CODE>s, 1 or 2 indicates eithor <CODE>o1</CODE>
-     * or <CODE>o2</CODE> was not removed from the <CODE>List</CODE>, 3 indicates
-     * no <CODE>NamedObject</CODE> was removed, -1 indicates both <CODE>List</CODE>s
+     * @return int result code where 0 indicates both {@code NamedObject}s
+     * were removed from {@code List}s, 1 or 2 indicates eithor {@code o1}
+     * or {@code o2} was not removed from the {@code List}, 3 indicates
+     * no {@code NamedObject} was removed, -1 indicates both {@code List}s
      * are null.
      */
-    int mutualRemove(AbstractNamedObject<?, ?> o1, List<AbstractNamedObject<?, ?>> v1, AbstractNamedObject<?, ?> o2, List<AbstractNamedObject<?, ?>> v2) 
+    int mutualRemove(AbstractNamedObject<?> o1, List<AbstractNamedObject<?>> v1, AbstractNamedObject<?> o2, List<AbstractNamedObject<?>> v2) 
     {
 	if(v1 == null && v2 == null)
 	    return -1;
@@ -871,8 +872,8 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * get String Data
-     * @param  xmlElement an <CODE>Element</CODE> of XML document
-     * @return String representing contents of <CODE>xmlElement</CODE>
+     * @param  xmlElement an {@code Element} of XML document
+     * @return String representing contents of {@code xmlElement}
      */
     protected String getString(Element xmlElement)
     {
@@ -964,8 +965,8 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     */    
 
     /**
-     * Returns the component of the persistentID at <CODE>index</CODE>,
-     * or null if <CODE>index</CODE> is out or range.
+     * Returns the component of the persistentID at {@code index},
+     * or null if {@code index} is out or range.
      *
      * @param index position of the component in the persistentID.
      *
@@ -977,8 +978,8 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns the component of the persistentID at <CODE>index</CODE>,
-     * or null if <CODE>index</CODE> is out or range.
+     * Returns the component of the persistentID at {@code index},
+     * or null if {@code index} is out or range.
      *
      */
     public static String getPersistentIDComponent(String pid, int index)
@@ -1020,24 +1021,25 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
      *
      * @return NamedObject source of this object
      */
-    public NamedObject<?, ?> getSource()
+    public NamedObject<?> getSource()
     {
-	if(entity != null)
-	    return ((NamedObject<?, ?>)getEntity()).getSource();
+	if(entity != null) 
+	    //return ((NamedObject<T>)getEntity()).getSource();
+	    return getEntity().getSource();
 
 	return source;
     }
 
     /**
-     * Sets <CODE>source</CODE> of this object which gives a context
+     * Sets {@code source} of this object which gives a context
      * where this NamedObject appeared.
      *
      * @param source where this object appeared
      */
-    public void setSource(NamedObject<?, ?> source)
+    public void setSource(NamedObject<?> source)
     {
 	if(entity != null) {
-	    ((NamedObject<?, ?>)getEntity()).setSource(source);
+	    ((NamedObject<?>)getEntity()).setSource(source);
 	    return;
 	}
 
@@ -1058,7 +1060,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets <CODE>contributor</CODE> as name of whom contributed this object
+     * Sets {@code contributor} as name of whom contributed this object
      *
      * @param contributor who contributed this object
      */
@@ -1073,7 +1075,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns <CODE>Timestamp</CODE> when the data last updated
+     * Returns {@code Timestamp} when the data last updated
      *
      * @return Timestamp when the data last updated
      */
@@ -1086,7 +1088,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets <CODE>timestamp</CODE> when the data last updated
+     * Sets {@code timestamp} when the data last updated
      *
      * @param thimestamp when the data last updated
      */
@@ -1100,7 +1102,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets <CODE>date</CODE> when the data last updated
+     * Sets {@code date} when the data last updated
      *
      * @param date when the data last updated
      */
@@ -1158,7 +1160,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets <CODE>copyright</CODE> applied to this object
+     * Sets {@code copyright} applied to this object
      *
      * @param copyright to be applied to this object
      */
@@ -1188,7 +1190,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns scope of this object as a <CODE>String</CODE>
+     * Returns scope of this object as a {@code String}
      *
      * @return String rpresentating scope of the object
      */
@@ -1201,9 +1203,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets <CODE>scope</CODE> as scope of this object
+     * Sets {@code scope} as scope of this object
      *
-     * @param verbatim rpresentation of this object in <CODE>String</CODE>
+     * @param verbatim rpresentation of this object in {@code String}
      */
     public void setScope(String scope)
     {
@@ -1216,11 +1218,11 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets <CODE>verbatim</CODE> as a verbatim
+     * Sets {@code verbatim} as a verbatim
      * repsentation of this object
      * supporting "variable atomization"
      *
-     * @param verbatim rpresentation of this object in <CODE>String</CODE>
+     * @param verbatim rpresentation of this object in {@code String}
      */
     public void setVerbatim(String verbatim)
     {
@@ -1246,7 +1248,7 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets <CODE>notes</CODE> on this object
+     * Sets {@code notes} on this object
      *
      * @param notes on this object
      */
@@ -1265,115 +1267,127 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 	if(entity != null)
 	    return ((NamedObject)getEntity()).isParsed();
 
-	return (sources != null && sources.length > 0);
+	return (sources != null && sources.size() > 0);
     }
 
     /**
-     * Returns an array of <CODE>NamedObject</CODE>s
+     * Returns an array of {@code NamedObject}s
      * represented by this object
      * 
-     * @return an array of <CODE>NamedObject</CODE>s
+     * @return an array of {@code NamedObject}s
      * represented by this object
      */
-    public NamedObject<?, ?>[] getSourceObjects()
+    public Collection<NamedObject<?>> getSourceObjects()
     {
 	if(entity != null)
-	    return ((NamedObject<?, ?>)getEntity()).getSourceObjects();
+	    return ((NamedObject<?>)getEntity()).getSourceObjects();
 
 	return sources;
     }
 
     /**
-     * Set <CODE>NamedObject</CODE>s in <CODE>sources</CODE>
+     * Set {@code NamedObject}s in {@code sources}
      * as objects represented by this object
      * 
-     * @param sources an array of <CODE>NamedObject</CODE>s
+     * @param sources an array of {@code NamedObject}s
      * to be represented by this object
      */
-    public void setSourceObjects(NamedObject<N, ? extends T>[] sources)
+    public void setSourceObjects(NamedObject<?>[] sources)
     {
-	if(entity == null) {
-	    this.sources = sources;
+	if(entity != null) {
+	    castNamedObject(getNamedObject()).setSourceObjects(sources);
+	}
+	else if (sources == null) {
+	    this.sources = null;
+	}
+	else if (sources.length == 0) {
+	    this.sources = Collections.emptyList();
 	}
 	else {
-	    //((NamedObject<N, T>)getNamedObject()).setSourceObjects(sources);
-	    castNamedObject(getNamedObject()).setSourceObjects(sources);
+	    if (this.sources == null)
+		this.sources = new ArrayList<NamedObject<?>>(sources.length);
+	    for (int i = 0; i < sources.length; i++) {
+		this.sources.add(sources[i]);
+	    }
 	}
     }
 
     /**
-     * Set <CODE>NamedObject</CODE>s in <CODE>sources</CODE>
+     * Set {@code NamedObject}s in {@code sources}
      * as objects represented by this object
      * 
-     * @param sources a <CODE>List</CODE> of <CODE>NamedObject</CODE>s
+     * @param sources a {@code List} of {@code NamedObject}s
      * to be represented by this object
      */
-    public void setSourceObjects(List<? extends NamedObject<N, ? extends T>>  sources)
+    public void setSourceObjects(Collection<? extends NamedObject<?>>  sources)
     {
 	if(entity != null) {
 	    getNamedObject().setSourceObjects(sources);
 	}
 	else {
-	    if(sources == null) {
+	    if (sources == null) {
 		this.sources = null;
 	    }
+	    else if (sources.size() == 0) {
+		this.sources = Collections.emptyList();
+	    }
 	    else {
-		this.sources = ArrayUtility.toArray(sources);
+		if (this.sources == null) {
+		    this.sources = new ArrayList<NamedObject<?>>(sources);
+		}
+		else {
+		    this.sources.clear();
+		    this.sources.addAll(sources);
+		}
 	    }
 	}
     }
 
     /**
-     * Adds <CODE>source</CODE> to the list of <CODE>NamedObject</CODE>s
+     * Adds {@code source} to the list of {@code NamedObject}s
      * represented by this object
      * 
-     * @param source a <CODE>NamedObject</CODE> to be 
+     * @param source a {@code NamedObject} to be 
      * represented by this object
      */
-    public void addSourceObject(NamedObject<N, ? extends T> source)
+    public void addSourceObject(NamedObject<?> source)
     {
 	if(entity != null) {
 	    getNamedObject().addSourceObject(source);
 	}
 	else {
-	    NamedObject<N, ? extends T>[] added = ArrayUtility.add(source, sources);
-	    if(added != sources) {
-		ArrayUtility.clear(sources);
-		sources = added;
-	    }
+	    if (this.sources == null)
+		this.sources = new ArrayList<NamedObject<?>>(1);
+	    this.sources.add(source);
 	}
     }
 
     /**
-     * Removes <CODE>source</CODE> from the list of <CODE>NamedObject</CODE>s
+     * Removes {@code source} from the list of {@code NamedObject}s
      * represented by this object
      * 
-     * @param source a <CODE>NamedObject</CODE> to be 
-     * removed from list of <CODE>NamedObject</CODE> represented by this object
+     * @param source a {@code NamedObject} to be 
+     * removed from list of {@code NamedObject} represented by this object
      */
-    public void removeSourceObject(NamedObject<N, ? extends T> source)
+    public void removeSourceObject(NamedObject<?> source)
     {
 	if(entity != null) {
 	    getNamedObject().removeSourceObject(source);
 	}
-	else {
-	    NamedObject<N, ? extends T>[] removed = ArrayUtility.remove(source, sources);
-	    if(removed != sources) {
-		ArrayUtility.clear(sources);
-		sources = removed;
-	    }
+	else if (sources != null) {
+	    sources.remove(source);
 	}
     }
 
     /**
-     * Returns an <code>Iterator</code> of <CODE>list</CODE>'s
-     * contents, or null if <CODE>vector</CODE> is null or empty
+     * Returns an <code>Iterator</code> of {@code list}'s
+     * contents, or null if {@code vector} is null or empty
      *
-     * @param list <CODE>List</CODE> to get its elements as an
-     * <CODE>Iterator</CODE>
+     * @param list {@code List} to get its elements as an
+     * {@code Iterator}
      *
-     * @return Iterator of <CODE>vector</CODE>'s contents
-     * or null if <CODE>vector</CODE> is null or empty
+     * @return Iterator of {@code vector}'s contents
+     * or null if {@code vector} is null or empty
      */ 
     protected static <E> Iterator<E> elements(List<E> list)
     {
@@ -1384,14 +1398,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns an <code>Collectcion</code> of <CODE>map</CODE>'s
-     * contents, or null if <CODE>map</CODE> is null or empty
+     * Returns an <code>Collectcion</code> of {@code map}'s
+     * contents, or null if {@code map} is null or empty
      *
-     * @param map <CODE>Map</CODE> to get its elements as an
-     * <CODE>Collection</CODE>
+     * @param map {@code Map} to get its elements as an
+     * {@code Collection}
      *
-     * @return Collection of <CODE>map</CODE>'s contents
-     * or null if <CODE>map</CODE> is null or empty
+     * @return Collection of {@code map}'s contents
+     * or null if {@code map} is null or empty
      */ 
     static protected <K, V> Collection<V> elements(Map<K, V> map)
     {
@@ -1402,14 +1416,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns an <code>Enumeration</code> of <CODE>map</CODE>'s
-     * keys, or null if <CODE>map</CODE> is null or empty
+     * Returns an <code>Enumeration</code> of {@code map}'s
+     * keys, or null if {@code map} is null or empty
      *
-     * @param map <CODE>Map</CODE> to get its keys as an
-     * <CODE>Enumeration</CODE>
+     * @param map {@code Map} to get its keys as an
+     * {@code Enumeration}
      *
-     * @return Enumeration of <CODE>map</CODE>'s contents
-     * or null if <CODE>map</CODE> is null or empty
+     * @return Enumeration of {@code map}'s contents
+     * or null if {@code map} is null or empty
      */ 
     static protected <K, V> Set<K> keySet(Map<K, V> map)
     {
@@ -1420,9 +1434,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns XML <CODE>String</CODE> representing this object
+     * Returns XML {@code String} representing this object
      *
-     * @return XML <CODE>String</CODE> representing this object
+     * @return XML {@code String} representing this object
      */
     public String toXML()
     {
@@ -1431,12 +1445,12 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Appends an XML representing the object at the end of
-     * <CODE>buffer</CODE>.  If <CODE>buffer</CODE> is null,
-     * it creates a new <CODE>StringBuffer</CODE>.
+     * {@code buffer}.  If {@code buffer} is null,
+     * it creates a new {@code StringBuffer}.
      *
-     * @param buffer <CODE>StringBuffer</CODE> to which the
+     * @param buffer {@code StringBuffer} to which the
      * XML to be appended, or null to create a new
-     * <CODE>StringBuffer</CODE>
+     * {@code StringBuffer}
      *
      * @return StringBuffer containing the XML at the end
      */
@@ -1449,10 +1463,10 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
 
     /**
-     * Returns XML <CODE>String</CODE> of the all related <CODE>NamedObject</CODE>s
+     * Returns XML {@code String} of the all related {@code NamedObject}s
      *
-     * @return XML <CODE>String</CODE> representing all <CODE>NamedObject</CODE>s 
-     * relationg to the <CODE>NamedObject</CODE>
+     * @return XML {@code String} representing all {@code NamedObject}s 
+     * relationg to the {@code NamedObject}
      */
     public String toRelevantXML()
     {
@@ -1461,13 +1475,13 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Appends an XML representing all objects relevant to
-     * the object at the end of <CODE>buffer</CODE>.
-     * If <CODE>buffer</CODE> is null, it creates 
-     * a new <CODE>StringBuffer</CODE>.
+     * the object at the end of {@code buffer}.
+     * If {@code buffer} is null, it creates 
+     * a new {@code StringBuffer}.
      *
-     * @param buffer <CODE>StringBuffer</CODE> to which the
+     * @param buffer {@code StringBuffer} to which the
      * XML to be appended, or null to create a new
-     * CODE>StringBuffer</CODE>
+     * CODE>StringBuffer}
      *
      * @return StringBuffer containing the XML at the end
      */
@@ -1479,16 +1493,16 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets valuse of this <CODE>NamedObject</CODE> to
-     * <CODE>statement</CODE> using <CODE>connection</CODE>.
-     * from specified <CODE>index</CODE> of the <CODE>statement</CODE>
+     * Sets valuse of this {@code NamedObject} to
+     * {@code statement} using {@code connection}.
+     * from specified {@code index} of the {@code statement}
      *
-     * @param statement <CODE>PraredStatement</CODE> to which
-     * value of the this <CODE>NamedObject</CODE> to be set
-     * @param connection <CODE>NamedObjectConnection</CODE>
+     * @param statement {@code PraredStatement} to which
+     * value of the this {@code NamedObject} to be set
+     * @param connection {@code NamedObjectConnection}
      * to be used to set values
-     * @param index <CODE>int</CODE> from where values to be set
-     * into the <CODE>statement</CODE>
+     * @param index {@code int} from where values to be set
+     * into the {@code statement}
      *
      * @return int index of the next parameter to be set if there is
      *
@@ -1504,9 +1518,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Returns a SQL to create a relevant table in given
-     * <CODE>sqlType</CODE>
+     * {@code sqlType}
      *
-     * @param sqlType <CODE>Locale</CODE> representing the target SQL subset
+     * @param sqlType {@code Locale} representing the target SQL subset
      *
      * @return String representing a SQL to create relevant table
      */
@@ -1517,13 +1531,13 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Appends a SQL to create a relevant table at the end of
-     * <CODE>buffer</CODE>.  If <CODE>buffer</CODE> is null,
-     * it creates a new <CODE>StringBuffer</CODE>.
+     * {@code buffer}.  If {@code buffer} is null,
+     * it creates a new {@code StringBuffer}.
      *
-     * @param buffer <CODE>StringBuffer</CODE> to which the
+     * @param buffer {@code StringBuffer} to which the
      * SQL to be appended, or null to create a new
-     * CODE>StringBuffer</CODE>
-     * @param sqlType <CODE>Locale</CODE> representing the target SQL subset
+     * CODE>StringBuffer}
+     * @param sqlType {@code Locale} representing the target SQL subset
      *
      * @return StringBuffer containing the SQL at the end
      */
@@ -1537,14 +1551,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Appends a SQL to create a relevant table at the end of
-     * <CODE>buffer</CODE>.  If <CODE>buffer</CODE> is null,
-     * it creates a new <CODE>StringBuffer</CODE>.
+     * {@code buffer}.  If {@code buffer} is null,
+     * it creates a new {@code StringBuffer}.
      *
-     * @param buffer <CODE>StringBuffer</CODE> to which the
+     * @param buffer {@code StringBuffer} to which the
      * SQL to be appended, or null to create a new
-     * CODE>StringBuffer</CODE>
-     * @param resourceBaseName <CODE>String</CODE> basename of property files
-     * @param sqlType <CODE>Locale</CODE> representing the target SQL subset
+     * CODE>StringBuffer}
+     * @param resourceBaseName {@code String} basename of property files
+     * @param sqlType {@code Locale} representing the target SQL subset
      *
      * @return StringBuffer containing the SQL at the end
      */
@@ -1588,9 +1602,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Inserts the object to the database specified by the
-     * <CODE>connection</CODE>
+     * {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return object ID of inserted object
      */
@@ -1603,9 +1617,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Inserts the object to the database specified by the
-     * <CODE>connection</CODE>
+     * {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return object ID of inserted object
      */
@@ -1618,9 +1632,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Inserts the object to the database specified by the
-     * <CODE>connection</CODE>
+     * {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return object ID of inserted object
      */
@@ -1634,27 +1648,27 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     /**
      * Returns object ID of the named object, or zero if the
      * object doesn't exist in the database behind
-     * given <CODE>connection</CODE>
+     * given {@code connection}
      *
-     * @param connection <CODE>NamedObjectConnection</CODE> to the database
+     * @param connection {@code NamedObjectConnection} to the database
      *
-     * @return the object ID of the NamedObject in the <CODE>connection</CODE>
+     * @return the object ID of the NamedObject in the {@code connection}
      * or zero if it is no in the database.
      */
-    public int getObjetID(NamedObjectConnection<? extends N> connection)
+    public int getObjetID(NamedObjectConnection<? extends T> connection)
     	throws SQLException
     {
 	return connection.getObjectID(this);
     }
 
     /**
-     * Sets <CODE>objectID</CODE> of the NamedObject for the
-     * object in the database behind <CODE>connection</CODE>.
+     * Sets {@code objectID} of the NamedObject for the
+     * object in the database behind {@code connection}.
      *
-     * @param objectID <CODE>int</CODE> of object ID in the database
-     * @param connection <CODE>NamedObjectConnection</CODE> to the database
+     * @param objectID {@code int} of object ID in the database
+     * @param connection {@code NamedObjectConnection} to the database
      */
-    public void setObjetID(int objectID, NamedObjectConnection<? extends N> connection)
+    public void setObjetID(int objectID, NamedObjectConnection<? extends T> connection)
     {
 	connection.setObjectID(objectID, this);
     }
@@ -1673,12 +1687,12 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Appends a SQL to insert to a relevant table at the end of
-     * <CODE>buffer</CODE>.  If <CODE>buffer</CODE> is null,
-     * it creates a new <CODE>StringBuffer</CODE>.
+     * {@code buffer}.  If {@code buffer} is null,
+     * it creates a new {@code StringBuffer}.
      *
-     * @param buffer <CODE>StringBuffer</CODE> to which the
+     * @param buffer {@code StringBuffer} to which the
      * SQL to be appended, or null to create a new
-     * CODE>StringBuffer</CODE>
+     * CODE>StringBuffer}
      *
      * @return StringBuffer containing the SQL at the end
      */
@@ -1736,13 +1750,13 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets paremeters to <CODE>statement</CODE> to INSERT, UPDATE 
+     * Sets paremeters to {@code statement} to INSERT, UPDATE 
      * or DELETE
      *
-     * @param statement <CODE>PreparedStatement</CODE> to which 
+     * @param statement {@code PreparedStatement} to which 
      * paramters to be set
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return number of parameters
@@ -1803,9 +1817,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Inserts the object to the database specified by the
-     * <CODE>connection</CODE>
+     * {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return object ID of inserted object
      */
@@ -1825,9 +1839,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Returns a precompiled statement to insert an object
-     * of this class to <CODE>connection</CODE>
+     * of this class to {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return List containing precompiled SQL statement to insert
      */
@@ -1844,9 +1858,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Returns a precompiled statement to insert an object
-     * of this class to <CODE>connection</CODE>
+     * of this class to {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return List containing precompiled SQL statement to update
      */
@@ -1871,9 +1885,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
 
     /**
      * Returns a precompiled statement to delete an object
-     * of this class in <CODE>connection</CODE>
+     * of this class in {@code connection}
      *
-     * @param connection <CODE>Connection</CODE> to the database
+     * @param connection {@code Connection} to the database
      *
      * @return List containing precompiled SQL statement to delete
      */
@@ -1890,14 +1904,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets paremeters to <CODE>PreparedStatement</CODE> in 
-     * <CODE>statements</CODE> to INSERT to the database
+     * Sets paremeters to {@code PreparedStatement} in 
+     * {@code statements} to INSERT to the database
      *
-     * @param statements <CODE>Iterator</CODE> of 
-     * <CODE>PreparedStatement</CODE> to which 
+     * @param statements {@code Iterator} of 
+     * {@code PreparedStatement} to which 
      * parameters to be set
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return number of parameters
@@ -1955,14 +1969,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets paremeters to <CODE>PreparedStatement</CODE> in 
-     * <CODE>statements</CODE> to UPDATE data in the database
+     * Sets paremeters to {@code PreparedStatement} in 
+     * {@code statements} to UPDATE data in the database
      *
-     * @param statements <CODE>Iterator</CODE> of 
-     * <CODE>PreparedStatement</CODE> to which 
+     * @param statements {@code Iterator} of 
+     * {@code PreparedStatement} to which 
      * parameters to be set
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return number of parameters
@@ -1986,14 +2000,14 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Sets paremeters to <CODE>PreparedStatement</CODE> in 
-     * <CODE>statements</CODE> to DELETE data in the database
+     * Sets paremeters to {@code PreparedStatement} in 
+     * {@code statements} to DELETE data in the database
      *
-     * @param statements <CODE>Iterator</CODE> of 
-     * <CODE>PreparedStatement</CODE> to which 
+     * @param statements {@code Iterator} of 
+     * {@code PreparedStatement} to which 
      * parameters to be set
      *
-     * @param objectID unique ID number in <CODE>long</CODE>
+     * @param objectID unique ID number in {@code long}
      * to be assigned to the object on the databaes
      *
      * @return number of parameters
@@ -2007,9 +2021,9 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     }
 
     /**
-     * Returns a summarized expression of this <CODE>NamedObject</CODE>
+     * Returns a summarized expression of this {@code NamedObject}
      *
-     * @return String representing summary of this <CODE>NamedObject</CODE>
+     * @return String representing summary of this {@code NamedObject}
      */
     public String getSummary()
     {
@@ -2116,26 +2130,26 @@ public abstract class AbstractNamedObject <N extends NamedObject<?, ?>, T extend
     */
 
     @SuppressWarnings({"unchecked"})
-    public NamedObject<N, T> getNamedObject(Object object) {
+    public NamedObject<T> getNamedObject(Object object) {
 	if(isAssignableFrom(object))
-	    return (NamedObject<N, T>)getClass().cast(object);
+	    return (NamedObject<T>)getClass().cast(object);
 	else
 	    return null;
     }
 
     @SuppressWarnings({"unchecked"})
-    public AbstractNamedObject<N, T> getAbstractNamedObject(Object object) {
+    public AbstractNamedObject<T> getAbstractNamedObject(Object object) {
 	if(isAssignableFrom(object))
 	    return getClass().cast(object);
 	else
 	    return null;
     }
 
-    protected ObjectExchanger<N, T> exchanger;
+    protected ObjectExchanger<T> exchanger;
 
-    public ObjectExchanger<N, T> getObjectExchanger() { return exchanger; }
+    public ObjectExchanger<T> getObjectExchanger() { return exchanger; }
     
-    public void setObjectExchanger(ObjectExchanger<N, T> exchanger)
+    public void setObjectExchanger(ObjectExchanger<T> exchanger)
     {
 	    this.exchanger = exchanger;
     }

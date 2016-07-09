@@ -39,18 +39,17 @@ import java.util.Observable;
 import java.util.Stack;
 
 /**
- * A <CODE>Name</CODE> provides a name, a tagged indirect reference.
- * It "extends" the final <code>String</code> class,
- * which makes an <code>Object</code> "compatible" with <code>String</code>,
+ * A {@code Name} provides a name, a tagged indirect reference.
+ * It "extends" the final {@code String} class, which makes an
+ * {@code Object} "compatible" with {@code String},
  * i.e. make namable.
  *
- * @version 	23 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractName<N extends Name<?, ?>, T extends N>
-					    //public abstract class AbstractName<N, T>
+public abstract class AbstractName<T extends Name<?>>
     extends Observable
-    implements Name<N, T>, Serializable
+    implements Name<T>, Serializable
 {
     private static final long serialVersionUID = -6225343190498874223L;
 
@@ -66,11 +65,11 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
 
 
     /**
-     * Returns true if <CODE>object</CODE> equals to this <CODE>Name</CODE>
+     * Returns true if {@code object} equals to this {@code Name}
      *
-     * @param object <CODE>Object</CODE> to be compared
+     * @param object {@code Object} to be compared
      *
-     * @return true if <CODE>object</CODE> equals to this <CODE>Name</CODE>
+     * @return true if {@code object} equals to this {@code Name}
      */
     public boolean equals(Object object)
     {
@@ -84,7 +83,7 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
 	if(getClass() != object.getClass()) return false;
 
 	if (object instanceof Name) {
-	    final Name<?, ?> n = (Name<?, ?>)object;
+	    final Name<?> n = (Name<?>)object;
 
 	    if(getEntity() == n.getEntity())
 		return true;
@@ -111,7 +110,6 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
 	this(literal, null);
     }
 
-    //public AbstractName(String name, Name<N, T> entity)
     public AbstractName(String literal, T entity)
     {
 	this.literal = literal;
@@ -120,7 +118,7 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Gets name in <CODE>String</CODE>
+     * Gets name in {@code String}
      *
      * @return String representing a name
      */
@@ -132,7 +130,7 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Gives a name as a <CODE>String</CODE>
+     * Gives a name as a {@code String}
      *
      * @param String representing a name
      */
@@ -144,7 +142,7 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Gets synonym in <CODE>String</CODE>,
+     * Gets synonym in {@code String},
      * or null if it is not a synonym
      *
      * @return String representing a name
@@ -157,10 +155,10 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Gets entity of this <CODE>Name</CODE>.
+     * Gets entity of this {@code Name}.
      * Returns itself if it doesn't have entity separately,
      * or entity if the entity non-null.
-     * If the entity is an instance of <CODE>Name</CODE>,
+     * If the entity is an instance of {@code Name},
      * the method returns the result of recursive apply of
      * this method
      *
@@ -169,7 +167,7 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     @SuppressWarnings("unchecked")
     public T getEntity()
     {
-	Name<N, T> name = getName();
+	Name<T> name = getName();
 	if(name != this)
 	    return name.getEntity();
 
@@ -180,10 +178,10 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Sets a <CODE>object</CODE> as the entity of the name
+     * Sets a {@code object} as the entity of the name
      *
      * @param object representing the entity
-     * @exception IllegalArgumentException if <CODE>object</CODE> is this object
+     * @exception IllegalArgumentException if {@code object} is this object
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void setEntity(Object entity)
@@ -199,14 +197,12 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Sets a <CODE>object</CODE> as the entity of the name
+     * Sets a {@code object} as the entity of the name
      *
      * @param object representing the entity
-     * @exception IllegalArgumentException if <CODE>object</CODE> is this object
+     * @exception IllegalArgumentException if {@code object} is this object
      */
-    //public void setEntity(Name<N, T> entity)
     public void setEntity(T entity)
-    //public void setEntity(Object entity)
     {
 	List<Object> entityPath = getEntityPath();
 	if(entity == this || entityPath != null &&  (entityPath.contains(entity)))
@@ -222,7 +218,7 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
 
     public List<Object> getEntityPath() 
     {
-	Name<N, T> n = getName();
+	Name<T> n = getName();
 	if(n != this)
 	    return n.getEntityPath();
 
@@ -248,10 +244,9 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     @Override
-    public Name<N, T> getName()
+    public Name<T> getName()
     {
 	if(entity == null || !isAssignableFrom(entity))
-	    //!(entity instanceof Name))
 	    return this;
 
 	return getName(entity).getName();
@@ -294,7 +289,6 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
      */
     public boolean isNominal()
     {
-	//	return (literal != null && !literal.equals(ANONYMOUS) &&  (entity == null));
 	return (literal != null && literal.length() != 0 &&  (getEntity() == this));
     }
 
@@ -311,16 +305,15 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Returns true if <CODE>name</CODE> is a synonym of this
-     * <CODE>Name</CODE>, i.e. both have the same entity
+     * Returns true if {@code name} is a synonym of this
+     * {@code Name}, i.e. both have the same entity
      * but different in spelling.
      *
-     * @param name <CODE>Name</CODE> to be examined
+     * @param name {@code Name} to be examined
      *
      * @return true if both literal and entity are non-null
      */
-    //public Boolean isSynonym(Name<? extends N, ? extends T> name)
-    public Boolean synonym(Name<?, ?> name)
+    public Boolean synonym(Name<?> name)
     {
 	if(name == null || name == this ||
 	   getLiteral().equals(name.getLiteral()))
@@ -330,16 +323,15 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
     }
 
     /**
-     * Returns true if <CODE>name</CODE> is a homonym of this
-     * <CODE>Name</CODE>, i.e. they have the same spelling
+     * Returns true if {@code name} is a homonym of this
+     * {@code Name}, i.e. they have the same spelling
      * but different entity
      *
-     * @param name <CODE>Name</CODE> to be examined
+     * @param name {@code Name} to be examined
      *
-     * @return true if <CODE>name</CODE> is a homonym of this <CODE>Name</CODE>
+     * @return true if {@code name} is a homonym of this {@code Name}
      */
-    //public Boolean isHomonym(Name<? extends N, ? extends T> name)
-    public Boolean homonym(Name<?, ?> name)
+    public Boolean homonym(Name<?> name)
     {
 	if(name == null || name == this ||
 	   getEntity() != name.getEntity())
@@ -389,7 +381,7 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
      */
     public void setImplicit(boolean implicit)
     {
-	if(entity != null && entity instanceof AbstractName<?, ?>)
+	if(entity != null && entity instanceof AbstractName<?>)
 	    ((AbstractName)entity).setImplicit(implicit);
 
 	this.implicit = implicit;
@@ -522,21 +514,21 @@ public abstract class AbstractName<N extends Name<?, ?>, T extends N>
 
     // casts only when castable
     @SuppressWarnings({"unchecked"})
-    public Name<N, T> cast(Object object) {
+    public Name<T> cast(Object object) {
 	if(isAssignableFrom(object))
-	    return (Name<N, T>)getClass().cast(object);
+	    return (Name<T>)getClass().cast(object);
 	return null;
     }
 
     @SuppressWarnings({"unchecked"})
-    public Name<N, T> getName(Object object) {
+    public Name<T> getName(Object object) {
 	if(isAssignableFrom(object))
-	    return (Name<N, T>)getClass().cast(object);
+	    return (Name<T>)getClass().cast(object);
 	return null;
     }
 
     @SuppressWarnings({"unchecked"})
-    public AbstractName<N, T> getAbstractName(Object object) {
+    public AbstractName<T> getAbstractName(Object object) {
 	if(isAssignableFrom(object))
 	   return getClass().cast(object);
 	return null;

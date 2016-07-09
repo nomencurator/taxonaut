@@ -52,7 +52,7 @@ import org.w3c.dom.NodeList;
  * An implementation of {@code NameUsage} in Nomencurator
  * data model to handle uBio NamebankObject.
  *
- * @version 	27 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UBioNameUsage
@@ -89,7 +89,7 @@ public class UBioNameUsage
      *
      * @param nameUsage {@code NameUsage} to be copied deeply
      */
-    public UBioNameUsage(NameUsage<?, ?> nameUsage)
+    public UBioNameUsage(NameUsage<?> nameUsage)
     {
 	super(nameUsage);
     }
@@ -138,9 +138,9 @@ public class UBioNameUsage
 	return new UBioNameUsage();
     }
 
-    protected NameUsage createNameUsage(Name<?, ?> nameUsage)
+    protected NameUsage createNameUsage(Name<?> nameUsage)
     {
-	return new UBioNameUsage((NameUsage<?, ?>)nameUsage);
+	return new UBioNameUsage((NameUsage<?>)nameUsage);
     }
 
     protected NameUsage createNameUsage(String persistentID)

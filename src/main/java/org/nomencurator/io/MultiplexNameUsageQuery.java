@@ -38,23 +38,23 @@ import lombok.Getter;
 /**
  * {@code MultiplexNameUsageQuery} implements {@code ObjectExchanger}.
  *
- * @version 	29 June. 2016
+ * @version 	02 July. 2016
  * @author 	Nozomi `James' Ytow
  */
-public class MultiplexNameUsageQuery<N extends NameUsage<?, ?>, T extends N>
-    extends AbstractMultiplexQuery<N, T>
+public class MultiplexNameUsageQuery<T extends NameUsage<?>>
+    extends AbstractMultiplexQuery<T>
 {
-    protected NamedObjectQuery<N, T> createQuery(QueryParameter<N, T> parameter, ObjectExchanger<N, T> source) {
+    protected NamedObjectQuery<T> createQuery(QueryParameter<T> parameter, ObjectExchanger<T> source) {
 	if(parameter instanceof NameUsageExchanger && source instanceof NameUsageExchanger)
-	    return new NamedObjectQuery<N, T>((NameUsageQueryParameter<N, T>)parameter, (NameUsageExchanger<N, T>)source);
+	    return new NamedObjectQuery<T>((NameUsageQueryParameter<T>)parameter, (NameUsageExchanger<T>)source);
 	return null;
     }
 
-    public MultiplexNameUsageQuery(NameUsageQueryParameter<N, T> parameter, Collection<? extends NameUsageExchanger<N, T>> sources) {
+    public MultiplexNameUsageQuery(NameUsageQueryParameter<T> parameter, Collection<? extends NameUsageExchanger<T>> sources) {
 	super(parameter, sources);
     }
 
-    public MultiplexNameUsageQuery(Collection<? extends NamedObjectQuery<N, T>> queries)
+    public MultiplexNameUsageQuery(Collection<? extends NamedObjectQuery<T>> queries)
     {
 	super(queries);
     }

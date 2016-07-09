@@ -42,7 +42,7 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
 /**
  * {@code NameTableCellRenderer} is a {@code TableCellRenderer} to render a {@code NameTree}
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTableCellRenderer
@@ -110,14 +110,14 @@ public class NameTableCellRenderer
 						   boolean isSelected, boolean hasFocus, 
 						   int row, int column)
     {
-	NameUsage<?, ?> nameUsage = null;
+	NameUsage<?> nameUsage = null;
 	boolean isSynonym = false;
 	if(value != null) {
 	    if(value instanceof NameUsage) {
 		nameUsage = (NameUsage)value;
 	    }
 	    else if(value instanceof NameTreeNode) {
-		nameUsage = (NameUsage<?, ?>)((NameTreeNode)value).getUserObject();
+		nameUsage = (NameUsage<?>)((NameTreeNode)value).getUserObject();
 	    }
 	}
 

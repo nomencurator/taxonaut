@@ -47,20 +47,55 @@ import org.nomencurator.model.Publication;
 import org.nomencurator.model.Rank;
 
 /**
- * <code>NameTreeNode</code> wrapping a <code>NameUsage</code>
+ * {@code NameTreeNode} wrapping a {@code NameUsage}
  *
- * @version 	21 June 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeNode
-    extends AbstractNameTreeNode<NameTreeNode>
-    implements Observer //,
-	       // Exchangable<NameTreeNode, NameTreeNode>
+    extends GenericNameTreeNode <NameUsage<?>, NameUsageNode<?>>
 {
-    private static final long serialVersionUID = -2874077019466493952L;
+    private static final long serialVersionUID = 5788535401126987413L;
+
+    /**
+     * Create a tree node without parent nor child
+     * but initialise it with the given object
+     */
+    // Safe wrapping by an interface
+    @SuppressWarnings("unchecked")
+    public NameTreeNode(NameUsage<?> nameUsage)
+    {
+	super((NameUsage<NameUsage<?>>)nameUsage);
+    }
+
+    /**
+     * Create a tree node without parent nor child
+     * but initialise it with the given object and
+     * given allowance
+     */
+    // Safe wrapping by an interface
+    @SuppressWarnings("unchecked")
+    public NameTreeNode(NameUsage<?> nameUsage, boolean allowsChildren)
+    {
+	super((NameUsage<NameUsage<?>>)nameUsage, allowsChildren);
+    }
+}
+
+/**
+ * {@code GenericNameTreeNode} wrapping a {@code NameUsage} as {@code N}.
+ *
+ * @version 	08 July 2016
+ * @author 	Nozomi `James' Ytow
+ */
+class GenericNameTreeNode <T extends NameUsage<?>, N extends NameUsageNode<?>>
+    extends AbstractNameTreeNode<GenericNameTreeNode<?, ?>>
+    implements Observer //,
+	       // Exchangable<NameTreeNode>
+{
+    private static final long serialVersionUID = 7118376193252108532L;
 
     /** NameUsageNode wrapped by this */
-    protected NameUsage<?, ?> node;
+    protected NameUsage<T> node;
 
     protected boolean lowerNameUsageUnchecked;
 
@@ -80,7 +115,7 @@ public class NameTreeNode
      * Create a tree node without parent nor child
      * but initialise it with the given object
      */
-    public NameTreeNode(NameUsage<?, ?> nameUsageNode)
+    protected GenericNameTreeNode(NameUsage<T> nameUsageNode)
     {
 	this(nameUsageNode, true);
     }
@@ -90,13 +125,8 @@ public class NameTreeNode
      * but initialise it with the given object and
      * given allowance
      */
-    public NameTreeNode(NameUsage<?, ?> nameUsageNode, boolean allowsChildren)
+    protected GenericNameTreeNode(NameUsage<T> nameUsageNode, boolean allowsChildren)
     {
-	/*
-	super(nameUsageNode, allowsChildren?nameUsageNode.getLowerTaxa():null);
-	if(nameUsageNode instanceof Observable)
-	    ((Observable)nameUsageNode).addObserver(this);
-	*/
 	super(nameUsageNode, allowsChildren);
 
 	node = nameUsageNode;
@@ -106,12 +136,12 @@ public class NameTreeNode
 	if(!allowsChildren || !node.hasLowerNameUsages())
 	    return;
 
-	List<?> taxa = node.getLowerNameUsages();
+	List<NameUsage<T>> taxa = nameUsageNode.getLowerNameUsages();
 	if(taxa != null) {
 	    lowerNameUsageUnchecked = false;
-	    for(Object taxon : taxa) {
+	    for(NameUsage<T> taxon : taxa) {
 		if (taxon instanceof NameUsage) {
-		    add(new NameTreeNode((NameUsage<?, ?>)taxon));
+		    add(new NameTreeNode(taxon));
 		}
 	    }
 	}
@@ -119,6 +149,7 @@ public class NameTreeNode
 	    lowerNameUsageUnchecked = true;
 	}
     }
+
 
     /**
      * Returns true if this node is allowed to have children.
@@ -143,14 +174,28 @@ public class NameTreeNode
 	    ((Observable)node).deleteObserver(this);
     }
 
-    public NameUsage<?, ?> getNameUsage()
+    public NameUsage<T> getNameUsage()
     {
-	return (NameUsage<?, ?>)getUserObject();
+	NameUsage<T> theUsage = null;
+	Object object = getUserObject();
+	if (object instanceof NameUsage) {
+	    @SuppressWarnings("unchecked")
+		NameUsage<T> tmp = (NameUsage<T>)object;
+	    theUsage = tmp;
+	}
+	return theUsage;
     }
 
-    public NameUsageNode<?, ?> getNameUsageNode()
+    public NameUsageNode<N> getNameUsageNode()
     {
-	return (NameUsageNode<?, ?>)getUserObject();
+	NameUsageNode<N> theNode = null;
+	Object object = getUserObject();
+	if (object instanceof NameUsageNode) {
+	    @SuppressWarnings("unchecked")
+		NameUsageNode<N> tmp = (NameUsageNode<N>)object;
+	    theNode = tmp;
+	}
+	return theNode;
     }
 
     public String getRank()
@@ -165,7 +210,7 @@ public class NameTreeNode
 
     public String getLiteral()
     {
-	NameUsage<?, ?> usage = getNameUsage();
+	NameUsage<T> usage = getNameUsage();
 	if(usage != null)
 	    return getNameUsage().getLiteral();
 	    
@@ -179,7 +224,7 @@ public class NameTreeNode
 
     public String getRankedName(boolean abbreviate)
     {
-	NameUsage<?, ?> usage = getNameUsage();
+	NameUsage<T> usage = getNameUsage();
 	if(usage != null)
 	    return usage.getRankedName(abbreviate);
 	    
@@ -245,7 +290,7 @@ public class NameTreeNode
 		o = ((NamedNode<?>)o).getLiteral();
 	    }
 	    else if(o instanceof NameUsage) {
-		o = ((NameUsage<?, ?>)o).getRankedName(true);
+		o = ((NameUsage<?>)o).getRankedName(true);
 	    }
 	    
 	    NameTreeNode child = children.get(o);

@@ -31,109 +31,111 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.nomencurator.model.NameUsage;
+
 /**
- * <CODE>NodeMapper</CODE> defines an interface
+ * {@code NodeMapper} defines an interface
  * to map nodes in trees into nodes in a united tree
  * synthesized from those trees
  *
- * @version 	09 Apr. 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface NodeMapper
 {
     /**
-     * Adds <CODE>tree</CODE> to the <CODE>NodeMapper</CODE>.
-     * If <CODE>tree</CODE> already in the <CODE>NodeMapper</CODE>,
+     * Adds {@code tree} to the {@code NodeMapper}.
+     * If {@code tree} already in the {@code NodeMapper},
      * this method does nothing.
      *
-     * @param tree <CODE>TreeModel</CODE> containing nodes
+     * @param tree {@code TreeModel} containing nodes
      * to be mapped to other nodes
      */
     public void add(TreeModel tree);
 
     /**
-     * Removes <CODE>tree</CODE> from the <CODE>NodeMapper</CODE>.
+     * Removes {@code tree} from the {@code NodeMapper}.
      *
-     * @param tree <CODE>TreeModel</CODE> containing nodes
+     * @param tree {@code TreeModel} containing nodes
      * to be mapped to other nodes
      */
     public void remove(TreeModel tree);
 
     /**
-     * Returns <CODE>TreeModel</CODE> integrated all
-     * trees added to the <CODE>NodeMapper</CODE>,
-     * or null if the <CODE>NodeMapper</CODE> does not
+     * Returns {@code TreeModel} integrated all
+     * trees added to the {@code NodeMapper},
+     * or null if the {@code NodeMapper} does not
      * use tree integration method to provide node mapping.
      *
-     * @return <CODE>TreeModel</CODE> integrated all trees,
+     * @return {@code TreeModel} integrated all trees,
      * or null if tree integration method is not used.
      */
     //public TreeModel getTree();
 
     /**
-     * Returns a <CODE>TreeNode</CODE> in a united tree
-     * mapped to <CODE>node</CODE>,
+     * Returns a {@code TreeNode} in a united tree
+     * mapped to {@code node},
      * or null if there is no node in the united tree
-     * is mapped to <CODE>node</CODE>
+     * is mapped to {@code node}
      *
-     * @param node <CODE>TreeNode</CODE> in a tree mapped
+     * @param node {@code TreeNode} in a tree mapped
      * to the united tree
      *
-     * @return <CODE>TreeNode</CODE> representing 
+     * @return {@code TreeNode} representing 
      * a node in united tree, corresponding to 
-     * <CODE>node</CODE>, or null if the united tree
+     * {@code node}, or null if the united tree
      * does not contain such node
      */
     public TreeNode getNodeFor(TreeNode node);
 
     /**
-     * Returns a <CODE>TreeNode</CODE> in <CODE>tree</CODE>
-     * mapped to <CODE>node</CODE> in a united tree,
-     * or null if <CODE>tree</CODE> does not contain such node.
-     * It is inverse mapping of <CODE>#getNodeFor(TreeNode)</CODE>.
+     * Returns a {@code TreeNode} in {@code tree}
+     * mapped to {@code node} in a united tree,
+     * or null if {@code tree} does not contain such node.
+     * It is inverse mapping of {@code #getNodeFor(TreeNode)}.
      *
-     * @param node <CODE>TreeNode</CODE> in a unified tree
-     * @param tree <CODE>TreeModel</CODE> to contain the returend
-     * <CODE>TreeNode</CODE>
+     * @param node {@code TreeNode} in a unified tree
+     * @param tree {@code TreeModel} to contain the returend
+     * {@code TreeNode}
      *
-     * @return <CODE>TreeNode</CODE> in <CODE>tree</CODE> mapped
-     * to <CODE>node</CODE> in united tree, or null if no node in
-     * <CODE>tree</CODE> is mapped to <CODE>node</CODE>
+     * @return {@code TreeNode} in {@code tree} mapped
+     * to {@code node} in united tree, or null if no node in
+     * {@code tree} is mapped to {@code node}
      *
-     * @see <CODE>#getNodeFor(TreeNode)</CODE>
+     * @see {@code #getNodeFor(TreeNode)}
      */
     public TreeNode getNodeFor(TreeNode node, TreeModel tree);
 
     /**
-     * Returns <tt>Set</tt>s of <tt>UnitedNameTreeNode</tt>
-     * having the <tt>name</tt> as a <tt>Map</tt> indexed by the name of the higher
-     * <tt>UnitedNameTreeNode</tt>.
+     * Returns {@code Set}s of {@code UnitedNameTreeNode}
+     * having the {@code name} as a {@code Map} indexed by the name of the higher
+     * {@code UnitedNameTreeNode}.
      *
      * @param name to look for
-     * @return <tt>Set</tt>s of <tt>UnitedNameTreeNode</tt>
-     * having the <tt>name</tt> as a <tt>Map</tt> indexed by the name of the higher
-     * <tt>UnitedNameTreeNode</tt>
+     * @return {@code Set}s of {@code UnitedNameTreeNode}
+     * having the {@code name} as a {@code Map} indexed by the name of the higher
+     * {@code UnitedNameTreeNode}
      */
     public Map<String, Set<UnitedNameTreeNode>> getNodeParentalMapFor(String name);
 
     /**
-     * Returns <tt>Set</tt>s of <tt>UnitedNameTreeNode</tt> having the <tt>name</tt>.
+     * Returns {@code Set}s of {@code UnitedNameTreeNode} having the {@code name}.
      *
      * @param name to look for
-     * @return <tt>Set</tt>s of <tt>UnitedNameTreeNode</tt> having the <tt>name</tt>.
+     * @return {@code Set}s of {@code UnitedNameTreeNode} having the {@code name}.
      */
     public Collection<UnitedNameTreeNode> getNodesFor(String name);
 
     /**
-     * Returns <CODE>Enumeration</CODE> of <CODE>TreeNode</CODE>
-     * in trees mapped to <CODE>node</CODE> in the united tree,
-     * or null if no node is mapped to <CODE>node</CODE>
+     * Returns {@code Enumeration} of {@code TreeNode}
+     * in trees mapped to {@code node} in the united tree,
+     * or null if no node is mapped to {@code node}
      *
-     * @param node <CODE>TreeNode</CODE> in the united tree
+     * @param node {@code TreeNode} in the united tree
      *
-     * @return <CODE>Enumeration</CODE> of <CODE>TreeNode</CODE>
-     * mapped to <CODE>node</CODE>, or null if no node is
-     * mapped to <CODE>node</CODE>.
+     * @return {@code Enumeration} of {@code TreeNode}
+     * mapped to {@code node}, or null if no node is
+     * mapped to {@code node}.
      */
     //public Enumeration getNodesFor(TreeNode node);
     public Iterator<? extends TreeNode> getNodesFor(TreeNode node);
@@ -172,8 +174,8 @@ public interface NodeMapper
     public TreePath[] getPathsFor(TreePath path);
 
     /**
-     * Retruns <CODE>TreePath</CODE> of the node in the
-     * unified tree to which <CODE>node</CODE> in a tree
+     * Retruns {@code TreePath} of the node in the
+     * unified tree to which {@code node} in a tree
      * mapped, or null if ....
      */
     public TreePath getPathFor(TreeNode node);
@@ -189,7 +191,7 @@ public interface NodeMapper
     public Map<TreeModel, NameTreeNode> getTreesAndNodesFor(TreeNode node);
 
     /**
-     * Maps <CODE>node</CODE> to <CODE>key</CODE>
+     * Maps {@code node} to {@code key}
      */
     public TreeNode mapNode(TreeNode key, TreeNode node);
 

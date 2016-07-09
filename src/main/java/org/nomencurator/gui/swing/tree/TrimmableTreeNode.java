@@ -2,7 +2,7 @@
  * TrimmableTreeNode.java:  a MutableTreeNode of which footstanp
  * of children can be minimized
  *
- * Copyright (c) 2006, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2006, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -25,11 +25,11 @@ package org.nomencurator.gui.swing.tree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * <CODE>TrimmableTreeNode</CODE> is a <CODE>MutableTreeNode<CODE>
+ * {@code TrimmableTreeNode} is a {@code MutableTreeNode}
  * allowing users to minimize memory consumpution by trimming
  * allocated memory to link to relevant nodes.
  *
- * @version 	20 June 2015
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
 class TrimmableTreeNode

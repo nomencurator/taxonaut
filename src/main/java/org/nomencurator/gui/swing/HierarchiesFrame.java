@@ -33,15 +33,15 @@ import org.nomencurator.model.NameUsage;
  * {@code Hierarchies} provides a table to compare
  * hierarchies using Nomencuartor.
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-class HierarchiesFrame<N extends NameUsage<?, ?>>
+class HierarchiesFrame<T extends NameUsage<?>>
     extends JFrame
 {
     private static final long serialVersionUID = -2611443589109401968L;
 
-    protected Hierarchies<N> comparator;
+    protected Hierarchies<T> comparator;
 
     public HierarchiesFrame()
     {
@@ -51,19 +51,19 @@ class HierarchiesFrame<N extends NameUsage<?, ?>>
     public HierarchiesFrame(Locale locale)
     {
 	super();
-	setHierarchies(new Hierarchies<N>(locale));
+	setHierarchies(new Hierarchies<T>(locale));
     }
 
     public HierarchiesFrame(GraphicsConfiguration gc)
     {
 	super(gc);
-	setHierarchies(new Hierarchies<N>());
+	setHierarchies(new Hierarchies<T>());
     }
 
     public HierarchiesFrame(String title)
     {
 	super(title);
-	setHierarchies(new Hierarchies<N>());
+	setHierarchies(new Hierarchies<T>());
     }
 
     public HierarchiesFrame(String title, GraphicsConfiguration gc)
@@ -74,15 +74,15 @@ class HierarchiesFrame<N extends NameUsage<?, ?>>
     public HierarchiesFrame(Locale locale, String title, GraphicsConfiguration gc)
     {
 	super(title, gc);
-	setHierarchies(new Hierarchies<N>(locale));
+	setHierarchies(new Hierarchies<T>(locale));
     }
 
-    public Hierarchies<N> getHierarchies()
+    public Hierarchies<T> getHierarchies()
     {
 	return comparator;
     }
 
-    protected void setHierarchies(Hierarchies<N> comparator)
+    protected void setHierarchies(Hierarchies<T> comparator)
     {
 	this.comparator = comparator;
 	getContentPane().add(comparator);

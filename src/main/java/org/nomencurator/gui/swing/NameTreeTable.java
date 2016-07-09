@@ -113,15 +113,15 @@ import lombok.Setter;
 /**
  * {@code JTable} of {@code NameUsageNode}s
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NameTreeTable<T extends NameUsage<?, ?>>
+public class NameTreeTable<T extends NameUsage<?>>
     extends HeaderEditableTable
     implements Alignable, 
 	       // FIXME
-	       // NameUsageExchanger<T, T>,
-	       //ObjectExchanger<T, T>,
+	       // NameUsageExchanger<T>,
+	       //ObjectExchanger<T>,
 	       NameQuery,
 	       ListSelectionListener,
 	       TreeSelectionListener,
@@ -155,7 +155,7 @@ public class NameTreeTable<T extends NameUsage<?, ?>>
 
     public static final int MISSING_ASSIGNMENTS_ONLY = NameTreeTableModel.MISSING_ASSIGNMENTS_ONLY;
 
-    protected QueryResultListenerAdaptor<T, T> adaptor;
+    protected QueryResultListenerAdaptor<T> adaptor;
 
     /*
     @Getter
@@ -856,7 +856,7 @@ public class NameTreeTable<T extends NameUsage<?, ?>>
 	((NameTreeTableHeader<T>)getTableHeader()).setPreferredHeight(height);
     }
 
-    public String getNames(Collection<? extends NameUsage<?, ?>> nameUsages, String ascribedName, Rank rank, String authors, String year, MatchingMode queryType)
+    public String getNames(Collection<? extends NameUsage<?>> nameUsages, String ascribedName, Rank rank, String authors, String year, MatchingMode queryType)
     {
 	return getNames(ascribedName, rank, authors, year, queryType);
     }
@@ -894,10 +894,10 @@ public class NameTreeTable<T extends NameUsage<?, ?>>
 	}
     }
 
-    public ObjectExchanger<?, ?> getObjectExchanger()
+    public ObjectExchanger<?> getObjectExchanger()
     {
 	if (aligner instanceof ObjectExchanger)
-	    return (ObjectExchanger<?, ?>)aligner;
+	    return (ObjectExchanger<?>)aligner;
 	return null;
     }
 
@@ -940,21 +940,21 @@ public class NameTreeTable<T extends NameUsage<?, ?>>
 	return t;
     }
 
-    public void addQueryResultListener(QueryResultListener<T, T> listener)
+    public void addQueryResultListener(QueryResultListener<T> listener)
     {
 	if(adaptor == null)
-	    adaptor = new QueryResultListenerAdaptor<T, T>();
+	    adaptor = new QueryResultListenerAdaptor<T>();
 
 	adaptor.addQueryResultListener(listener);
     }
 
-    public void removeQueryResultListener(QueryResultListener<T, T> listener)
+    public void removeQueryResultListener(QueryResultListener<T> listener)
     {
 	if(adaptor != null)
 	    adaptor.removeQueryResultListener(listener);
     }
 
-    public void fireQueryResultEvent(QueryResultEvent<T, T> event)
+    public void fireQueryResultEvent(QueryResultEvent<T> event)
     {
 	if(adaptor != null)
 	    adaptor.fireQueryResultEvent(event);
@@ -967,7 +967,7 @@ public class NameTreeTable<T extends NameUsage<?, ?>>
 	return MatchingMode.EXACT;
     }
 
-    class RequestNameUsages<E extends NameUsage<?, ?>>
+    class RequestNameUsages<E extends NameUsage<?>>
 	extends Thread
     {
 	Rank rank;

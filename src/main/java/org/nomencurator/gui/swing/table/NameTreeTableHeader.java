@@ -89,10 +89,10 @@ import org.nomencurator.gui.swing.tree.UnitedNameTreeNode;
 /**
  * A {@code JTableHedear} provides an editable header
  *
- * @version 	29 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NameTreeTableHeader<T extends NameUsage<?, ?>>
+public class NameTreeTableHeader<T extends NameUsage<?>>
     extends EditableTableHeader
     implements MouseListener,
 	       MouseMotionListener
@@ -288,7 +288,6 @@ public class NameTreeTableHeader<T extends NameUsage<?, ?>>
 	    return null;
 	}
 
-	//
 	List<UnitedNameTreeNode> unifiedNodeList = new ArrayList<UnitedNameTreeNode>(unifiedNodeSet);
 
 	UnitedNameTreeNode[] unifiedNodes = 
@@ -300,6 +299,8 @@ public class NameTreeTableHeader<T extends NameUsage<?, ?>>
 	    for(int i = 0; i < columns; i++) {
 		if (i == alignerIndex) continue;
 		c = ((TreeHeaderRenderer)model.getColumn(i).getHeaderRenderer()).getTree();
+		@SuppressWarnings("unchecked")
+		    NameTree nameTree = (c instanceof NameTree)? null: (NameTree)c;
 		TreeModel treeModel = c.getModel();
 		List<NamedNode<?>> nodes = new ArrayList<>();
 		node = null;
@@ -311,7 +312,9 @@ public class NameTreeTableHeader<T extends NameUsage<?, ?>>
 		    buff.append("(no match)");
 		    break;
 		case 1:
-		    buff.append(((NameTree)c).getToolTipText(nodes.get(0)));
+		    if (nameTree != null) {
+			buff.append(nameTree.getToolTipText(nodes.get(0)));
+		    }
 		    break;
 		default:
 		    int nodeSize = nodes.size();
@@ -319,7 +322,8 @@ public class NameTreeTableHeader<T extends NameUsage<?, ?>>
 		    int maxLength[] = new int[nodeSize];
 		    int maxLines = 0;
 		    for (int j = 0; j < nodeSize; j++) {
-			toolTipTexts[j] = ((NameTree)c).getToolTipText(nodes.get(j)).split("\\n");
+			toolTipTexts[j] = nameTree == null ? null :
+			    nameTree.getToolTipText(nodes.get(j)).split("\\n");
 			maxLength[j] = 0;
 			int l = toolTipTexts[j].length;
 			if (l > maxLines)

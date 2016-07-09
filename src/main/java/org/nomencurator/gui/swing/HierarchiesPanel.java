@@ -76,13 +76,13 @@ import lombok.Setter;
  * {@code HierarchiesPanel} provides a table to compare hierarchies
  * and a text box to search these hierarchies
  *
- * @version 	28 June 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class HierarchiesPanel<T extends NameUsage<?, ?>>
+public class HierarchiesPanel<T extends NameUsage<?>>
     extends JPanel
     implements ChangeListener,
-	       QueryResultListener<NameUsage<?, ?>, NameUsage<?, ?>>,
+	       QueryResultListener<T>,
 	       Runnable
 {
     private static final long serialVersionUID = 8396001721380574975L;
@@ -90,7 +90,7 @@ public class HierarchiesPanel<T extends NameUsage<?, ?>>
     protected LanguageMenu languageMenu;
 
     /** Panel to display components for query */
-    protected QueryPanel<NameUsage<?, ?>, NameUsage<?, ?>> query;
+    protected QueryPanel<NameUsage<?>> query;
 
     @Getter
     /** Panel to show two tables representing hierarchies */
@@ -158,17 +158,17 @@ public class HierarchiesPanel<T extends NameUsage<?, ?>>
     protected void createComponents()
     {
 	//query = new QueryPanel(QueryPanel.RANK | QueryPanel.NAME);
-	query = new QueryPanel<NameUsage<?, ?>, NameUsage<?, ?>>();
+	query = new QueryPanel<NameUsage<?>>();
 	hierarchiesPane = new HierarchiesPane<T>();
 	final List<NameTreeTableModel> tableModels = NameTreeTableModel.createTableModels(unifiedTreeModel);
 	//FIXME 20141201
 	//query.setQueryManager(table.getAlignerTree());
-	hierarchiesPane.addTab("Search result", new NameTreeTable<NameUsage<?, ?>>(tableModels.get(NameTreeTableMode.ASSIGNMENTS.ordinal())));
-	hierarchiesPane.addTab("Inconsistent taxa", new NameTreeTable<NameUsage<?, ?>>(tableModels.get(NameTreeTableMode.INCONSISTENCY.ordinal())));
-	hierarchiesPane.addTab("Synonyms", new NameTreeTable<NameUsage<?, ?>>(tableModels.get(NameTreeTableMode.SYNONYMS.ordinal())));
-	hierarchiesPane.addTab("Different taxa",  new NameTreeTable<NameUsage<?, ?>>(tableModels.get(NameTreeTableMode.DIFFERENCE.ordinal())));
-	hierarchiesPane.addTab("Missing taxa", new NameTreeTable<NameUsage<?, ?>>(tableModels.get(NameTreeTableMode.MISSINGS.ordinal())));
-	hierarchiesPane.addTab("Common taxa",  new NameTreeTable<NameUsage<?, ?>>(tableModels.get(NameTreeTableMode.COMMONS.ordinal())));
+	hierarchiesPane.addTab("Search result", new NameTreeTable<NameUsage<?>>(tableModels.get(NameTreeTableMode.ASSIGNMENTS.ordinal())));
+	hierarchiesPane.addTab("Inconsistent taxa", new NameTreeTable<NameUsage<?>>(tableModels.get(NameTreeTableMode.INCONSISTENCY.ordinal())));
+	hierarchiesPane.addTab("Synonyms", new NameTreeTable<NameUsage<?>>(tableModels.get(NameTreeTableMode.SYNONYMS.ordinal())));
+	hierarchiesPane.addTab("Different taxa",  new NameTreeTable<NameUsage<?>>(tableModels.get(NameTreeTableMode.DIFFERENCE.ordinal())));
+	hierarchiesPane.addTab("Missing taxa", new NameTreeTable<NameUsage<?>>(tableModels.get(NameTreeTableMode.MISSINGS.ordinal())));
+	hierarchiesPane.addTab("Common taxa",  new NameTreeTable<NameUsage<?>>(tableModels.get(NameTreeTableMode.COMMONS.ordinal())));
 
 	statusPanel = new StatusPanel();
     }
@@ -212,7 +212,7 @@ public class HierarchiesPanel<T extends NameUsage<?, ?>>
     {
     }
 
-    public QueryPanel<NameUsage<?, ?>, NameUsage<?, ?>> getQueryPanel()
+    public QueryPanel<NameUsage<?>> getQueryPanel()
     {
 	return query;
     }
@@ -276,20 +276,20 @@ public class HierarchiesPanel<T extends NameUsage<?, ?>>
 	setLocale(languageMenu.getLocale());
     }
 
-    protected List<MultiplexNameUsageQuery<NameUsage<?, ?>, NameUsage<?, ?>>> threads = null;
+    protected List<MultiplexNameUsageQuery<T>> threads = null;
 
-    public void add(MultiplexNameUsageQuery<NameUsage<?, ?>, NameUsage<?, ?>> thread)
+    public void add(MultiplexNameUsageQuery<T> thread)
     {
 	if(thread == null)
 	    return;
 
 	if(threads == null)
-	    threads = new ArrayList<MultiplexNameUsageQuery<NameUsage<?, ?>, NameUsage<?, ?>>>();
+	    threads = new ArrayList<MultiplexNameUsageQuery<T>>();
 	thread.addQueryResultListener(this);
 	threads.add(thread);
     }
 
-    public void remove(MultiplexNameUsageQuery<NameUsage<?, ?>, NameUsage<?, ?>> thread)
+    public void remove(MultiplexNameUsageQuery<T> thread)
     {
 	if(thread == null)
 	    return;
@@ -317,14 +317,14 @@ public class HierarchiesPanel<T extends NameUsage<?, ?>>
     }
 
 
-    public synchronized void queryReturned(QueryResultEvent<NameUsage<?, ?>, NameUsage<?, ?>> event)
+    public synchronized  void queryReturned(QueryResultEvent<T> event)
     {
 	//remove((MultiplexNameUageQuery)event.getSource());
-	Collection<NameUsage<?, ?>> nodes = event.getResults();
+	Collection<T> nodes = event.getResults();
 	if(nodes == null)
 	    return;
-	Iterator<NameUsage<?, ?>> iterator = nodes.iterator();
-	NameUsage<?, ?> node = iterator.next();
+	Iterator<T> iterator = nodes.iterator();
+	T node = iterator.next();
 	NameTreeModel model = new NameTreeModel(node);
 	model.setViewName(node.getViewName());
 

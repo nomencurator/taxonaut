@@ -1,8 +1,8 @@
 /*
- * Exchangable.java: an interface of <CODE>Object</CODE>
- * exchangable with sources using <CODE>ObjectExchanger</CODE>
+ * Exchangable.java: an interface of Object
+ * exchangable with sources using ObjectExchanger.
  *
- * Copyright (c) 2006, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2006, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -25,30 +25,27 @@ package org.nomencurator.io;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>Exchangable</CODE> defines data exchangable with
- * data sources implementing <CODE>ObjectExchanger</CODE>
+ * {@code Exchangable} defines data exchangable with
+ * data sources implementing {@code ObjectExchanger}
  *
- * @version 	08 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface Exchangable<N extends NamedObject<?, ?>, T extends N>
-								    //public interface Exchangable<N extends NamedObject<?, ?>, T extends N, E extends NamedObject<N, T>>
+public interface Exchangable<T extends NamedObject<?>>
 {
     /**
-     * Returns a <CODE>ObjectExchanger</CODE> to access to the data source,
+     * Returns a {@code ObjectExchanger} to access to the data source,
      * or null if it is an internal object
      */
-    public ObjectExchanger<N, T> getExchanger();
-    //public ObjectExchanger<N, T, E> getExchanger();
+    public ObjectExchanger<T> getExchanger();
 
     /**
-     * Sets <CODE>exchanger</CODE> as the <CODE>ObjectExchanger</CODE>
+     * Sets {@code exchanger} as the {@code ObjectExchanger}
      * to access to the data source, or null to prohibit access to
      * external data storage.
      *
-     * @param exchanger an <CODE>ObjectExchanger</CODE> used as exteral
+     * @param exchanger an {@code ObjectExchanger} used as exteral
      * data storage
      */
-    public void setExchanger(ObjectExchanger<N, T> exchanger);
-    //public void setExchanger(ObjectExchanger<N, T, E> exchanger);
+    public void setExchanger(ObjectExchanger<T> exchanger);
 }

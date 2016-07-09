@@ -40,45 +40,45 @@ import lombok.Getter;
 /**
  * {@code AbstractMultiplexQuery} implements {@code ObjectExchanger}.
  *
- * @version 	29 June 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractMultiplexQuery<N extends NamedObject<?, ?>, T extends N>
-    extends NamedObjectQuery<N, T>
-    implements MultiplexQuery<N, T>
+public abstract class AbstractMultiplexQuery<T extends NamedObject<?>>
+    extends NamedObjectQuery<T>
+    implements MultiplexQuery<T>
 {
-    protected List<ObjectQuery<N, T>> queries;
+    protected List<ObjectQuery<T>> queries;
 
-    protected Map<ObjectQuery<N, T>, Future<Collection<T>>> futures;
+    protected Map<ObjectQuery<T>, Future<Collection<? extends T>>> futures;
 
     protected volatile boolean inSubmission;
 
-    protected abstract ObjectQuery<N, T> createQuery(QueryParameter<N, T> parameter, ObjectExchanger<N, T> source);
+    protected abstract ObjectQuery<T> createQuery(QueryParameter<T> parameter, ObjectExchanger<T> source);
     
-    public AbstractMultiplexQuery(QueryParameter<N, T> parameter, Collection<? extends ObjectExchanger<N, T>> sources)
+    public AbstractMultiplexQuery(QueryParameter<T> parameter, Collection<? extends ObjectExchanger<T>> sources)
     {
 	super(parameter);
 	inSubmission = false;
 	if(parameter != null && sources != null && sources.size() > 0) {
-	    queries = Collections.synchronizedList(new ArrayList<ObjectQuery<N, T>>(sources.size()));
+	    queries = Collections.synchronizedList(new ArrayList<ObjectQuery<T>>(sources.size()));
 	    synchronized(queries) {
-		for(ObjectExchanger<N, T> source : sources) {
+		for(ObjectExchanger<T> source : sources) {
 		    addQuery(createQuery(parameter, source));
 		}
 	    }
 	}
     }
 
-    public AbstractMultiplexQuery(Collection<? extends ObjectQuery<N, T>> queries)
+    public AbstractMultiplexQuery(Collection<? extends ObjectQuery<T>> queries)
     {
 	super(null);
-	this.queries = Collections.synchronizedList(new ArrayList<ObjectQuery<N, T>>(queries));
+	this.queries = Collections.synchronizedList(new ArrayList<ObjectQuery<T>>(queries));
     }
 
-    public boolean addQuery(ObjectQuery<N, T> query)
+    public boolean addQuery(ObjectQuery<T> query)
     {
 	if(queries == null)
-	    this.queries = Collections.synchronizedList(new ArrayList<ObjectQuery<N, T>>());
+	    this.queries = Collections.synchronizedList(new ArrayList<ObjectQuery<T>>());
 
 	synchronized(queries) {
 	    if(query != null && !queries.contains(query)) {
@@ -90,7 +90,7 @@ public abstract class AbstractMultiplexQuery<N extends NamedObject<?, ?>, T exte
 	return false;
     }
 
-    public boolean removeQuery(ObjectQuery<N, T> query)
+    public boolean removeQuery(ObjectQuery<T> query)
     {
 	if(queries == null || query == null)
 	    return false;
@@ -114,40 +114,40 @@ public abstract class AbstractMultiplexQuery<N extends NamedObject<?, ?>, T exte
 		inSubmission = true;
 		int size = queries.size();
 		ExecutorService executor = Executors.newFixedThreadPool(size);
-		futures = Collections.synchronizedMap(new HashMap<ObjectQuery<N, T>, Future<Collection<T>>>(size));
-		for(ObjectQuery<N, T> query : queries) {
+		futures = Collections.synchronizedMap(new HashMap<ObjectQuery<T>, Future<Collection<? extends T>>>(size));
+		for(ObjectQuery<T> query : queries) {
 		    futures.put(query, executor.submit(query));
 		}
 		inSubmission = false;
 	    }
 
-	    fireQueryResultEvent(new QueryResultEvent<N, T>(this, futures.size(), queries.size()));
+	    fireQueryResultEvent(new QueryResultEvent<T>(this, futures.size(), queries.size()));
 	}
 
 
 	return results;
     }
 
-    public void addQueryResultListener(QueryResultListener<N, T> listener)
+    public void addQueryResultListener(QueryResultListener<T> listener)
     {
 	if(listeners == null)
-	    listeners = new QueryResultListenerAdaptor<N, T>();
+	    listeners = new QueryResultListenerAdaptor<T>();
 	listeners.addQueryResultListener(listener);
     }
 
-    public void removeQueryResultListener(QueryResultListener<N, T> listener)
+    public void removeQueryResultListener(QueryResultListener<T> listener)
     {
 	if(listeners != null)
 	    listeners.removeQueryResultListener(listener);
     }
 
-    public void fireQueryResultEvent(QueryResultEvent<N, T> event)
+    public void fireQueryResultEvent(QueryResultEvent<T> event)
     {
 	if(listeners != null)
 	    listeners.fireQueryResultEvent(event);
     }
 
-    public void queryReturned(QueryResultEvent<N, T> event)
+    public void queryReturned(QueryResultEvent<T> event)
     {
 	while(inSubmission) { ; }
 
@@ -164,7 +164,7 @@ public abstract class AbstractMultiplexQuery<N extends NamedObject<?, ?>, T exte
 	    }
 	}
 
-	fireQueryResultEvent(new QueryResultEvent<N, T>(this, futures.size(), queries.size()));
+	fireQueryResultEvent(new QueryResultEvent<T>(this, futures.size(), queries.size()));
     }
 }
 

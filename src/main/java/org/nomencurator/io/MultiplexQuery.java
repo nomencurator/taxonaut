@@ -1,7 +1,7 @@
 /*
  * MultiplexQuery.java
  *
- * Copyright (c) 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -36,20 +36,15 @@ import org.nomencurator.model.NamedObject;
 import lombok.Getter;
 
 /**
- * <CODE>MultiplexQuery</CODE> implements <tt>ObjectExchanger</tt>.
+ * {@code MultiplexQuery} implements {@code ObjectExchanger}.
  *
- * @version 	08 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-//public interface MultiplexQuery<N extends NamedObject<?, ?>, T extends N, E extends NamedObject<N, T>>
-public interface MultiplexQuery<N extends NamedObject<?, ?>, T extends N>
-    extends QueryResultListener<N, T>, ObjectQuery<N, T>
+public interface MultiplexQuery<T extends NamedObject<?>>
+    extends QueryResultListener<T>, ObjectQuery<T>
 {
-    //public boolean addQuery(Q query);
-    public boolean addQuery(ObjectQuery<N, T> query);
-    //public boolean addQuery(ObjectQuery query);
+    public boolean addQuery(ObjectQuery<T> query);
 
-    //public boolean removeQuery(Q query);
-    public boolean removeQuery(ObjectQuery<N, T> query);
-    //public boolean removeQuery(ObjectQuery query);
+    public boolean removeQuery(ObjectQuery<T> query);
 }

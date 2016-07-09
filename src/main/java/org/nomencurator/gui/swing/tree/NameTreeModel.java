@@ -46,9 +46,9 @@ import org.nomencurator.model.gbif.NubNameUsage;
 import org.nomencurator.util.MapUtility;
 
 /**
- * <code>TreeModel</code> to manage <code>NameTreeNode</code>
+ * {@code TreeModel} to manage {@code NameTreeNode}
  *
- * @version 	22 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeModel
@@ -72,23 +72,23 @@ public class NameTreeModel
     protected boolean rootToBeVisible;
 
     /**
-     * Constructs <CODE>NameTreeModel</CODE>
-     * using <CODE>node</CODE> to construct
+     * Constructs {@code NameTreeModel}
+     * using {@code node} to construct
      * root tree node of this model
      *
-     * @param node <CODE>NameUsage</CODE> to be
+     * @param node {@code NameUsage} to be
      * used as the root node
      */
-    public NameTreeModel(NameUsage<?, ?> node)
+    public NameTreeModel(NameUsage<?> node)
     {
-	this(new NameTreeNode(node));
+	this(new NameTreeNode(/*(NameUsage<NameUsage<?>>)*/node));
     }
 
     /**
-     * Constructs <CODE>NameTreeModel</CODE>
-     * using <CODE>node</CODE> as the root node.
+     * Constructs {@code NameTreeModel}
+     * using {@code node} as the root node.
      *
-     * @param node <CODE>NameNodeTree</CODE> to be
+     * @param node {@code NameNodeTree} to be
      * the root node
      */
     public NameTreeModel(NameTreeNode node)
@@ -114,7 +114,7 @@ public class NameTreeModel
 	    Object userObject = node.getUserObject();
 	    if (!(userObject instanceof NameUsage))
 		continue;
-	    NameUsage<?, ?> n = (NameUsage<?, ?>)userObject;
+	    NameUsage<?> n = (NameUsage<?>)userObject;
 	    if(n.getLiteral() == null)
 		continue;
 	    rankedName.delete(0, rankedName.length());
@@ -153,9 +153,9 @@ public class NameTreeModel
 
     /**
      * Returns view name of the name tree.
-     * If it is set by <CODE>setViewName()</CODE>,
+     * If it is set by {@code setViewName()},
      * the set name is used.  Instead, it returns
-     * view name held by the root <CODE>NameUsage</CODE>
+     * view name held by the root {@code NameUsage}
      *
      * @return String representing view name of this tree
      *
@@ -171,7 +171,7 @@ public class NameTreeModel
 	if(root == null)
 	    return "";
 
-	NameUsage<?, ?> rootUsage = (NameUsage<?, ?>)((NameTreeNode)root).getUserObject();
+	NameUsage<?> rootUsage = (NameUsage<?>)((NameTreeNode)root).getUserObject();
 
 	// String viewName = rootUsage.getViewName();
 	String viewName = rootUsage.getDatasetTitle();
@@ -186,7 +186,7 @@ public class NameTreeModel
     }
 
     /**
-     * Sets <CODE>name</CODE> as view name of this tree
+     * Sets {@code name} as view name of this tree
      *
      * @see #getViewName()
      */
@@ -196,10 +196,10 @@ public class NameTreeModel
     }
 
     /**
-     * Returns <CODE>Enumeration</CODE> of names in this tree,
+     * Returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      *
-     * @returns <CODE>Enumeration</CODE> of names in this tree,
+     * @returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      */
     public Set<String> getNames()
@@ -210,10 +210,10 @@ public class NameTreeModel
     }
 
     /**
-     * Returns <CODE>Enumeration</CODE> of names in this tree,
+     * Returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      *
-     * @returns <CODE>Enumeration</CODE> of names in this tree,
+     * @returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      */
     public Map<String, Set<NameTreeNode>> getNameSet()
@@ -226,22 +226,22 @@ public class NameTreeModel
 	return rankedNames.get(name);
     }
 
-    public NameTreeNode getNode(NameUsage<?, ?> nameUsage)
+    public NameTreeNode getNode(NameUsage<?> nameUsage)
     {
 	NameTreeNode rootNode = (NameTreeNode)getRoot();
-	NameUsage<?, ?> root = rootNode.getNameUsage();
-	NameUsage<?, ?> current = nameUsage;
-	List<NameUsage<?, ?>> pathList = new ArrayList<NameUsage<?, ?>>();
+	NameUsage<?> root = rootNode.getNameUsage();
+	NameUsage<?> current = nameUsage;
+	List<NameUsage<?>> pathList = new ArrayList<NameUsage<?>>();
 	while(current != root) { //FIXME
 	    pathList.add(current);
-	    NameUsage<?, ?> tmp = current.getHigherNameUsage();
+	    NameUsage<?> tmp = current.getHigherNameUsage();
 	    if(tmp == null) {
 		break;
 	    }
 	    current = current.getHigherNameUsage();
 	}
 	
-	NameUsage<?, ?>[] path = pathList.toArray(new NameUsage<?, ?>[pathList.size()]);
+	NameUsage<?>[] path = pathList.toArray(new NameUsage<?>[pathList.size()]);
 
 	NameTreeNode treeNode = rootNode;
 	for(int i = path.length - 1; i > -1; i--) {
@@ -269,14 +269,14 @@ public class NameTreeModel
     }
 
     /**
-     * Returns <CODE>Enumeration</CODE> of <CODE>NameTreeNode</CODE>
-     * having <CODE>name</CODE> in this tree, or null if no node
-     * of the tree has <CODE>name</CODE>
-     * @param name <CODE>String</CODE> representing name
+     * Returns {@code Enumeration} of {@code NameTreeNode}
+     * having {@code name} in this tree, or null if no node
+     * of the tree has {@code name}
+     * @param name {@code String} representing name
      *
-     * @return <CODE>Enumeration</CODE> of <CODE>NameTreeNode</CODE>
-     * having <CODE>name</CODE> in this tree, or null if no node
-     * of the tree has <CODE>name</CODE>
+     * @return {@code Enumeration} of {@code NameTreeNode}
+     * having {@code name} in this tree, or null if no node
+     * of the tree has {@code name}
      */
     public Iterator<NameTreeNode> getNodes(String name)
     {
@@ -291,10 +291,10 @@ public class NameTreeModel
     }
 
     /**
-     * Returns <CODE>Enumeration</CODE> of rank names in this tree,
+     * Returns {@code Enumeration} of rank names in this tree,
      * or null if no name is contained.
      *
-     * @returns <CODE>Enumeration</CODE> of rank names in this tree,
+     * @returns {@code Enumeration} of rank names in this tree,
      * or null if no name is contained.
      */
     public Iterator<String> getRankNames()
@@ -305,10 +305,10 @@ public class NameTreeModel
     }
 
     /**
-     * Returns <CODE>Enumeration</CODE> of names in this tree,
+     * Returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      *
-     * @returns <CODE>Enumeration</CODE> of names in this tree,
+     * @returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      */
     public Iterator<String> getNamesAtRank(String rank)
@@ -320,11 +320,11 @@ public class NameTreeModel
     }
 
     /**
-     * Returns <CODE>Hashtable</CODE> of names at <CODE>rank</CODE>
-     * in this tree, or null if no name at the <CODE>rank</CODE>
+     * Returns {@code Hashtable} of names at {@code rank}
+     * in this tree, or null if no name at the {@code rank}
      * is contained.
      *
-     * @returns <CODE>Hashtable</CODE> of names in this tree,
+     * @returns {@code Hashtable} of names in this tree,
      * or null if no name is contained.
      */
     public Map<String, NameTreeNode> getNameSetAtRank(String rank)
@@ -333,10 +333,10 @@ public class NameTreeModel
     }
 
     /**
-     * Returns <CODE>Enumeration</CODE> of names in this tree,
+     * Returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      *
-     * @returns <CODE>Enumeration</CODE> of names in this tree,
+     * @returns {@code Enumeration} of names in this tree,
      * or null if no name is contained.
      */
     public Map<String, Map<String, NameTreeNode>> getNamesAtRankSet()

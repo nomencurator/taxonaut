@@ -85,11 +85,11 @@ import org.w3c.dom.Element;
  * in the Nomencurator model.
  *
  *
- * @version 	27 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UBioNameUsageNode
-    extends AbstractNameUsageNode<UBioNameUsageNode, UBioNameUsageNode>
+    extends AbstractNameUsageNode<UBioNameUsageNode>
 {
     private static final long serialVersionUID = 8438841604594238724L;
 
@@ -127,7 +127,7 @@ public class UBioNameUsageNode
     
     protected ClassificationBankObject classificationBankObject;
 
-    protected NameUsage<?, ?> homotypicSeniorSynonym;
+    protected NameUsage<?> homotypicSeniorSynonym;
 
     public UBioNameUsageNode create()
     {
@@ -149,7 +149,7 @@ public class UBioNameUsageNode
      * @param nameUsage existing {@code NameUsage}
      * to be pointed by this object
      */
-    public UBioNameUsageNode(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    public UBioNameUsageNode(NameUsage<?> nameUsage)
     {
 	super(nameUsage);
 	nominal = false;
@@ -228,7 +228,7 @@ public class UBioNameUsageNode
      */ 
     public String getLiteral()
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this) {
 	    return n.getLiteral();
 	}
@@ -252,7 +252,7 @@ public class UBioNameUsageNode
      */ 
     public Rank/*String*/ getRank()
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this)
 	    return n.getRank();
 
@@ -268,7 +268,7 @@ public class UBioNameUsageNode
 
     public Locale getLocale()
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this)
 	    return n.getLocale();
 
@@ -314,9 +314,9 @@ public class UBioNameUsageNode
 	resolved = true;
     }
 
-    public NameUsage<UBioNameUsageNode, UBioNameUsageNode> getHigherNameUsage()
+    public NameUsage<UBioNameUsageNode> getHigherNameUsage()
     {
-	NameUsage<UBioNameUsageNode, UBioNameUsageNode> n = getNameUsage();
+	NameUsage<UBioNameUsageNode> n = getNameUsage();
 	if(n != this)
 	    return n.getHigherNameUsage();
 
@@ -330,14 +330,14 @@ public class UBioNameUsageNode
     }
 
     
-    public NameUsage<?, ?> getHigherNameUsage(UBio uBio)
-	//public NameUsage<?, ?> getHigherNameUsage(UBio uBio, boolean b)
+    public NameUsage<?> getHigherNameUsage(UBio uBio)
+	//public NameUsage<?> getHigherNameUsage(UBio uBio, boolean b)
     {
 	//setUBio(uBio);
 	//setObjectExchanger(uBio);
 	return getHigherNameUsage();
 	/*
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this)
 	    return n.getHigherNameUsage();
 
@@ -355,7 +355,7 @@ public class UBioNameUsageNode
 	return new UBioNameUsageNode();
     }
 
-    protected UBioNameUsageNode createNameUsageNode(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    protected UBioNameUsageNode createNameUsageNode(NameUsage<?> nameUsage)
     {
 	return new UBioNameUsageNode(nameUsage);
     }
@@ -366,30 +366,30 @@ public class UBioNameUsageNode
     }
 
     /*
-    protected AbstractNameUsage<UBioNameUsageNode, UBioNameUsageNode> createNameUsage()
+    protected AbstractNameUsage<UBioNameUsageNode> createNameUsage()
     {
-	return (NameUsage<UBioNameUsageNode, UBioNameUsageNode>)createNameUsageNode();
+	return (NameUsage<UBioNameUsageNode>)createNameUsageNode();
     }
     */
 
     /*
-    protected NameUsage<UBioNameUsageNode, UBioNameUsageNode> createNameUsage(Name<?, ?> nameUsage)
+    protected NameUsage<UBioNameUsageNode> createNameUsage(Name<?> nameUsage)
     {
 	if(nameUsage instanceof NameUsage)
-	    return (NameUsage<UBioNameUsageNode, UBioNameUsageNode>)createNameUsageNode(getNameUsage(nameUsage));
+	    return (NameUsage<UBioNameUsageNode>)createNameUsageNode(getNameUsage(nameUsage));
 
 	return null;
     }
 
-    protected NameUsage<UBioNameUsageNode, UBioNameUsageNode> createNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    protected NameUsage<UBioNameUsageNode> createNameUsage(NameUsage<?> nameUsage)
     {
-	    return (NameUsage<UBioNameUsageNode, UBioNameUsageNode>)createNameUsageNode(nameUsage);
+	    return (NameUsage<UBioNameUsageNode>)createNameUsageNode(nameUsage);
     }
 
 
-    protected NameUsage<UBioNameUsageNode, UBioNameUsageNode> createNameUsage(String persistentID)
+    protected NameUsage<UBioNameUsageNode> createNameUsage(String persistentID)
     {
-	return (NameUsage<UBioNameUsageNode, UBioNameUsageNode>)createNameUsageNode(persistentID);
+	return (NameUsage<UBioNameUsageNode>)createNameUsageNode(persistentID);
     }
     */
 
@@ -447,7 +447,7 @@ public class UBioNameUsageNode
 
     public void setNamebankID(int namebankID)
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this &&
 	   n instanceof UBioNameUsageNode) {
 	    ((UBioNameUsageNode)n).setNamebankID(namebankID);
@@ -464,7 +464,7 @@ public class UBioNameUsageNode
     public void setClassificationBankID(int classificationBankID)
     {
 	/*
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != null && n != this &&
 	   n instanceof UBioNameUsageNode) {
 	    ((UBioNameUsageNode)n).setClassificationBankID(classificationBankID);
@@ -481,7 +481,7 @@ public class UBioNameUsageNode
     public void setSeniorClassificationBankID(int classificationBankID)
     {
 	/*
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this &&
 	   n instanceof UBioNameUsageNode) {
 	    ((UBioNameUsageNode)n).setSeniorClassificationBankID(classificationBankID);
@@ -498,7 +498,7 @@ public class UBioNameUsageNode
 
     public void setClassificationTitleID(int classificationTitleID)
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this &&
 	   n instanceof UBioNameUsageNode) {
 	    ((UBioNameUsageNode)n).setClassificationBankID(classificationTitleID);
@@ -717,24 +717,24 @@ public class UBioNameUsageNode
 	return buf.toString();
     }
 
-    public NameUsage<?, ?> getHomotypicSeniorSynonym()
+    public NameUsage<?> getHomotypicSeniorSynonym()
     {
 	return homotypicSeniorSynonym;
     }
 
-    public void setHomotypicSeniorSynonym(NameUsage<?, ?> seniorSynonym)
+    public void setHomotypicSeniorSynonym(NameUsage<?> seniorSynonym)
     {
 	homotypicSeniorSynonym = seniorSynonym;
     }
 
-    public Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> getSeniorSynonyms()
+    public Collection<NameUsage<?>> getSeniorSynonyms()
     {
 	Collection<Annotation> synonymizers = getAnnotations("synonym");
-	Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> synonyms = new ArrayList<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>>();
+	Collection<NameUsage<?>> synonyms = new ArrayList<NameUsage<?>>();
 	for(Annotation annotation: synonymizers) {
-	    Iterator<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> annotators = annotation.getAnnotators();
+	    Iterator<NameUsage<?>> annotators = annotation.getAnnotators();
 	    while(annotators.hasNext()) {
-		NameUsage<?, ?> annotator = annotators.next();
+		NameUsage<?> annotator = annotators.next();
 		if(!synonyms.contains(annotator))
 		    synonyms.add(annotator);
 	    }
@@ -744,17 +744,17 @@ public class UBioNameUsageNode
     }
 
 
-    public void setSeniorSynonym(NameUsage<?, ?>[] seniorSynonyms)
+    public void setSeniorSynonym(NameUsage<?>[] seniorSynonyms)
     {
 	//do we need this?
     }
 
-    public void addSeniorSynonym(NameUsage<?, ?> seniorSynonym)
+    public void addSeniorSynonym(NameUsage<?> seniorSynonym)
     {
 	//do we need this?
     }
 
-    public void removeSeniorSynonym(NameUsage<?, ?> seniorSynonym)
+    public void removeSeniorSynonym(NameUsage<?> seniorSynonym)
     {
 	//do we need this?
     }

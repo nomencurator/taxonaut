@@ -32,13 +32,13 @@ import java.util.StringTokenizer;
 import org.nomencurator.model.NameUsage;
 
 /**
- * <CODE>NexusReader</CODE> reads and extract trees from
+ * {@code NexusReader} reads and extract trees from
  * a NEXUS format file
  *
  * @see Syst. Biol. 46(4):590-621, 1997
  * @see org.nomencurator.model.NameUsage
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NexusReader
@@ -55,13 +55,13 @@ public class NexusReader
 
     protected Map<String, String> translator;
 
-    protected Map<NameUsage<?, ?>, String> treeNames;
+    protected Map<NameUsage<?>, String> treeNames;
 
     protected boolean inTreeBlock;
 
     protected String lowerCaseLine;
 
-    public NameUsage<?, ?>[] parseTrees(File file)
+    public NameUsage<?>[] parseTrees(File file)
 	throws FileNotFoundException, IOException
     {
 	if(translator != null)
@@ -81,7 +81,7 @@ public class NexusReader
     protected void provideTreeNames() 
     {
 	if(treeNames == null) 
-	    treeNames = new HashMap<NameUsage<?, ?>, String>();
+	    treeNames = new HashMap<NameUsage<?>, String>();
     }
 
 
@@ -199,10 +199,10 @@ public class NexusReader
     }
 
 
-    protected NameUsage<?, ?> parseTreeLine()
+    protected NameUsage<?> parseTreeLine()
 	throws IOException
     {
-	NameUsage<?, ?> root = null;
+	NameUsage<?> root = null;
 	/*
 	while(line != null && !lowerCaseLine.startsWith(NEXUS_BLOCK_END)
 	      && !lowerCaseLine.startsWith(NEXUS_TREE)) {
@@ -253,7 +253,7 @@ public class NexusReader
     }
 	
 
-    public void setTreeName(NameUsage<?, ?> root, String name)
+    public void setTreeName(NameUsage<?> root, String name)
     {
 	if(root == null || name == null)
 	    return;
@@ -262,7 +262,7 @@ public class NexusReader
 	treeNames.put(root, name);
     }
 
-    public String getTreeName(NameUsage<?, ?> root)
+    public String getTreeName(NameUsage<?> root)
     {
 	if(root == null || treeNames == null)
 	    return null;

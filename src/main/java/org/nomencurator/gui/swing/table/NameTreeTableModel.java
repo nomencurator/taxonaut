@@ -77,9 +77,9 @@ import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
 import org.nomencurator.gui.swing.tree.UnitedNameTreeNode;
 
 /**
- * {@code NameTreeTableMode} provieds a {@TableModel} to compare {@code NameTree}s.
+ * {@code NameTreeTableMode} provieds a {@code TableModel} to compare {@code NameTree}s.
  *
- * @version 	25 June 2016
+ * @version 	03 Julye 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeTableModel
@@ -1236,7 +1236,7 @@ public class NameTreeTableModel
 		Enumeration<?> subtree = node.breadthFirstEnumeration();
 		subtree.nextElement(); //discurd the root of the subtree
 		while(subtree.hasMoreElements()) {
-		    NameUsage<?, ?> n =(NameUsage<?, ?>)((NameTreeNode)subtree.nextElement()).getUserObject();
+		    NameUsage<?> n =(NameUsage<?>)((NameTreeNode)subtree.nextElement()).getUserObject();
 		    String key = Rank.getRank(n);
 		    Map<String, Map<TreeModel, TreeNode>> ranks = rankedNameTable.get(key);
 		    if(ranks == null) {
@@ -1306,7 +1306,7 @@ public class NameTreeTableModel
     protected String getRankedName(NameTreeNode node)
     {
 	StringBuffer buffer = new StringBuffer();
-	NameUsage<?, ?> n = (NameUsage<?, ?>)node.getUserObject();
+	NameUsage<?> n = (NameUsage<?>)node.getUserObject();
 	String rank = Rank.getRank(n);
 	if(rank != null) {
 	    rank = Rank.getAbbreviation(rank);

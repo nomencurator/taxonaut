@@ -89,11 +89,11 @@ import lombok.Getter;
 /**
  * {@code NubNameUsage} is an implementation of GBIF CheklistBank NameUsage, or nub.
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubNameUsage
-    extends AbstractNameUsage<NubNameUsage, NubNameUsage>
+    extends AbstractNameUsage<NubNameUsage>
 {
     private static final long serialVersionUID = 1412309127412404817L;
 
@@ -184,7 +184,7 @@ public class NubNameUsage
 
     public String getPersistentID(String separator, boolean withClassName)
     {
-	NameUsage<?, ?> n = getEntity();
+	NameUsage<?> n = getEntity();
 	if(n != this) {
 	    return n.getPersistentID(separator, withClassName);
 	}
@@ -255,7 +255,7 @@ public class NubNameUsage
 	}
     };
 
-    public NubNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage) {
+    public NubNameUsage(NameUsage<? > nameUsage) {
 	super();
 	if(nameUsage == null)
 	    return;
@@ -275,7 +275,7 @@ public class NubNameUsage
 
     public boolean setDataset(Dataset dataset)
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		return ((NubNameUsage)n).setDataset(dataset);
@@ -301,7 +301,7 @@ public class NubNameUsage
 
     public String getDatasetTitle()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		return ((NubNameUsage)n).getDatasetTitle();
@@ -366,7 +366,7 @@ public class NubNameUsage
 
     public boolean setScientificName(org.gbif.api.model.checklistbank.NameUsage scientificNameUsage)
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		return ((NubNameUsage)n).setScientificName(scientificNameUsage);
@@ -406,7 +406,7 @@ public class NubNameUsage
 
     protected void clearScientificName()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		((NubNameUsage)n).clearScientificName();
@@ -420,7 +420,7 @@ public class NubNameUsage
 
     public boolean setNameUsageSearchResult(NameUsageSearchResult nameUsageSearchResult)
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		return ((NubNameUsage)n).setNameUsageSearchResult(nameUsageSearchResult);
@@ -451,7 +451,7 @@ public class NubNameUsage
 
     protected void clearNameUsageSearchResult()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		((NubNameUsage)n).clearNameUsageSearchResult();
@@ -468,7 +468,7 @@ public class NubNameUsage
 
     public boolean setNameUsageSuggestResult(NameUsageSuggestResult nameUsageSuggestResult)
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		return ((NubNameUsage)n).setNameUsageSuggestResult(nameUsageSuggestResult);
@@ -494,7 +494,7 @@ public class NubNameUsage
 
     protected void clearNameUsageSuggestResult()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		((NubNameUsage)n).clearNameUsageSuggestResult();
@@ -511,7 +511,7 @@ public class NubNameUsage
 
     public String getLiteral()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getLiteral();
 	}
@@ -523,7 +523,7 @@ public class NubNameUsage
 
     public String getCanonicalOrScientificName()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getCanonicalOrScientificName();
 	}
@@ -544,7 +544,7 @@ public class NubNameUsage
 
     public void setLiteral(String literal)
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    ((NubNameUsage)n).setLiteral(literal);
 	    return;
@@ -569,7 +569,7 @@ public class NubNameUsage
 	return new NubNameUsage();
     }
 
-    protected NubNameUsage createNameUsage(Name<?, ?> nameUsage)
+    protected NubNameUsage createNameUsage(Name<?> nameUsage)
     {
 	if(nameUsage instanceof org.gbif.api.model.checklistbank.NameUsage)
 	    return new NubNameUsage((org.gbif.api.model.checklistbank.NameUsage)nameUsage);
@@ -583,7 +583,7 @@ public class NubNameUsage
 	    return createNameUsage();
     }
 
-    protected NubNameUsage createNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    protected NubNameUsage createNameUsage(NameUsage<?> nameUsage)
 
     {
 	NubNameUsage nub = null;
@@ -612,7 +612,7 @@ public class NubNameUsage
 
     public Boolean isExtinct()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).isExtinct();
 	}
@@ -624,7 +624,7 @@ public class NubNameUsage
 
     public List<Habitat> getHabitats()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getHabitats();
 	}
@@ -637,7 +637,7 @@ public class NubNameUsage
     /*
     public List<NomenclaturalStatus> getNomenclaturalStatus()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getNomenclaturalStatus();
 	}
@@ -650,7 +650,7 @@ public class NubNameUsage
 
     public List<ThreatStatus> getThreatStatuses()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getThreatStatuses();
 	}
@@ -662,7 +662,7 @@ public class NubNameUsage
 
     public List<Description> getDescriptions()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getDescriptions();
 	}
@@ -674,7 +674,7 @@ public class NubNameUsage
 
     public List<VernacularName> getVernacularNames()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getVernacularNames();
 	}
@@ -686,7 +686,7 @@ public class NubNameUsage
 
     public LinkedHashMap<Integer, String> getHigherClassificationMap()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getHigherClassificationMap();
 	}
@@ -707,7 +707,7 @@ public class NubNameUsage
     //@Nullable
     String getClazz()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getClazz();
 	}
@@ -728,7 +728,7 @@ public class NubNameUsage
     //@Nullable
     String getFamily()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getFamily();
 	}
@@ -749,7 +749,7 @@ public class NubNameUsage
     //@Nullable
     String getGenus()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getGenus();
 	}
@@ -770,7 +770,7 @@ public class NubNameUsage
     //@Nullable
     String getKingdom()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getKingdom();
 	}
@@ -791,7 +791,7 @@ public class NubNameUsage
     //@Nullable
     String getOrder()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getOrder();
 	}
@@ -812,7 +812,7 @@ public class NubNameUsage
     //@Nullable
     String getPhylum()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getPhylum();
 	}
@@ -833,7 +833,7 @@ public class NubNameUsage
     //@Nullable
     String getSpecies()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getSpecies();
 	}
@@ -854,7 +854,7 @@ public class NubNameUsage
     //@Nullable
     String getSubgenus()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getSubgenus();
 	}
@@ -875,7 +875,7 @@ public class NubNameUsage
     //@Nullable
     String getHigherRank(Rank rank)
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getHigherRank(rank);
 	}
@@ -896,7 +896,7 @@ public class NubNameUsage
     //@Nullable
     Integer getClassKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getClassKey();
 	}
@@ -917,7 +917,7 @@ public class NubNameUsage
     //@Nullable
     Integer getFamilyKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getFamilyKey();
 	}
@@ -938,7 +938,7 @@ public class NubNameUsage
     //@Nullable
     Integer getGenusKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getGenusKey();
 	}
@@ -959,7 +959,7 @@ public class NubNameUsage
     //@Nullable
     Integer getKingdomKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getKingdomKey();
 	}
@@ -980,7 +980,7 @@ public class NubNameUsage
     //@Nullable
     Integer getOrderKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getOrderKey();
 	}
@@ -1001,7 +1001,7 @@ public class NubNameUsage
     //@Nullable
     Integer getPhylumKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getPhylumKey();
 	}
@@ -1022,7 +1022,7 @@ public class NubNameUsage
     //@Nullable
     Integer getSpeciesKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getSpeciesKey();
 	}
@@ -1043,7 +1043,7 @@ public class NubNameUsage
     //@Nullable
     Integer getSubgenusKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getSubgenusKey();
 	}
@@ -1064,7 +1064,7 @@ public class NubNameUsage
     //@Nullable
     Integer getHigherRankKey(Rank rank)
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getHigherRankKey(rank);
 	}
@@ -1085,7 +1085,7 @@ public class NubNameUsage
     //@Nullable
     public Integer getSourceTaxonKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getSourceTaxonKey();
 	}
@@ -1107,7 +1107,7 @@ public class NubNameUsage
 
     public String getAccepted()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getAccepted();
 	}
@@ -1124,7 +1124,7 @@ public class NubNameUsage
 
     public Integer getAcceptedKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getAcceptedKey();
 	}
@@ -1142,7 +1142,7 @@ public class NubNameUsage
     //@Nullable
     public String getAccordingTo()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getAccordingTo();
 	}
@@ -1160,7 +1160,7 @@ public class NubNameUsage
     //@Nullable
     public String getAuthorship()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getAuthorship();
 	}
@@ -1177,7 +1177,7 @@ public class NubNameUsage
 
     public String getBasionym()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getBasionym();
 	}
@@ -1195,7 +1195,7 @@ public class NubNameUsage
     //@Nullable
     public Integer getBasionymKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getBasionymKey();
 	}
@@ -1213,7 +1213,7 @@ public class NubNameUsage
     //@Nullable
     public String getCanonicalName()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getCanonicalName();
 	}
@@ -1234,7 +1234,7 @@ public class NubNameUsage
     //@NotNull
     public UUID getDatasetKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getDatasetKey();
 	}
@@ -1252,7 +1252,7 @@ public class NubNameUsage
     //@NotNull
     public Integer getKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getKey();
 	}
@@ -1272,7 +1272,7 @@ public class NubNameUsage
 
     public NameType getNameType()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getNameType();
 	}
@@ -1289,7 +1289,7 @@ public class NubNameUsage
 
     public Collection<NomenclaturalStatus> getNomenclaturalStatus()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getNomenclaturalStatus();
 	}
@@ -1307,7 +1307,7 @@ public class NubNameUsage
     //@Nullable
     public Integer getNubKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getNubKey();
 	}
@@ -1327,7 +1327,7 @@ public class NubNameUsage
 
     public Integer getNumDescendants()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getNumDescendants();
 	}
@@ -1345,7 +1345,7 @@ public class NubNameUsage
     //@NotNull
     public Origin getOrigin()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getOrigin();
 	}
@@ -1362,7 +1362,7 @@ public class NubNameUsage
 
     public String getParent()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getParent();
 	}
@@ -1383,7 +1383,7 @@ public class NubNameUsage
     //@Nullable
     public Integer getParentKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getParentKey();
 	}
@@ -1403,7 +1403,7 @@ public class NubNameUsage
 
     public Integer getProParteKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getProParteKey();
 	}
@@ -1418,7 +1418,7 @@ public class NubNameUsage
     //@Nullable
     public String getPublishedIn()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getPublishedIn();
 	}
@@ -1436,7 +1436,7 @@ public class NubNameUsage
     //@NotNull
     public String getScientificName()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getScientificName();
 	}
@@ -1454,7 +1454,7 @@ public class NubNameUsage
     //@Nullable
     public UUID getConstituentKey()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getConstituentKey();
 	}
@@ -1469,7 +1469,7 @@ public class NubNameUsage
     //@Nullable
     public String getVernacularName()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getVernacularName();
 	}
@@ -1483,7 +1483,7 @@ public class NubNameUsage
 
     public String getRemarks()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getRemarks();
 	}
@@ -1498,7 +1498,7 @@ public class NubNameUsage
     //@Nullable
     public URI getReferences()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getReferences();
 	}
@@ -1513,7 +1513,7 @@ public class NubNameUsage
     //@Nullable
     public String getTaxonID()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getTaxonID();
 	}
@@ -1531,7 +1531,7 @@ public class NubNameUsage
     //@Nullable
     public TaxonomicStatus getTaxonomicStatus()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getTaxonomicStatus();
 	}
@@ -1549,7 +1549,7 @@ public class NubNameUsage
     //@Nullable
     public Date getModified()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getModified();
 	}
@@ -1564,7 +1564,7 @@ public class NubNameUsage
     //@Nullable
     public Date getLastCrawled()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getLastCrawled();
 	}
@@ -1579,7 +1579,7 @@ public class NubNameUsage
     //@Nullable
     public Date getLastInterpreted()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getLastInterpreted();
 	}
@@ -1595,7 +1595,7 @@ public class NubNameUsage
     /*
     public Set<NameUsageIssue> getIssues()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).getIssues();
 	}
@@ -1617,7 +1617,7 @@ public class NubNameUsage
 
     public Boolean isNub()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).isNub();
 	}
@@ -1637,7 +1637,7 @@ public class NubNameUsage
 
     public Boolean isProParte()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).isProParte();
 	}
@@ -1651,7 +1651,7 @@ public class NubNameUsage
 
     public Boolean isSynonym()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this && n instanceof NubNameUsage) {
 	    return ((NubNameUsage)n).isSynonym();
 	}
@@ -1666,7 +1666,7 @@ public class NubNameUsage
 	}
     }
 
-    public Boolean synonym(final Name<?, ?> name)
+    public Boolean synonym(final Name<?> name)
     {
 	if (name != null &&  (name instanceof NubNameUsage))
 	    return ((NubNameUsage)name).isSynonymOf(this);
@@ -1674,7 +1674,7 @@ public class NubNameUsage
 	return super.synonym(name);
     }
 
-    public Boolean synonymOf(final NameUsage<?, ?> nameUsage)
+    public Boolean synonymOf(final NameUsage<?> nameUsage)
     {
 	Boolean synonymy = super.synonym(nameUsage);
 
@@ -1692,7 +1692,7 @@ public class NubNameUsage
 
     public String getViewName()
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this) {
 	    return n.getViewName();
 	}
@@ -1715,7 +1715,7 @@ public class NubNameUsage
 
     public Integer getDescendantCount()
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this) {
 	    return n.getDescendantCount();
 	}
@@ -1729,7 +1729,7 @@ public class NubNameUsage
 
     public String getAuthority()
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this) {
 	    return n.getAuthority();
 	}
@@ -1773,7 +1773,7 @@ public class NubNameUsage
 
     public String getSummary()
     {
-	NameUsage<?, ?> n = getNameUsage();
+	NameUsage<?> n = getNameUsage();
 	if(n != this) {
 	    return n.getSummary();
 	}
@@ -1920,7 +1920,7 @@ public class NubNameUsage
 
     public boolean isImplicit()
     {
-	NameUsage<? extends NubNameUsage, ? extends NubNameUsage> n = getNameUsage();
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof NubNameUsage) {
 		return ((NubNameUsage)n).isImplicit();

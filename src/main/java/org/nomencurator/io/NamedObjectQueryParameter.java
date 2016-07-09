@@ -1,7 +1,7 @@
 /*
  * QueryParameter.java: a calss to specify parameters of ObjectExchanger querys
  *
- * Copyright (c) 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -27,13 +27,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <CODE>QueryParameter</CODE> provides a query parameter container.
+ * {@code QueryParameter} provides a query parameter container.
  *
- * @version 	09 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NamedObjectQueryParameter <N extends NamedObject<?, ?>>
-    extends QueryParameter <N, N>
+public class NamedObjectQueryParameter <T extends NamedObject<?>>
+    extends QueryParameter <T>
 {
     public NamedObjectQueryParameter() {
 	super();
@@ -47,7 +47,7 @@ public class NamedObjectQueryParameter <N extends NamedObject<?, ?>>
 	super(localKey, matchingMode);
     }
 
-    public NamedObjectQueryParameter(NamedObject<N, N> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode) {
+    public NamedObjectQueryParameter(NamedObject<T> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode) {
 	super(filter, synchronous, matchingMode, queryMode);
     }
 

@@ -1,5 +1,5 @@
 /*
- * NameTree.java:  a JTree for NameUsageNode
+ * NameTree.java: a JTree for NameUsageNode
  *
  * Copyright (c) 2002, 2003, 2004, 2005, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
@@ -112,50 +112,15 @@ import org.nomencurator.gui.swing.tree.NameTreeCellEditor;
 import org.nomencurator.gui.swing.tree.NameTreeCellRenderer;
 
 /**
- * A <code>JTree</code> for a <code>NameUsageNode</code>
+ * A {@code JTree} for a {@code NameUsageNode}
  *
- * @version 	26 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTree
-    extends JTree
-    implements Alignable,
-	       NamedTree,
-	       //MouseListener,
-	       PropertyChangeListener
+    extends GenericNameTree<NameUsage<?>, NameUsageNode<?>>
 {
-    private static final long serialVersionUID = 5038492227318154910L;
-
-    /* User interface class ID */
-    private static final String uiClassID = "AlignableTreeUI";
-
-    /* Set user interface class ID according to current default look and feel*/
-    protected static void putUI()
-    {
-	if(LookAndFeelManager.isWindows())
-	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.windows.WindowsAlignableTreeUI");
-	else if (LookAndFeelManager.isMotif())
-	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.motif.MotifAlignableTreeUI");
-	else
-	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.metal.MetalAlignableTreeUI");
-    }
-
-    static {
-	putUI();
-    }
-
-    public void propertyChange(PropertyChangeEvent event) 
-    {
-	if(LookAndFeelManager.isLookAndFeelEvent(event))
-	    putUI();
-    }
-
-    public String getUIClassID()
-    {
-	return uiClassID;
-    }
-
-    protected static NameTree lookAndFeelListener = null;
+    private static final long serialVersionUID = 5822064655034983379L;
 
     /**
      * Line style properties of JTree.
@@ -198,10 +163,98 @@ public class NameTree
 	}
     }
 
+    public NameTree()
+    {
+	super();
+    }
+
+    public NameTree(NameUsage<?> node)
+    {
+	super(node);
+    }
+
+    public NameTree(NameUsageNode<?> node)
+    {
+	super(node);
+    }
+    
+    public NameTree(NameTreeNode node)
+    {
+	super(node);
+    }
+
+    public NameTree(NameTreeModel model)
+    {
+	super(model);
+    }
+
+    public NameTree(NameTreeModel model, Aligner aligner)
+    {
+	super(model, aligner);
+    }
+
+    public NameTree(NameTreeModel model, Aligner aligner, ResizeDirection direction)
+    {
+	super(model, aligner, direction);
+    }
+
+    public void setLineStyle(LineStyle style)
+    {
+	putClientProperty("JTree.lineStyle", style.getValue());
+    }
+
+}
+
+/**
+ * A {@code JTree} for a {@code NameUsageNode}
+ *
+ * @version 	03 July 2016
+ * @author 	Nozomi `James' Ytow
+ */
+class GenericNameTree<T extends NameUsage<?>, N extends NameUsageNode<?>>
+    extends JTree
+    implements Alignable,
+	       NamedTree,
+	       //MouseListener,
+	       PropertyChangeListener
+{
+    private static final long serialVersionUID = 7162858196935385720L;
+
+    /* User interface class ID */
+    private static final String uiClassID = "AlignableTreeUI";
+
+    /* Set user interface class ID according to current default look and feel*/
+    protected static void putUI()
+    {
+	if(LookAndFeelManager.isWindows())
+	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.windows.WindowsAlignableTreeUI");
+	else if (LookAndFeelManager.isMotif())
+	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.motif.MotifAlignableTreeUI");
+	else
+	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.metal.MetalAlignableTreeUI");
+    }
+
+    static {
+	putUI();
+    }
+
+    public void propertyChange(PropertyChangeEvent event) 
+    {
+	if(LookAndFeelManager.isLookAndFeelEvent(event))
+	    putUI();
+    }
+
+    public String getUIClassID()
+    {
+	return uiClassID;
+    }
+
+    protected GenericNameTree<?, ?> lookAndFeelListener = null;
+
 
     /**
-     * Default <CODE>TreeCellRenderer</CODE> for
-     * <CODE>NameTree</CODE>
+     * Default {@code TreeCellRenderer} for
+     * {@code NameTree}
      */
     public static final TreeCellRenderer renderer =
 	new NameTreeCellRenderer();
@@ -243,37 +296,37 @@ public class NameTree
 	return getViewName();
     }
 
-    public NameTree()
+    protected GenericNameTree()
     {
 	this(new NameTreeModel((NameTreeNode)null));
     }
 
-    public NameTree(NameUsage<?, ?> node)
+    protected GenericNameTree(NameUsage<?> node)
     {
 	this(new NameTreeNode(node));
     }
 
-    public NameTree(NameUsageNode<?, ?> node)
+    protected GenericNameTree(NameUsageNode<?> node)
     {
-	this(new NameTreeNode(node));
+	this((NameUsage<?>)node);
     }
 
-    public NameTree(NameTreeNode node)
+    protected GenericNameTree(NameTreeNode node)
     {
 	this(new NameTreeModel(node));
     }
 
-    public NameTree(NameTreeModel model)
+    protected GenericNameTree(NameTreeModel model)
     {
 	this(model, null);
     }
 
-    public NameTree(NameTreeModel model, Aligner aligner)
+    protected GenericNameTree(NameTreeModel model, Aligner aligner)
     {
 	this(model, aligner, ResizeDirection.VERTICAL);
     }
 
-    public NameTree(NameTreeModel model, Aligner aligner, ResizeDirection direction)
+    protected GenericNameTree(NameTreeModel model, Aligner aligner, ResizeDirection direction)
     {
 	super(model);
 	initializeLocalVars();
@@ -324,9 +377,9 @@ public class NameTree
 
     /**
      * Returns view name of the name tree.
-     * If it is set by <CODE>setViewName(String)</CODE>,
+     * If it is set by {@code setViewName(String)},
      * the set name is used.  Instead, it returns
-     * view name held by the root <CODE>NameUsage</CODE>
+     * view name held by the root {@code NameUsage}
      *
      * @return String representing view name of this tree
      *
@@ -339,7 +392,7 @@ public class NameTree
     }
 
     /**
-     * Sets <CODE>name</CODE> as view name of this tree
+     * Sets {@code name} as view name of this tree
      *
      * @see #getViewName()
      */
@@ -356,11 +409,6 @@ public class NameTree
     public void setExpandedIcon(Icon icon)
     {
 	((BasicTreeUI)getUI()).setExpandedIcon(icon);
-    }
-
-    public void setLineStyle(LineStyle style)
-    {
-	putClientProperty("JTree.lineStyle", style.getValue());
     }
 
     public String convertValueToText(Object value, boolean selected,
@@ -396,34 +444,37 @@ public class NameTree
 	return this;
     }
 
-    public void processMouseEvent(MouseEvent event)
+    protected void processMouseEventGenerics(MouseEvent event)
     {
 	if(event.getID() == MouseEvent.MOUSE_PRESSED) {
 	    TreePath path =
 		getClosestPathForLocation(event.getX(), event.getY());
-	    if(path != null &&
-	       getPathBounds(path).x >= event.getX()
+	    if (path != null
+		&& getPathBounds(path).x >= event.getX()
 	       ) {
-		
 		NameTreeNode node =
 		    (NameTreeNode)path.getLastPathComponent();
-		NameUsage<?, ?> usage = node.getNameUsage();
+		@SuppressWarnings("unchecked")
+		    NameUsage<T> usage = (NameUsage<T>)node.getNameUsage();
 		if(usage.getLowerNameUsages() == null) {
-		    ObjectExchanger<?, ?> source = null;
-		    if(usage instanceof Exchangable/*<NameUsage>*/)
-			source = ((Exchangable<?, ?>)usage).getExchanger();
-		    if(source != null &&
-		       source instanceof NameUsageExchanger) {
+		    ObjectExchanger<?> source = null;
+		    if (usage instanceof Exchangable)
+			source = ((Exchangable<?>)usage).getExchanger();
+		    if (source != null &&
+			source instanceof NameUsageExchanger) {
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			List<NameUsage<?, ?>> lowerNameUsages = 
-			    ((NameUsageExchanger<?, ?>)source).getLowerNameUsages(usage, null, 1);
+			List<NameUsage<T>> lowerNameUsages = null;
+			if (source instanceof NameUsageExchanger) {
+			    @SuppressWarnings("unchecked")
+			    NameUsageExchanger<NameUsage<T>> exchanger =
+				(NameUsageExchanger<NameUsage<T>>)source;
+			    lowerNameUsages = exchanger.getLowerNameUsages(usage, null, 1);
+			}
 			NameTreeNode lowerNode = null;
 			if(lowerNameUsages != null) {
 			    usage.setLowerNameUsages(lowerNameUsages);
-			    for(NameUsage<?, ?> lowerNameUsage: lowerNameUsages) {
-				lowerNode =
-				    new NameTreeNode(lowerNameUsage);
-				node.add(lowerNode);
+			    for(NameUsage<T> lowerNameUsage: lowerNameUsages) {
+				node.add(new NameTreeNode(lowerNameUsage));
 			    }
 			}
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -698,97 +749,4 @@ public class NameTree
 	else
 	    collapsePath(path);
     }
-
-    /*
-    static NameTreeModel createPasher_1913(Person pasher)
-    {
-	Publication pasher_1913 = new Publication();
-	pasher_1913.setYear("1913");
-	pasher_1913.addAuthor(pasher);
-	pasher_1913.setAuthorNames(pasher.getSurname());
-	
-	NameUsageNode cryptophyceae_pasher_1913 = 
-	    createNode("class", "Cryptophyceae", pasher_1913);
-	NameUsageNode euryptomonodina_pascher_1913 = 
-	    createNode("subclass", "Euryptomonodina", pasher_1913, cryptophyceae_pasher_1913);
-
-	NameUsageNode cryptomonadales_pasher_1913 = 
-	    createNode("order", "Cryptomonadales", pasher_1913, euryptomonodina_pascher_1913);
-	NameUsageNode cryptomonadaceae_pasher_1913 = 
-	    createNode("family", "Cryptomonadaceae", pasher_1913, cryptomonadales_pasher_1913);
-	NameUsageNode  cryptomonadeae_pasher_1913 = 
-	    createNode("subfamily", "Cryptomonadeae", pasher_1913, cryptomonadaceae_pasher_1913);
-	NameUsageNode  cryptochrysidae_pasher_1913 = 
-	    createNode("subfamily", "Cryptochrysidae", pasher_1913, cryptomonadaceae_pasher_1913);
-
-	NameUsageNode nephroselmidaceae_pasher_1913 = 
-	    createNode("family", "Nephroselmidaceae", pasher_1913, cryptomonadales_pasher_1913);
-
-	NameUsageNode phaeocapsina_pascher_1913 = 
-	    createNode("subclass", "Phaeocapsina", pasher_1913, cryptophyceae_pasher_1913);
-
-	NameUsageNode phaeotamniaceae_pascher_1913 = 
-	    createNode("order", "Phaeotamniaceae", pasher_1913, phaeocapsina_pascher_1913);
-
-	NameUsageNode phaeocapsaceae_pascher_1913 = 
-	    createNode("order", "Phaeocapsaceae", pasher_1913, phaeocapsina_pascher_1913);
-
-	
-	NameTreeModel model = new NameTreeModel(cryptophyceae_pasher_1913);
-	model.setViewName("Pascher 1913");
-	return model;
-    }
-
-    static NameTreeModel createPasher_1914(Person pasher)
-    {
-	Publication pasher_1914 = new Publication();
-	pasher_1914.setYear("1914");
-	pasher_1914.addAuthor(pasher);
-	pasher_1914.setAuthorNames(pasher.getSurname());
-
-	NameUsageNode cryptophyceae_pasher_1914 = 
-	    createNode("class", "Cryptophyceae", pasher_1914);
-
-	NameUsageNode cryptomonadales_pasher_1914 = 
-	    createNode("order", "Cryptomonadales", pasher_1914, cryptophyceae_pasher_1914);
-
-	NameUsageNode phaeocapsales_pasher_1914 = 
-	    createNode("order", "Phaeocapsales", pasher_1914, cryptophyceae_pasher_1914);
-
-	NameUsageNode cryptococcales_pasher_1914 = 
-	    createNode("order", "Cryptococcales", pasher_1914, cryptophyceae_pasher_1914);
-	NameUsageNode cryptotrichales_pasher_1914 = 
-	    createNode("order", "Cryptotrichales", pasher_1914, cryptophyceae_pasher_1914);
-
-	NameTreeModel model = new NameTreeModel(cryptophyceae_pasher_1914);
-	model.setViewName("Pascher 1914");
-	return model;
-    }
-
-    static NameTreeModel createOltmanns_1922(Person oltmanns)
-    {
-	Publication oltmanns_1922 = new Publication();
-	oltmanns_1922.setYear("1922");
-	oltmanns_1922.addAuthor(oltmanns);
-	oltmanns_1922.setAuthorNames(oltmanns.getSurname());
-
-	NameUsageNode cryptomonadales_oltmanns_1922 = 
-	    createNode("order", "Cryptomonadales", oltmanns_1922);
-	NameUsageNode nephroselmidaceae_oltmanns_1922 = 
-	    createNode("family", "Nephroselmidaceae", oltmanns_1922, cryptomonadales_oltmanns_1922);
-
-	NameUsageNode cryptochrysidaceae_oltmanns_1922 = 
-	    createNode("family", "Cryptochrysidaceae", oltmanns_1922, cryptomonadales_oltmanns_1922);
-
-	NameUsageNode phaeocapsaceae_oltmanns_1922 = 
-	    createNode("family", "Phaeocapsaceae", oltmanns_1922, cryptomonadales_oltmanns_1922);
-
-	NameUsageNode cryptomonadaceae_oltmanns_1922 = 
-	    createNode("family", "Cryptomonadaceae", oltmanns_1922, cryptomonadales_oltmanns_1922);
-
-	NameTreeModel model = new NameTreeModel(cryptomonadales_oltmanns_1922);
-	model.setViewName("Oltmanns 1922");
-	return model;
-    }
-    */
 }

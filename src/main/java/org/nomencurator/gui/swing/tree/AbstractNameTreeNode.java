@@ -44,66 +44,19 @@ import javax.swing.tree.TreeNode;
 import org.nomencurator.model.NameUsage;
 
 /**
- * <code>AbstractNameTreeNode</code> wrapping a <code>NameUsage</code>.
+ * {@code AbstractNameTreeNode} wrapping a {@code NameUsage} as generic {@code N}.
  * Concrete subclasses are expeced to be implemented like
- * {@code public class Foo extends AbstractNameTreeNode<Foo>}
+ * {@code public class Foo extends AbstractNameTreeNode<Foo, Bar>} where {@code Bar}
+ * is an insance of {@code NameUsage<?>}
  *
- * @version 	22 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameTreeNode<T extends AbstractNameTreeNode<?>>
-    extends GenericNameTreeNode<T>
-	    //    implements NameUsage<T, T>
-{
-    private static final long serialVersionUID = 7575704267493453727L;
-
-    protected AbstractNameTreeNode(NameUsage<?, ?> nameUsage)
-    {
-	super(nameUsage);
-    }
-
-    protected AbstractNameTreeNode(NameUsage<?, ?> nameUsage, boolean  allowsChildren)
-    {
-	super(nameUsage, allowsChildren);
-    }
-
-    protected AbstractNameTreeNode()
-    {
-	super();
-    }
-
-    protected AbstractNameTreeNode(boolean  allowsChildren)
-    {
-	super(allowsChildren);
-    }
-    
-    @SuppressWarnings("unchecked")
-    public AbstractNameTreeNode<T> clone() {
-	AbstractNameTreeNode<T> newNode;
-
-	newNode = (AbstractNameTreeNode)super.clone();
-	newNode.literal = literal;
-	newNode.rankedName = rankedName;
-	if(rough != null) {
-	    newNode.rough = new RoughSetAdaptor(newNode);
-	}
-	newNode.toolTipText = toolTipText;
-
-	return newNode;
-    }
-}
-
-/**
- * <code>GenericNameTreeNode</code> wrapping a <code>NameUsage</code>
- *
- * @version 	20 June 2016
- * @author 	Nozomi `James' Ytow
- */
-abstract class GenericNameTreeNode<T extends GenericNameTreeNode<?>>
     extends TrimmableTreeNode
     implements NamedNode<T>, RenderingOptions
 {
-    private static final long serialVersionUID = 1748964327470579483L;
+    private static final long serialVersionUID = -8535391312644725675L;
 
     protected String literal;
 
@@ -119,25 +72,43 @@ abstract class GenericNameTreeNode<T extends GenericNameTreeNode<?>>
 
     protected Map<String, Set<T>> childNames;
 
-    protected GenericNameTreeNode(NameUsage<?, ?> nameUsage)
+    protected AbstractNameTreeNode(NameUsage<?>  nameUsage)
     {
 	this(nameUsage, true);
     }
 
-    protected GenericNameTreeNode(NameUsage<?, ?> nameUsage, boolean  allowsChildren)
+    protected AbstractNameTreeNode(NameUsage<?> nameUsage, boolean  allowsChildren)
     {
 	super(nameUsage, allowsChildren);
     }
 
-    protected GenericNameTreeNode()
+    protected AbstractNameTreeNode()
     {
 	this(true);
     }
 
-    protected GenericNameTreeNode(boolean  allowsChildren)
+    protected AbstractNameTreeNode(boolean  allowsChildren)
     {
 	super(null, allowsChildren);
     }
+
+
+    public AbstractNameTreeNode<T> clone() {
+	
+	@SuppressWarnings("unchecked")
+	AbstractNameTreeNode<T> newNode =
+	    (AbstractNameTreeNode)super.clone();
+	newNode.literal = literal;
+	newNode.rankedName = rankedName;
+	if(rough != null) {
+	    newNode.rough = new RoughSetAdaptor(newNode);
+	}
+	newNode.toolTipText = toolTipText;
+
+	return newNode;
+    }
+
+
 
     protected abstract String getRankedName(boolean abbreviate);
 
@@ -299,7 +270,7 @@ abstract class GenericNameTreeNode<T extends GenericNameTreeNode<?>>
 	return rough.getCoverage(node);
     }
 
-    protected String getToolTipText(NameUsage<?, ?> nameUsage)
+    protected String getToolTipText(NameUsage<?> nameUsage)
     {
 	if(nameUsage != null)
 	    return nameUsage.getSummary();
@@ -344,8 +315,8 @@ abstract class GenericNameTreeNode<T extends GenericNameTreeNode<?>>
 	while(descendants.hasMoreElements()) {
 	    MutableTreeNode descendant = 
 		(MutableTreeNode)descendants.nextElement();
-	    if(descendant instanceof GenericNameTreeNode) {
-		((GenericNameTreeNode<?>)descendant).setToolTipText(null);
+	    if(descendant instanceof AbstractNameTreeNode) {
+		((AbstractNameTreeNode<?>)descendant).setToolTipText(null);
 	    }
 	}
     }
@@ -386,7 +357,7 @@ abstract class GenericNameTreeNode<T extends GenericNameTreeNode<?>>
 
     public void setPseudonymForUnnamedNode(String pseudonym)
     {
-	org.nomencurator.gui.swing.tree.GenericNameTreeNode.pseudonym = pseudonym;
+	org.nomencurator.gui.swing.tree.AbstractNameTreeNode.pseudonym = pseudonym;
     }
 
     public int getHeight()
@@ -395,10 +366,10 @@ abstract class GenericNameTreeNode<T extends GenericNameTreeNode<?>>
     }
 
     /**
-     * Returnes parent node of the <CODE>NamedNode</CODE>,
+     * Returnes parent node of the {@code NamedNode},
      * some node having a name on the prental chain if the parent node is unnamed,
      * or null if none node on the prental chain has name or if the 
-     * <CODE>NamedNode</CODE> is the root node.
+     * {@code NamedNode} is the root node.
      */
     public NamedNode<?> getNamedParent()
     {

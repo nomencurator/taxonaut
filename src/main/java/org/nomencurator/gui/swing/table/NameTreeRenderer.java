@@ -36,7 +36,7 @@ import org.nomencurator.gui.swing.tree.NameTreeModel;
 /**
  * {@code TableCellRenderer} to render a {@code NameTree}.
  *
- * @version 	29 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeRenderer

@@ -97,11 +97,11 @@ import org.nomencurator.gui.vocabulary.QueryPanelElement;
  * {@code NameUsageQueryPanel} provides components to specify a filter to search data sources.
  * It dispatches a {@code QueryEvent} representing a query filter.
  *
- * @version 	29 Juen 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NameUsageQueryPanel<N extends NameUsage<?, ?>, T extends N>
-    extends RankQueryPanel<N, T>
+public class NameUsageQueryPanel<T extends NameUsage<?>>
+    extends RankQueryPanel< T>
     implements ItemListener
 {
     private static final long serialVersionUID = -6396795868029423073L;
@@ -178,7 +178,7 @@ public class NameUsageQueryPanel<N extends NameUsage<?, ?>, T extends N>
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    public NameUsageQueryPanel(QueryListener<N, T> listener)
+    public NameUsageQueryPanel(QueryListener<T> listener)
     {
 	this(Locale.getDefault(), listener);
     }
@@ -189,7 +189,7 @@ public class NameUsageQueryPanel<N extends NameUsage<?, ?>, T extends N>
      *
      * @param locale {@code Locale} to determine texts in labels and buttons
      */
-    public NameUsageQueryPanel(Locale locale, QueryListener<N, T> listener)
+    public NameUsageQueryPanel(Locale locale, QueryListener<T> listener)
     {
 	super(locale, listener);
     }
@@ -398,9 +398,9 @@ public class NameUsageQueryPanel<N extends NameUsage<?, ?>, T extends N>
 	super.setLocale(locale);
     }
 
-    protected synchronized QueryEvent<N, T> composeQuery()
+    protected synchronized QueryEvent<T> composeQuery()
     {
-	QueryEvent<N, T> event = super.composeQuery();
+	QueryEvent<T> event = super.composeQuery();
 	if (event.getQueryParameter() != null) {
 	    MatchingMode matchingMode = null;
 	    for(int i = 0; i < matchingModes.length; i++) {
@@ -410,7 +410,7 @@ public class NameUsageQueryPanel<N extends NameUsage<?, ?>, T extends N>
 		}
 	    }
 	    event.getQueryParameter().setMatchingMode(matchingMode);
-	    NameUsageQueryParameter<N, T> parameter = (NameUsageQueryParameter<N, T>)event.getQueryParameter();
+	    NameUsageQueryParameter<T> parameter = (NameUsageQueryParameter<T>)event.getQueryParameter();
 	    if (basionymCheckBox != null)
 		parameter.setIncludeBasionyms(basionymCheckBox.isSelected());
 	    if (synonymCheckBox != null)

@@ -60,7 +60,7 @@ import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
 /**
  * {@code NameTreeNodeRenderer} is a {@code TableCellRenderer} to render a {@code NameTree}
  *
- * @version 	28 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeNodeRenderer
@@ -125,7 +125,7 @@ public class NameTreeNodeRenderer
 						   boolean isSelected, boolean hasFocus, 
 						   int row, int column)
     {
-	NameUsage<?, ?> n = null;
+	NameUsage<?> n = null;
 	boolean isSynonym = false;
 	if(value == null) {
 	    value = "";
@@ -183,7 +183,7 @@ public class NameTreeNodeRenderer
 	return component;
     }
 
-    protected boolean renderText(NameUsage<?, ?> nameUsage, StringBuffer buffer)
+    protected boolean renderText(NameUsage<?> nameUsage, StringBuffer buffer)
     {
 	if (nameUsage == null)
 	    return false;
@@ -223,7 +223,7 @@ public class NameTreeNodeRenderer
      * to ignore, or null unnecessary to skip.
      */
     @SuppressWarnings("unchecked")
-    protected <T extends NameUsage<?, ?>> StringBuffer getToolTipTextBuffer(final T nameUsage, final String filter, StringBuffer buffer, Collection<T> toSkip)
+    protected <T extends NameUsage<?>> StringBuffer getToolTipTextBuffer(final T nameUsage, final String filter, StringBuffer buffer, Collection<T> toSkip)
     {
 	if (buffer == null)
 	    buffer = new StringBuffer();
@@ -287,14 +287,14 @@ public class NameTreeNodeRenderer
 		    }
 		}
 		else if (key instanceof String && value instanceof DefaultMutableTreeNode) {
-		    Set<NameUsage<?, ?>> usages = new HashSet<NameUsage<?, ?>>();
+		    Set<NameUsage<?>> usages = new HashSet<NameUsage<?>>();
 		    Enumeration<?> children = ((NamedNode)value).children();
 		    String literal = (String) key;
-		    NameUsage<?, ?> usage = null;
+		    NameUsage<?> usage = null;
 		    while (children.hasMoreElements()) {
 			NamedNode<?> child = (NamedNode<?>)children.nextElement();
 			if (literal.equals(child.getLiteral())) {
-			    usage = (NameUsage<?, ?>)((DefaultMutableTreeNode)child).getUserObject();
+			    usage = (NameUsage<?>)((DefaultMutableTreeNode)child).getUserObject();
 			    if (! usages.contains(usage)) {
 				usages.add(usage);
 				if (buffer.length() > 0)
@@ -303,24 +303,24 @@ public class NameTreeNodeRenderer
 			    }
 			}
 		    }
-		    usage = (NameUsage<?, ?>)((DefaultMutableTreeNode)value).getUserObject();
+		    usage = (NameUsage<?>)((DefaultMutableTreeNode)value).getUserObject();
 		    buffer = getToolTipTextBuffer(usage, (String) key, buffer, usages);
 		    usages.clear();
 		}
 	    }
 	}
 	else if (value instanceof NamedObject)  {
-	    buffer.append(((NamedObject<?, ?>)value).getSummary());
+	    buffer.append(((NamedObject<?>)value).getSummary());
 	    String literal = null;
 	    if (value instanceof NameUsage) {
 		if (key instanceof UnitedNameTreeNode) {
 		    literal = ((UnitedNameTreeNode)key).getLiteral();
 		}
 		else if (key instanceof NameUsage) {
-		    literal = ((NameUsage<?, ?>)key).getLiteral();
+		    literal = ((NameUsage<?>)key).getLiteral();
 		}
 		if (literal != null) {
-		    buffer = getToolTipTextBuffer((NameUsage<?, ?>)value, literal, buffer, null);
+		    buffer = getToolTipTextBuffer((NameUsage<?>)value, literal, buffer, null);
 		}
 	    }
 	}
@@ -339,7 +339,7 @@ public class NameTreeNodeRenderer
 			buffer.append(((NamedNode<?>)object).getToolTipText());
 		    }
 		    else if (object instanceof NamedObject) {
-			buffer.append(((NamedObject<?, ?>)object).getSummary());
+			buffer.append(((NamedObject<?>)object).getSummary());
 		    }
 		    if (buffer.length() > 0 && objectCount < objects)
 			buffer.append("\n\n");

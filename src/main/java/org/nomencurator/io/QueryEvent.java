@@ -29,20 +29,20 @@ import lombok.Getter;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>QueryEvent</CODE> provides an event to manage a query parameter.
+ * {@code QueryEvent} provides an event to manage a query parameter.
  *
- * @version 	25 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class QueryEvent<N extends NamedObject<?, ?>, T extends N>
+public class QueryEvent<T extends NamedObject<?>>
     extends EventObject
 {
     private static final long serialVersionUID = 4302605739900827696L;
 
     @Getter
-    protected QueryParameter<N, T> queryParameter;
+    protected QueryParameter<T> queryParameter;
 
-    public QueryEvent(Object source, QueryParameter<N, T> queryParameter)
+    public QueryEvent(Object source, QueryParameter<T> queryParameter)
     {
 	super(source);
 	this.queryParameter = queryParameter;

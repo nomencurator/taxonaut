@@ -1,7 +1,7 @@
 /*
  * VernacularNameUsage.java:  a Java implementation of GBIF CheklistBank NameUsage, or nub
  *
- * Copyright (c) 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -58,13 +58,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <CODE>VernacularNameUsage</CODE> is an implementation of GBIF CheklistBank NameUsage, or nub.
+ * {@code VernacularNameUsage} is an implementation of GBIF CheklistBank NameUsage, or nub.
  *
- * @version 	15 July 2015
+ * @version 	02 July 2016`
  * @author 	Nozomi `James' Ytow
  */
 public class VernacularNameUsage
-    extends AbstractNameUsage<VernacularNameUsage, VernacularNameUsage>
+    extends AbstractNameUsage<VernacularNameUsage>
 {
     private static final long serialVersionUID = -2520762617216765347L;
 
@@ -95,7 +95,7 @@ public class VernacularNameUsage
     public void setVernacularName(VernacularName vernacularName)
 	throws RuntimeException
     {
-	NameUsage<? extends VernacularNameUsage, ? extends VernacularNameUsage> n = getNameUsage();
+	NameUsage<? extends VernacularNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof VernacularNameUsage) {
 		((VernacularNameUsage)n).setVernacularName(vernacularName);
@@ -140,7 +140,7 @@ public class VernacularNameUsage
 
     protected void clearVernacularName()
     {
-	NameUsage<? extends VernacularNameUsage, ? extends VernacularNameUsage> n = getNameUsage();
+	NameUsage<? extends VernacularNameUsage> n = getNameUsage();
 	if(n != this) {
 	    if(n instanceof VernacularNameUsage) {
 		((VernacularNameUsage)n).clearVernacularName();
@@ -152,7 +152,7 @@ public class VernacularNameUsage
 
     public String getLiteral()
     {
-	NameUsage<? extends VernacularNameUsage, ? extends VernacularNameUsage> n = getNameUsage();
+	NameUsage<? extends VernacularNameUsage> n = getNameUsage();
 	if(n != this && n instanceof VernacularNameUsage) {
 	    return ((VernacularNameUsage)n).getLiteral();
 	}
@@ -165,7 +165,7 @@ public class VernacularNameUsage
 
     public void setLiteral(String literal)
     {
-	NameUsage<? extends VernacularNameUsage, ? extends VernacularNameUsage> n = getNameUsage();
+	NameUsage<? extends VernacularNameUsage> n = getNameUsage();
 	if(n != this && n instanceof VernacularNameUsage) {
 	    ((VernacularNameUsage)n).setLiteral(literal);
 	    return;
@@ -190,7 +190,7 @@ public class VernacularNameUsage
 	return null;
     }
 
-    protected VernacularNameUsage createNameUsage(Name<?, ?> nameUsage)
+    protected VernacularNameUsage createNameUsage(Name<?> nameUsage)
     {
 	if(nameUsage != null && nameUsage instanceof VernacularNameUsage)
 	    return new VernacularNameUsage(((VernacularNameUsage)nameUsage).getVernacularName());
@@ -198,7 +198,7 @@ public class VernacularNameUsage
 	    return createNameUsage();
     }
 
-    protected VernacularNameUsage createNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    protected VernacularNameUsage createNameUsage(NameUsage<?> nameUsage)
 
     {
 	if(nameUsage != null && nameUsage instanceof VernacularNameUsage)

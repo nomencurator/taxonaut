@@ -1,7 +1,7 @@
 /*
  * AbstractObjectExchanger.java
  *
- * Copyright (c) 2006, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2006, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -34,18 +34,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <CODE>AbstractObjectExchanger</CODE> implements <tt>ObjectExchanger</tt>.
+ * {@code AbstractObjectExchanger} implements {@code ObjectExchanger}.
  *
- * @version 	10 Sep. 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-//public abstract class AbstractObjectExchanger<N extends NamedObject<?, ?>, T extends N, E extends NamedObject<N, T>>
-//    implements ObjectExchanger<N, T, E>
-public abstract class AbstractObjectExchanger<N extends NamedObject<?, ?>, T extends N>
-    implements ObjectExchanger<N, T>
+public abstract class AbstractObjectExchanger<T extends NamedObject<?>>
+    implements ObjectExchanger<T>
 {
-    protected static Map<NamedObject<?, ?>, ObjectExchanger<?, ?>> responsibeExchanger
-	= Collections.synchronizedMap(new HashMap<NamedObject<?, ?>, ObjectExchanger<?, ?>>());
+    protected static Map<NamedObject<?>, ObjectExchanger<?>> responsibeExchanger
+	= Collections.synchronizedMap(new HashMap<NamedObject<?>, ObjectExchanger<?>>());
 
     protected MatchingMode defaultMatchingMode;
 
@@ -81,8 +79,7 @@ public abstract class AbstractObjectExchanger<N extends NamedObject<?, ?>, T ext
 	return results.toArray(splitted);
     }
 
-    //public Collection<NamedObject<N, T>> getObjects(QueryParameter<N, T> filter)
-    public Collection<T> getObjects(QueryParameter<N, T> filter)
+    public Collection<T> getObjects(QueryParameter<T> filter)
     {
 	if(filter == null)
 	    return null;
@@ -103,12 +100,12 @@ public abstract class AbstractObjectExchanger<N extends NamedObject<?, ?>, T ext
 	return MatchingMode.EXACT;
     }
 
-    protected void deposit(NamedObject<?, ?> namedObject)
+    protected void deposit(NamedObject<?> namedObject)
     {
 	responsibeExchanger.put(namedObject, this);	
     }
 
-    public ObjectExchanger<?, ?> getExchanger(NamedObject<?, ?> namedObject) {
+    public ObjectExchanger<?> getExchanger(NamedObject<?> namedObject) {
 	return responsibeExchanger.get(namedObject);
     }
 }

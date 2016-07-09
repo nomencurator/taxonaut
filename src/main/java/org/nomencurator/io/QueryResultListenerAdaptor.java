@@ -29,37 +29,37 @@ import java.util.List;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>QueryResultListenerAdapter</CODE> provides an adaptor
- * to handle events to <CODE>QueryResultListener</CODE>
+ * {@code QueryResultListenerAdapter} provides an adaptor
+ * to handle events to {@code QueryResultListener}.
  *
- * @version 	25 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class QueryResultListenerAdaptor<N extends NamedObject<?, ?>, T extends N>
+public class QueryResultListenerAdaptor<T extends NamedObject<?>>
 {
     // EventListenerList is unhappy with type T which could be an interface but not a class
-    protected List<QueryResultListener<N, T>> listeners;
+    protected List<QueryResultListener<T>> listeners;
 
-    public synchronized void addQueryResultListener(QueryResultListener<N, T> listener)
+    public synchronized void addQueryResultListener(QueryResultListener<T> listener)
     {
 	if(listeners == null)
-	    listeners = Collections.synchronizedList(new ArrayList<QueryResultListener<N, T>>());
+	    listeners = Collections.synchronizedList(new ArrayList<QueryResultListener<T>>());
 	listeners.add(listener);
     }
 
-    public synchronized void removeQueryResultListener(QueryResultListener<N, T> listener)
+    public synchronized void removeQueryResultListener(QueryResultListener<T> listener)
     {
 	if(listeners != null)
 	    listeners.remove(listener);
     }
 
-    public void fireQueryResultEvent(QueryResultEvent<N, T> event)
+    public void fireQueryResultEvent(QueryResultEvent<T> event)
     {
 	if(listeners == null || listeners.isEmpty())
 	    return;
 
 	synchronized(listeners) {
-	    for(QueryResultListener<N, T> listener : listeners) {
+	    for(QueryResultListener<T> listener : listeners) {
 		listener.queryReturned(event);
 	    }
 	}

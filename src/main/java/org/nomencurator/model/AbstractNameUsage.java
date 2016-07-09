@@ -47,7 +47,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
-//import org.nomencurator.sql.NamedObjectConnection;
 import org.nomencurator.io.sql.NamedObjectConnection;
 
 import org.nomencurator.io.Exchangable;
@@ -70,13 +69,12 @@ import org.w3c.dom.NodeList;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	27 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
-						  //public abstract class AbstractNameUsage<T extends NameUsage<?>>
-    extends AbstractNamedObject<N, T>
-    implements NameUsage<N, T>, Serializable
+public abstract class AbstractNameUsage<T extends NameUsage<?>>
+    extends AbstractNamedObject< T>
+    implements NameUsage<T>, Serializable
 {
     private static final long serialVersionUID = 5100114850590005954L;
 
@@ -100,8 +98,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     //protected Appearance appearance;
 
     /** The sens of this {@code NameUsage}.  It may designate the first usage of the name */
-    protected NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> sensu;
-    //protected NameUsage<? extends N, ? extends T> sensu;
+    protected NameUsage<?> sensu;
 
     /** {@code Vector} containing authors of this {@code NameUsage} */
     protected List<Author> authors;
@@ -112,7 +109,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     protected Integer year;
 
     /** pointer to higher {@code NameUsage} */
-    protected NameUsage<N, T> higherNameUsage;
+    protected NameUsage<T> higherNameUsage;
     
     /** index of this in sibling {@code NameUsage}s */
     protected int siblingIndex;
@@ -124,20 +121,20 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * {@code List} of lower {@code NameUsage}s
      *  just under this {@code NameUsage}.
      */
-    protected List<NameUsage<N, T>> lowerNameUsages;
+    protected List<NameUsage<T>> lowerNameUsages;
 
     /** boolean indicating this taxon is type or not */
     protected boolean isType;
 
     /** {@code NameUsage} designated as type of this {@code NameUsage} */
-    protected NameUsage<? extends N, ? extends N> typeUsage;
+    protected NameUsage<?> typeUsage;
 
     /**
      * {@code Map} from {@code NameUsage} to a {@code TypeStatus}
      * representing a list of {@code NameUsage}s designated as type or types
      * of this {@code NameUsage} designated in a single {@code Appearance}.
      */
-    protected Map<NameUsage<? extends N, ? extends N>, TypeStatus> typeDesignators;
+    protected Map</*? extends */NameUsage<?>, TypeStatus> typeDesignators;
 
     /**
      * {@code String} representing type status of this {@code NameUsage}.
@@ -145,60 +142,34 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * If this {@code NameUsage} represents a specimen ID, the valume is one of
      * "holotype", 
      */
-    protected String typeOfType;
+    protected TypeStatus typeStatus;
 
     /**
-     * A constant indicates non-specimen type, i.e. type taxon.
-     * The word "nominotype" was taken from ICZN 4th ed. 
-     * Art. 37, 44, 47 and 61.2.
+     * {@code Collection} containing {@code Annotation}s made by this {@code NameUsage}
      */
-    public static final String NOMINOTYPE = "nominotype";
-
-    /**
-     * A constatns indicates allotype.
-     *
-     */
-    public static final String ALLOTYPE = "allotype";
-
-    public static final String COTYPE = "cotype";
-    public static final String GENOTYPE = "genotype";
-    public static final String HAPANTOTYPE = "hapantotype";
-    public static final String HOLOTYPE = "holotype";
-    public static final String LECTOTYPE = "lectotype";
-    public static final String NEOTYPE = "neotype";
-    public static final String PARALECTOTYPE = "paralectotype";
-    public static final String PARATYPE = "paratype";
-    public static final String SYNTYPE = "syntype";
-    public static final String TOPOTYPE = "topotype";
-    public static final String TYPE_SERIES = "type series";
-    public static final String TYPE_HOST = "type host";
-
-    /**
-     * {@code Vector} containing {@code Annotation}s made by this {@code NameUsage}
-     */
-    //protected Vector annotations;
     protected Collection<Annotation> annotations;
 
     /**
-     * {@code Hashtable} of which keys provide a list of literal values
+     * {@code Map} of which keys provide a list of literal values
      * included in the concept represented by this {@code NameUsage}
      */
-    protected Map<String, NameUsage<? extends N, ? extends N>> includants;
+    protected Map<String, NameUsage<T>> includants;
 
     /**
      * {@code Map} of which keys provide a list of literal values
      * excluded in the concept represented by this {@code NameUsage}
      */
-    protected Map<String, NameUsage<? extends N, ? extends N>> excludants;
+    protected Map<String, NameUsage<T>> excludants;
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public boolean equals(Object object) {
 	if(object == this) return true;
 	if(object == null) return false;
 	if(getClass() != object.getClass()) return false;
 
-	final AbstractNameUsage<N, T> that = (AbstractNameUsage<N, T>) object;
+	@SuppressWarnings("unchecked")
+	final AbstractNameUsage<T> that = (AbstractNameUsage<T>) object;
+
 	return super.equals(object)
 	    && Objects.equals(this.contentsResolved, that.contentsResolved)
 	    && Objects.equals(this.hierarchyResolved, that.hierarchyResolved)
@@ -216,7 +187,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	    && Objects.equals(this.isType, that.isType)
 	    && Objects.equals(this.typeUsage, that.typeUsage)
 	    && Objects.equals(this.typeDesignators, that.typeDesignators)
-	    && Objects.equals(this.typeOfType, that.typeOfType)
+	    && Objects.equals(this.typeStatus, that.typeStatus)
 	    && Objects.equals(this.annotations, that.annotations)
 	    && Objects.equals(this.includants, that.includants)
 	    && Objects.equals(this.excludants, that.excludants)
@@ -242,7 +213,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 			    isType,
 			    typeUsage,
 			    typeDesignators,
-			    typeOfType,
+			    typeStatus,
 			    annotations,
 			    includants,
 			    excludants
@@ -280,7 +251,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * Constructs a {@code NameUsage} based on
      * {@code nameUsage}
      */
-    protected AbstractNameUsage(Name<?,?> nameUsage)
+    protected AbstractNameUsage(Name<?> nameUsage)
     {
 	//don't use NamedObject(String) constructor
 	this();
@@ -306,8 +277,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      *
      * @param nameUsage {@code NameUsage} to be copied deeply
      */
-    protected AbstractNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
-    //protected AbstractNameUsage(NameUsage<N, T> nameUsage)
+    protected AbstractNameUsage(NameUsage<? extends T> nameUsage)
     {
 	this();
 	if(nameUsage == null)
@@ -321,23 +291,23 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
 	setAuthorityYear(nameUsage.getAuthorityYear());
 
-	NameUsage<N, T> higherNameUsage = getNameUsage(nameUsage).getHigherNameUsage();
+	NameUsage<T> higherNameUsage = getNameUsage(nameUsage).getHigherNameUsage();
 	if(higherNameUsage != null) {
 	    setHigherNameUsage(higherNameUsage);
 	    setIndex(nameUsage.getIndex());
 	    setIncertaeSedis(nameUsage.isIncertaeSedis());
 	}
 	setType(nameUsage.isType());
-	setTypeOfType(nameUsage.getTypeOfType());
+	setTypeStatus(nameUsage.getTypeStatus());
 
 	//NameUsage<? extends N, ? extends N>[] lowerNameUsagesToCopy = nameUsage.getLowerNameUsages();
 	if(nameUsage.getLowerNameUsagesCount() > 0) {
 	    setLowerNameUsages(nameUsage.getLowerNameUsages());
 	    /*
-	    List<NameUsage<N, T>> source = nameUsage.getLowerNameUsages();
-	    List<NameUsage<N, T>> lowers = Collections.synchronizedList(new ArrayList<NameUsage<N, T>>(source.size()));
+	    List<NameUsage<T>> source = nameUsage.getLowerNameUsages();
+	    List<NameUsage<T>> lowers = Collections.synchronizedList(new ArrayList<NameUsage<T>>(source.size()));
 	    for (NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> usage : source) {
-		lowers.add((NameUsage<N, T>)usage);
+		lowers.add((NameUsage<T>)usage);
 	    }
 	    setLowerNameUsages(lowers);
 	    */
@@ -373,10 +343,10 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @param higher {@code Name} of higher taxon
      * @param lower array of lower taxa's {@code Name}s
      */
-    protected AbstractNameUsage(String rankLiteral, String name,
-		     Name<N, T> auth, Name<N, T> rec,
+    protected <N extends T> AbstractNameUsage(String rankLiteral, String name,
+		     Name<N> auth, Name<N> rec,
 		     boolean type,
-		     Name<N, T> higher, Name<N, T> [] lower)
+		     Name<N> higher, Name<N> [] lower)
     {
 	this();
 	
@@ -412,7 +382,6 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @param xml {@code Element} specifying a {@code NameUsage}
      * @param appearance {@code Appearance} where the name used
      */
-    //@SuppressWarnings({"unchecked"})
     protected AbstractNameUsage(Element xml, Appearance ap)
     {
 	super();
@@ -421,8 +390,8 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	String persistentID = null;
 	boolean toBeResolved = false;
 	List<Annotation> annotationList = null;
-	List<NameUsage<N, T>> typeDesignatorList = null;
-	Name<?, ?> object = null;
+	List<NameUsage<T>> typeDesignatorList = null;
+	Name<?> object = null;
 
 	for (int j = 0; j < nodeCount; j++) {
 	    Node node = nodeList.item(j);
@@ -438,9 +407,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 		    nameLiteral =  getString(element);
 		else if(tagName.equals ("sensu")) {
 		    String pID = getString(element);
-		    Name<?, ?> name = curator.get(pID);
+		    Name<?> name = curator.get(pID);
 		    if(isAssignableFrom(name))
-			sensu = (NameUsage<?, ?>)name;
+			sensu = (NameUsage<?>)name;
 		    if(sensu == null) {
 			sensu = createNameUsage();
 			sensu.setLiteral(pID);
@@ -525,7 +494,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 		}
 		else if(tagName.equals ("lowerTaxon")) {
 		    String pID = getString(element);
-		    NameUsage<N, T> n = getNameUsage(curator.get(pID));
+		    NameUsage<T> n = getNameUsage(curator.get(pID));
 		    if(n != null) {
 			addLowerNameUsage(n);
 			toBeResolved = true;
@@ -549,9 +518,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 		    isType = Boolean.valueOf(getString(element)).booleanValue();
 		}
 		else if(tagName.equals ("type")) {
-		    typeOfType = element.getAttribute("type");
+		    setTypeStatus(element.getAttribute("type"));
 		    String pID = getString(element);
-		    NameUsage<N, T> n = getNameUsage(curator.get(pID));
+		    NameUsage<T> n = getNameUsage(curator.get(pID));
 		    if(n != null) {
 			toBeResolved = true;
 		    }
@@ -564,7 +533,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 		}
 		else if(tagName.equals("typeDesignator")) {
 		    String pID = getString(element);
-		    NameUsage<N, T> n = getNameUsage(curator.get(pID));
+		    NameUsage<T> n = getNameUsage(curator.get(pID));
 		    if(n != null) {
 			toBeResolved = true;
 		    }
@@ -574,7 +543,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 			curator.put(n);
 		    }
 		    if(typeDesignatorList == null)
-			typeDesignatorList = Collections.synchronizedList(new ArrayList<NameUsage<N, T>>());
+			typeDesignatorList = Collections.synchronizedList(new ArrayList<NameUsage<T>>());
 		    typeDesignatorList.add(n);
 		}
 		else if(tagName.equals ("annotation")) {
@@ -612,8 +581,8 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	    annotations = annotationList;
 	}
 	if(typeDesignatorList != null) {
-	    typeDesignators = Collections.synchronizedMap(new HashMap<NameUsage<? extends N, ? extends N>, TypeStatus>());
-	    for(NameUsage<? extends N, ? extends N> designator : typeDesignatorList) {
+	    typeDesignators = Collections.synchronizedMap(new HashMap<NameUsage<?>, TypeStatus>());
+	    for(NameUsage<?> designator : typeDesignatorList) {
 		typeDesignators.put(designator, null);
 	    }
 	}
@@ -629,26 +598,26 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	    curator.resolve(this);
     }
 
-    public AbstractNameUsage<N, T> create()
+    public AbstractNameUsage<T> create()
     {
 	return createNameUsage();
     }
 
-    public NameUsage<N, T> clone()
+    public NameUsage<T> clone()
     {
-	//AbstractNameUsage<N, T> n = createNameUsage();
-	//NameUsage<N, T> n = createNameUsage();
-	AbstractNameUsage<N, T> n = create();
+	//AbstractNameUsage<T> n = createNameUsage();
+	//NameUsage<T> n = createNameUsage();
+	AbstractNameUsage<T> n = create();
 	copyTo(n);
 	return n;
     }
 
-    protected void copy(AbstractNameUsage<N, T> source)
+    protected void copy(AbstractNameUsage<T> source)
     {
 	source.copyTo(this);
     }
 
-    protected void copyTo(NameUsage<N, T> dest)
+    protected void copyTo(NameUsage<T> dest)
     {
 	dest.setRankLiteral(getRankLiteral());
 	dest.setLiteral(getLiteral());
@@ -666,20 +635,20 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
 	dest.setAuthorityYear(getAuthorityYear());
 
-	NameUsage<N, T> higherNameUsage = dest.getHigherNameUsage();
+	NameUsage<T> higherNameUsage = dest.getHigherNameUsage();
 	if(higherNameUsage != null) {
 	    dest.setHigherNameUsage(higherNameUsage.clone());
 	    dest.setIndex(getIndex());
 	    dest.setIncertaeSedis(isIncertaeSedis());
 	}
 	dest.setType(isType());
-	dest.setTypeOfType(getTypeOfType());
+	dest.setTypeStatus(getTypeStatus());
 
 	/*
-	NameUsage<N, T>[] lowerNameUsagesArray = getLowerNameUsages();
+	NameUsage<T>[] lowerNameUsagesArray = getLowerNameUsages();
 	if(lowerNameUsagesArray != null) {
 	    lowerNameUsagesArray = ArrayUtility.copy(lowerNameUsagesArray);
-	    for(NameUsage<N, T> lowerNameUsage : lowerNameUsagesArray) {
+	    for(NameUsage<T> lowerNameUsage : lowerNameUsagesArray) {
 		lowerNameUsage = lowerNameUsage.clone();
 		lowerNameUsage.setHigherNameUsage(n);
 	    }
@@ -688,7 +657,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	*/
 
 	if(getLowerNameUsagesCount() > 0) {
-	    dest.setLowerNameUsages(Collections.synchronizedList(new ArrayList<NameUsage<N, T>>(getLowerNameUsages())));
+	    dest.setLowerNameUsages(Collections.synchronizedList(new ArrayList<NameUsage<T>>(getLowerNameUsages())));
 	}
 	
 	Collection<Annotation> annotationToCopy = getAnnotations();
@@ -725,7 +694,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public String getPersistentID(String separator, boolean withClassName)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getPersistentID(separator, withClassName);
 
@@ -771,7 +740,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
     public void parseLine(String line)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.parseLine(line);
 	    return;
@@ -811,7 +780,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	setSource(appearance);
     }
     
-    public boolean merge(NamedObject<?, ?> namedObject)
+    public boolean merge(NamedObject<?> namedObject)
     {
 	if(!(namedObject instanceof NameUsage))
 	    return false;
@@ -819,7 +788,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     }
 
     @Override
-    public Boolean isSynonymOf(final NameUsage<?, ?> nameUsage)
+    public Boolean isSynonymOf(final NameUsage<?> nameUsage)
     {
 	if(nameUsage == null)
 	    return Boolean.FALSE;
@@ -835,7 +804,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */ 
     public Rank getRank()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getRank();
 
@@ -852,7 +821,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */ 
     public String getRankLiteral()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getRankLiteral();
 
@@ -869,7 +838,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */ 
     public void setRank(Rank rank)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setRank(rank);
 	    return;
@@ -891,7 +860,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */ 
     public void setRankLiteral(String rankLiteral)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setRankLiteral(rankLiteral);
 	    return;
@@ -923,7 +892,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */ 
     public String getLiteral()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLiteral();
 
@@ -949,7 +918,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */ 
     public void setLiteral(String name)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setLiteral(name);
 	    return;
@@ -970,7 +939,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     public Locale getLocale()
     //public String getLocale()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLocale();
 
@@ -985,7 +954,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     public void setLocale(Locale locale)
     //public void setLocale(String locale)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setLocale(locale);
 	    return;
@@ -1005,11 +974,11 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public Publication getPublication()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getPublication();
 
-	NamedObject<?, ?> src = getSource();
+	NamedObject<?> src = getSource();
 
 	if(src != null) {
 	    if(src instanceof Publication)
@@ -1028,13 +997,13 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setPublication(Publication publication)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setPublication(publication);
 	    return;
 	}
 
-	NamedObject<?, ?> src = getSource();
+	NamedObject<?> src = getSource();
 	if(src == publication)
 	    return;
 
@@ -1055,11 +1024,11 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public Appearance getAppearance()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getAppearance();
 
-	NamedObject<?, ?> src = getSource();
+	NamedObject<?> src = getSource();
 	if(src != null &&
 	   src instanceof Appearance)
 	    return (Appearance)src;
@@ -1074,7 +1043,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setAppearance(Appearance appearance)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setAppearance(appearance);
 	    return;
@@ -1100,9 +1069,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      *
      * @return {@code NameUsage} representing higher taxon
      */
-    public NameUsage<N, T> getHigherNameUsage()
+    public NameUsage<T> getHigherNameUsage()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getHigherNameUsage();
 
@@ -1110,23 +1079,23 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     }
 
     //public List<NameUsage<?>> getNameUsagePath() 
-    public List<NameUsage<N, T>> getNameUsagePath() 
+    public List<NameUsage<T>> getNameUsagePath() 
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getNameUsagePath();
 
-	Stack<NameUsage<N, T>> stack = new Stack<NameUsage<N, T>>();
-	NameUsage<N, T> higher = getHigherNameUsage();
+	Stack<NameUsage<T>> stack = new Stack<NameUsage<T>>();
+	NameUsage<T> higher = getHigherNameUsage();
 	while (higher != null && stack.search(higher) == -1) {
 	    stack.push(higher);
 	    higher = getNameUsage(higher).getHigherNameUsage();
 	}
 
-	List<NameUsage<N, T>> nameUsagePath = null;
+	List<NameUsage<T>> nameUsagePath = null;
 	int size = stack.size();
 	if(size > 0) {
-	    nameUsagePath = new ArrayList<NameUsage<N, T>>(size);
+	    nameUsagePath = new ArrayList<NameUsage<T>>(size);
 	    while(!stack.empty()){
 		nameUsagePath.add(stack.pop());
 	    }
@@ -1140,12 +1109,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      *
      * @param higherNameUsage {@code NameUsage} representing higher taxon
      */
-    //public boolean setHigherNameUsage(NameUsage<? extends N, ? extends N> higherNameUsage)
-    //public boolean setHigherNameUsage(NameUsage<? extends N, ? extends T> higherNameUsage)
-    public synchronized boolean setHigherNameUsage(NameUsage<N, T> higherNameUsage)
-    //public boolean setHigherNameUsage(N higherNameUsage)
+    public synchronized boolean setHigherNameUsage(NameUsage<T> higherNameUsage)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    return n.setHigherNameUsage(higherNameUsage);
 	}
@@ -1163,7 +1129,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	    return false;
 	}
 
-	List<NameUsage<N, T>> nameUsagePath = getNameUsagePath();
+	List<NameUsage<T>> nameUsagePath = getNameUsagePath();
 
 	if(nameUsagePath != null &&  (nameUsagePath.contains(getNameUsage()) || nameUsagePath.contains(getNameUsage(getEntity()))))
 	    return false;
@@ -1203,9 +1169,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     //public void setHigherNameUsage(NameUsage<? extends N, ? extends N> higherNameUsage, int index)
     //public boolean setHigherNameUsage(NameUsage<? extends N, ? extends T> higherNameUsage, int index)
-    public boolean setHigherNameUsage(NameUsage<N, T> higherNameUsage, int index)
+    public boolean setHigherNameUsage(NameUsage<T> higherNameUsage, int index)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.setHigherNameUsage(higherNameUsage, index);
 
@@ -1228,7 +1194,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public int getIndex()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getIndex();
 
@@ -1245,7 +1211,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setIndex(int index)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setIndex(index);
 	    return;
@@ -1263,7 +1229,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public boolean isIncertaeSedis()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.isIncertaeSedis();
 
@@ -1278,7 +1244,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setIncertaeSedis(boolean incertaeSedis)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setIncertaeSedis(incertaeSedis);
 	    return;
@@ -1297,7 +1263,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public int getLowerNameUsagesCount()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLowerNameUsagesCount();
 
@@ -1317,7 +1283,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void toArray()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.toArray();
 	    return;
@@ -1340,9 +1306,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return true if this object contains {@code nameUsage}
      * as a lower taxon just below
      */
-    public boolean contains(NameUsage<? extends N, ? extends N> nameUsage)
+    public boolean contains(NameUsage<?> nameUsage)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.contains(nameUsage);
 
@@ -1381,9 +1347,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return true if this object contains {@code nameUsage}
      * as a lower taxon
      */
-    public boolean contains(NameUsage<? extends N, ? extends N> nameUsage, boolean recursive)
+    public boolean contains(NameUsage<?> nameUsage, boolean recursive)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.contains(nameUsage, recursive);
 
@@ -1402,8 +1368,8 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
 	n = getNameUsage(nameUsage);
 
-	//for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
-	for(NameUsage<?, ?> lowerNameUsage : lowerNameUsages) {
+	//for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
+	for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 	    //	    if(getNameUsage(lowerNameUsage).contains(nameUsage, recursive))
 	    if(getNameUsage(lowerNameUsage).contains(n, recursive))
 		return true;
@@ -1419,9 +1385,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return an array of lower taxa
      * or null if none
      */
-    public List<NameUsage<N, T>> getLowerNameUsages()
+    public List<NameUsage<T>> getLowerNameUsages()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLowerNameUsages();
 
@@ -1430,7 +1396,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	if(lowerNameUsages == null)
 	    return null;
 
-	NameUsage<N, T>[] toReturn = null;
+	NameUsage<T>[] toReturn = null;
 	synchronized (lowerNameUsages) {
 	    toReturn = ArrayUtility.copy(lowerNameUsages);
 	}
@@ -1444,10 +1410,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      *
      * @param lowerNameUsages {@code Vector} representing the list of lower taxa
      */
-    @SuppressWarnings({"unchecked"})
-    public void setLowerNameUsages(List<? extends NameUsage<?, ?>> lowerNameUsages)
+    public void setLowerNameUsages(List<? extends NameUsage<? extends T>> lowerNameUsages)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setLowerNameUsages(lowerNameUsages);
 	    return;
@@ -1458,10 +1423,14 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	    return;
 
 	if(this.lowerNameUsages == null)
-	    this.lowerNameUsages = new ArrayList<NameUsage<N, T>>(lowerNameUsages.size());
-	for(NameUsage<?, ?> nameUsage : lowerNameUsages) {
-	    if(isAssignableFrom(nameUsage))
-		addLowerNameUsage((NameUsage<N, T>)nameUsage);
+	    this.lowerNameUsages = new ArrayList<NameUsage<T>>(lowerNameUsages.size());
+	for(NameUsage<?> nameUsage : lowerNameUsages) {
+	    if(isAssignableFrom(nameUsage)) {
+		// it is safe to cast because it is assignable
+		@SuppressWarnings({"unchecked"})
+		    NameUsage<T> theUsage = (NameUsage<T>)nameUsage;
+		addLowerNameUsage(theUsage);
+	    }
 	    else
 		addLowerNameUsage(createNameUsage(nameUsage));
 	}
@@ -1474,9 +1443,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * representing the list of lower taxa
      */
     /*
-    public void setLowerNameUsages(NameUsage<? extends N, ? extends N>[] lowerNameUsagesArray)
+    public void setLowerNameUsages(NameUsage<?>[] lowerNameUsagesArray)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setLowerNameUsages(lowerNameUsages);
 	    return;
@@ -1486,7 +1455,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	if(lowerNameUsagesArray == null || lowerNameUsagesArray.length == 0)
 	    return;
 
-	for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsagesArray) {
+	for(NameUsage<?> lowerNameUsage : lowerNameUsagesArray) {
 	    this.addLowerNameUsage(lowerNameUsage);
 	}
     }
@@ -1503,11 +1472,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return true if {@code nameUsage} was appended to the list of lower taxa
      * successfully, or false if {@code nameUsage} is already in the list
      */
-    //public boolean addLowerNameUsage(NameUsage<? extends N, ? extends N> nameUsage)
-    //public boolean addLowerNameUsage(NameUsage<?, ?> nameUsage)
-    public synchronized boolean addLowerNameUsage(NameUsage<N, T> nameUsage)
+    public synchronized boolean addLowerNameUsage(NameUsage<T> nameUsage)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.addLowerNameUsage(nameUsage);
 
@@ -1527,50 +1494,24 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	   || nameUsage == this //if this object itself, or
 	   || contains(nameUsage) //if already contained
 	   || nameUsage.getNameUsage() == this //if proxy of this object, or
-	   || !n.isAssignableFrom(nameUsage) //if not an instancs of NameUsage<N, T>
+	   || !n.isAssignableFrom(nameUsage) //if not an instancs of NameUsage<T>
 	   )
 	    return false;
 
 	n = n.getNameUsage(nameUsage);
-	List<NameUsage<N, T>> nameUsagePath = getNameUsagePath();
+	List<NameUsage<T>> nameUsagePath = getNameUsagePath();
 	if(nameUsagePath != null && ( nameUsagePath.contains(nameUsage) || nameUsagePath.contains(nameUsage.getEntity())))
 	    return false;
 
 	if(this.lowerNameUsages == null)
-	    //this.lowerNameUsages = Collections.synchronizedList(new ArrayList<NameUsage<N, T>>());
-	    this.lowerNameUsages = new ArrayList<NameUsage<N, T>>();
+	    this.lowerNameUsages = new ArrayList<NameUsage<T>>();
 
 	boolean result = true;
 
-	/*
-	n = getNameUsage(nameUsage);
-	if(n == null) {
-	    Object object = nameUsage.getNameUsage();
-	    for(NameUsage<N, T> toTest: this.lowerNameUsages) {
-		n = toTest.getNameUsage();
-		if(toTest == nameUsage || toTest.equals(nameUsage)
-		   || n == nameUsage || n.equals(nameUsage)
-		   || toTest == object || toTest.equals(object)
-		   || n == object || n.equals(object))
-		    result = false;
-	    }
-	    if(result) {
-		n = createNameUsage(nameUsage);
-	    }
-	}
-	*/
+	n = nameUsage;
 
-	/*
-	if(n != null) {
-	    result = this.lowerNameUsages.add(n);
-	    if(result) {
-		getNameUsage(nameUsage).setHigherNameUsage(this);
-	    }
-	}
-	*/
-
-	result = this.lowerNameUsages.add(nameUsage);
-	nameUsage.setHigherNameUsage(this);
+	result = this.lowerNameUsages.add(n);
+	n.setHigherNameUsage(this);
 
 	return result;
     }
@@ -1582,10 +1523,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return true if {@code nameUsage} is a lower taxon of the object,
      * or false if else.  It also returns null if <tt>nameUsage</tt> is null.
      */
-    //public boolean removeLowerNameUsage(NameUsage<? extends N, ? extends N> nameUsage)
-    public synchronized boolean removeLowerNameUsage(NameUsage<N, T> nameUsage)
+    public synchronized boolean removeLowerNameUsage(NameUsage<T> nameUsage)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.removeLowerNameUsage(nameUsage);
 
@@ -1597,22 +1537,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	}
 	nameUsage = n;
 
-	/*
-	if(lowerNameUsages != null && ArrayUtility.contains(nameUsage, lowerNameUsages)) {
-	    NameUsage[] removed = 
-		ArrayUtility.remove(nameUsage, lowerNameUsages);
-	    if(removed != lowerNameUsages) {
-		nameUsage.setHigherNameUsage(null);
-		ArrayUtility.clear(lowerNameUsages);
-		lowerNameUsages = removed;
-		return true;
-	    }
-	}
-	*/
-
 	if(lowerNameUsages != null && lowerNameUsages.contains(nameUsage)) {
 	    nameUsage.setHigherNameUsage(null);
-	    return lowerNameUsages.remove(nameUsage);
+	    return lowerNameUsages.remove(n/*ameUsage*/);
 	}
 	return false;
     }
@@ -1623,7 +1550,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void removeLowerNameUsages()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.removeLowerNameUsages();
 	    return;
@@ -1640,7 +1567,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	}
 	*/
 
-	for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+	for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 	    lowerNameUsage.setHigherNameUsage(null);
 	}
 
@@ -1656,58 +1583,67 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return NamedObject representing type taxon of this
      * {@code NameUsage}, or null if no type is designated
      */
-    public NameUsage<? extends N, ? extends N> getTypeUsage()
+    public <N extends NameUsage<?>> N getTypeUsage()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getTypeUsage();
 
-	return typeUsage;
+	@SuppressWarnings("unchecked") N type = (N)this.typeUsage;
+	return type;
     }
 
     /**
-     * Returns {@code NameUsage} representing type taxon of this
-     * {@code NameUsage}, or null if no type is designated
+     * Returns type of  type taxon of this NameUsage, or null if no type is designated
      *
-     * @return NamedObject representing type taxon of this
-     * {@code NameUsage}, or null if no type is designated
+     * @return TypeStatus representing type of type taxon of this NameUsage,
+     * or null if no type is designated
      */
-    public String getTypeOfType()
+    public TypeStatus getTypeStatus()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
-	    return n.getTypeOfType();
+	    return n.getTypeStatus();
 
-	return typeOfType;
+	return typeStatus;
     }
 
     /**
-     * Returns {@code NameUsage} representing type taxon of this
-     * {@code NameUsage}, or null if no type is designated
+     * Sets type of type taxon of this NameUsage.
      *
-     * @return NamedObject representing type taxon of this
-     * {@code NameUsage}, or null if no type is designated
+     * @param typeStatus String representing type of type taxon of this
+     * NameUsage
      */
-    public void setTypeOfType(String typeOfType)
+    public void setTypeStatus(String typeStatus)
     {
-	NameUsage<N, T> n = getNameUsage();
+	setTypeStatus(TypeStatus.typeStatus(typeStatus));
+    }
+
+    /**
+     * Sets type of type taxon of this NameUsage.
+     *
+     * @param typeStatus {@code TypeStatus} representing type of type taxon of this
+     * NameUsage
+     */
+    public void setTypeStatus(TypeStatus typeStatus)
+    {
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
-	    n.setTypeOfType(typeOfType);
+	    n.setTypeStatus(typeStatus);
 	    return;
 	}
 
-	if(typeOfType == this.typeOfType ||
-	   (this.typeOfType != null &&
-	    this.typeOfType.equals(typeOfType)))
+	if(typeStatus == this.typeStatus ||
+	   (this.typeStatus != null &&
+	    this.typeStatus.equals(typeStatus)))
 	    return;
 
-	if(typeOfType == null)
+	if(typeStatus == null)
 	    setType(false);
 	else {
 	    setType(true);
-	    this.typeOfType = typeOfType;
+	    this.typeStatus = typeStatus;
 	}
-
     }
 
     /**
@@ -1717,7 +1653,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public boolean isType()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.isType();
 
@@ -1736,32 +1672,51 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setType(boolean type)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setType(type);
 	    return;
 	}
 
-	if(higherNameUsage == null)
+	n = getHigherNameUsage();
+
+	if(n == null)
 	    return;
 
 	if(type)
-	    higherNameUsage.setTypeUsage(this);
-	else if(higherNameUsage.getTypeUsage() == this)
-	    higherNameUsage.setTypeUsage(null, null);
+	    n.setTypeUsage(this);
+	else if(n.getTypeUsage() == this)
+	    n.setTypeUsage(null, (TypeStatus)null);
     }
 
     /**
-     * Sets boolean as type of taxon
+     * Sets type as type of taxon
      *
-     * @param type boolean true if this taxon is a nominal type
+     * @param type String representing type of its type taxon
      */
-    public void setType(String typeOfType)
+    public void setType(String typeStatus)
     {
-	if(typeOfType == null)
+	setType(TypeStatus.typeStatus(typeStatus));
+    }
+
+    /**
+     * Sets type as type of taxon
+     *
+     * @param type {@code TypeStatus} representing type of its type taxon
+     */
+    public void setType(TypeStatus typeStatus)
+    {
+	NameUsage<T> n = getNameUsage();
+	if(n != this) {
+	    n.setType(typeStatus);
+	}
+
+	if(typeStatus == null)
 	    return;
-	if(higherNameUsage != null)
-	    higherNameUsage.setTypeUsage(this, typeOfType);
+
+	n = getHigherNameUsage();
+	if(n != null)
+	    n.setTypeUsage(this, typeStatus);
     }
 
     /**
@@ -1771,15 +1726,15 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @param type {@code NameUsage} to be designated as the type of
      * this {@code NameUsage}
      */
-    public void setTypeUsage(NameUsage<? extends N, ? extends N> typeUsage)
+    public void setTypeUsage(NameUsage<?> typeUsage)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setTypeUsage(typeUsage);
 	}
 	else {
 	    if(typeUsage != null) {
-		NameUsage<N, T> typeUsageEntity = getNameUsage(typeUsage).getNameUsage();
+		NameUsage<T> typeUsageEntity = getNameUsage(typeUsage).getNameUsage();
 		if(typeUsage == this.typeUsage || typeUsage == this
 		   || typeUsageEntity == this.typeUsage || typeUsageEntity == this)
 		    return;
@@ -1790,31 +1745,41 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     }
 
     /**
-     * Sets {@code type} as {@code typeOfType} of this {@code NameUsage}
+     * Sets {@code type} as {@code typeStatus} of this {@code NameUsage}
      * The  {@code type} may be null.  If {@code type} is null,
-     * {@code typeOfType} is ignored.
+     * {@code typeStatus} is ignored.
      *
      * @param type {@code NameUsage} to be designated as the type of
      * this {@code NameUsage}
-     * @param typeOfType {@code String} represents type of type, e.g.
+     * @param typeStatus {@code String} represents type of type, e.g.
      * holotype.
      * 
      */
-    public void setTypeUsage(NameUsage<? extends N, ? extends N> typeUsage, String typeOfType)
+    public void setTypeUsage(NameUsage<?> typeUsage, String typeStatus)
     {
-	NameUsage<N, T> n = getNameUsage();
+	setTypeUsage(typeUsage, TypeStatus.typeStatus(typeStatus));
+    }
+
+    /**
+     * Sets {@code type} as {@code typeStatus} of this {@code NameUsage}
+     * The  {@code type} may be null.  If {@code type} is null,
+     * {@code typeStatus} is ignored.
+     *
+     * @param type {@code NameUsage} to be designated as the type of
+     * this {@code NameUsage}
+     * @param typeStatus {@code TypeStatus} represents type of type, e.g.
+     * holotype.
+     */
+    public void setTypeUsage(NameUsage<?> type, TypeStatus typeStatus)
+    {
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
-	    n.setTypeUsage(typeUsage, typeOfType);
+	    n.setTypeUsage(typeUsage, typeStatus);
 	    return;
 	}
 
 	setTypeUsage(typeUsage);
-	if(typeUsage != null) {
-	    setTypeOfType(typeOfType);
-	}
-	else {
-	    setTypeOfType(null);
-	}
+	setTypeStatus(typeStatus);
     }
 
     /**
@@ -1825,9 +1790,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * as its type
      */
     /*
-    public void addTypeDesignator(NameUsage<? extends N, ? extends N> designator, TypeStatus typeStatus)
+    public void addTypeDesignator(NameUsage<?> designator, TypeStatus typeStatus)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.addTypeDesignator(designator, typeStatus);
 	    return;
@@ -1865,13 +1830,13 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	    typeDesignators[1] = designator;
 	    */
     /*
-	    typeDesignators = Collections.synchronizedMap(new HashMap<NameUsage<? extends N, ? extends N>, TypeStatus>());
+	    typeDesignators = Collections.synchronizedMap(new HashMap<NameUsage<?>, TypeStatus>());
 	}
 	synchronized(typeDesignators) {
 	    typeDesignators.put(designator, typeStatus);
     */
 	    /*
-	    NameUsage<? extends N, ? extends N>[] tmp = ArrayUtility.create(typeDesignators[0].getClass(),typeDesignators.length + 1);
+	    NameUsage<?>[] tmp = ArrayUtility.create(typeDesignators[0].getClass(),typeDesignators.length + 1);
 	    System.arraycopy(typeDesignators, 0, tmp, 0, typeDesignators.length);
 	    tmp[typeDesignators.length] = designator;
 	    ArrayUtility.clear(typeDesignators);
@@ -1890,9 +1855,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * of this {@code NameUsage}
      */
     /*
-    public void removeTypeDesignator(NameUsage<? extends N, ? extends N> designator)
+    public void removeTypeDesignator(NameUsage<?> designator)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.removeTypeDesignator(designator);
 	    return;
@@ -1944,7 +1909,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public Collection<Annotation> getAnnotations()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    return n.getAnnotations();
 	}
@@ -1957,7 +1922,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
     public Collection<Annotation> getAnnotations(String linkType)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    return n.getAnnotations(linkType);
 	}
@@ -1984,7 +1949,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setAnnotations(Collection<? extends Annotation> annotations)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setAnnotations(annotations);
 	    return;
@@ -2022,7 +1987,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public boolean addAnnotation(Annotation annotation)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.addAnnotation(annotation);
 
@@ -2054,7 +2019,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public boolean removeAnnotation(Annotation annotation)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    return n.removeAnnotation(annotation);
 	}
@@ -2082,10 +2047,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return {@code NameUsage} representing {@code NameUsage} in which sens
      * it was used.  It may desiganate the authoritative usage of the name as {@code NameUsage}.
      */
-    //public NameUsage<? extends N, ? extends N> getSensu()
-    public NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> getSensu()
+    public NameUsage<?> getSensu()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getSensu();
 
@@ -2098,10 +2062,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      *
      * @param sensu {@code NameUsage} representing the sens of this {@code NameUsage}
      */
-    //public void setSensu(NameUsage<? extends N, ? extends N> sensu)
-    public void setSensu(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> sensu)
+    public void setSensu(NameUsage<?> sensu)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setSensu(sensu);
 	    return;
@@ -2124,7 +2087,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public Collection<Author> getAuthors()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getAuthors();
 
@@ -2144,7 +2107,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     @Override
     public void setAuthors(Collection<? extends Author> authors)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setAuthors(authors);
 	    return;
@@ -2186,7 +2149,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	if(author == null)
 	    return false;
 
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.addAuthor(author);
 
@@ -2206,7 +2169,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public boolean removeAuthor(Author author)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    return n.removeAuthor(author);
 	}
@@ -2224,10 +2187,10 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void removeAuthors()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    if(getClass().isInstance(n))
-		((AbstractNameUsage<N, T>)n).removeAuthors();
+		((AbstractNameUsage<T>)n).removeAuthors();
 	}
 	else if(authors != null) {
 		authors.clear();
@@ -2241,7 +2204,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public String getAuthority()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getAuthority();
 
@@ -2255,7 +2218,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setAuthority(String authority)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setAuthority(authority);
 	    return;
@@ -2275,7 +2238,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public Integer getAuthorityYear()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getAuthorityYear();
 
@@ -2294,7 +2257,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public void setAuthorityYear(Integer year)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.setAuthorityYear(year);
 	    return;
@@ -2313,7 +2276,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public String toXML()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.toXML();
 
@@ -2360,7 +2323,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	
 	if(lowerNameUsages != null){
 	    synchronized(lowerNameUsages) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+		for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 		    buf.append("<lowerNameUsage>").append(lowerNameUsage.getPersistentID()).append("</lowerNameUsage>\n");
 		}
 	    }
@@ -2380,8 +2343,8 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
 	if(typeUsage != null) {
 	    buf.append("<type");
-	    if(typeOfType != null)
-		buf.append(" type=\"").append(typeOfType).append("\"");
+	    if(typeStatus != null)
+		buf.append(" type=\"").append(typeStatus.getTypeStatus()).append("\"");
 	    buf.append(">").append(typeUsage.getPersistentID()).append("</type>\n");
 	}
 
@@ -2407,7 +2370,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public String toRelevantXML()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.toRelevantXML();
 
@@ -2423,7 +2386,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	// create XML of the lower NameUsage
 	if(lowerNameUsages != null) {
 	    synchronized(lowerNameUsages) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+		for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 		    buf.append(lowerNameUsage.toXML());
 		}
 	    }
@@ -2495,7 +2458,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     public StringBuffer toSQL(StringBuffer buffer,
 			      int objectID)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return ((SQLSerializable)n).toSQL(buffer, objectID);
 
@@ -2546,7 +2509,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public String getViewName()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getViewName();
 
@@ -2565,7 +2528,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public String getViewName(boolean toSort)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getViewName(toSort);
 
@@ -2587,7 +2550,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public String getYear()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getYear();
 	
@@ -2619,9 +2582,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      *
      * @return root {@code NameUsage} of the name hierarhcy.
      */
-    public NameUsage<N, T> getRoot()
+    public NameUsage<T> getRoot()
     {
-	NameUsage<N, T> root = getHigherNameUsage();
+	NameUsage<T> root = getHigherNameUsage();
 
 	if(root != this && root != null)
 	    return root.getRoot();
@@ -2636,7 +2599,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      */
     public boolean hasLowerNameUsages()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.hasLowerNameUsages();
 
@@ -2648,7 +2611,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      *
      * @return NameUsage proxied by this {@code NameUsag}
      */
-    public NameUsage<N, T> getNameUsage()
+    public NameUsage<T> getNameUsage()
     {
 	if(entity == null || !isAssignableFrom(entity)) {
 	    return this;
@@ -2690,28 +2653,28 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * leaf taxa under this {@code NameUsage}
      * or null if none
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLeafNameUsages()
+    public Map<String, NameUsage<T>> getLeafNameUsages()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLeafNameUsages();
 
 	if(!hasLowerNameUsages())
 	    return null;
 
-	Map<String, NameUsage<? extends N, ? extends N>> leafNameUsageMap =  Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>());
+	Map<String, NameUsage<T>> leafNameUsageMap =  Collections.synchronizedMap(new HashMap<String, NameUsage<T>>());
 
 	putLeafNameUsagesTo(leafNameUsageMap);
 
 	return leafNameUsageMap;
     }
 
-    public Map<String, NameUsage<? extends N, ? extends N>> putLeafNameUsagesTo(Map<String, NameUsage<? extends N, ? extends N>> leafNameUsageMap)
+    public  Map<String, NameUsage<T>> putLeafNameUsagesTo(Map<String, NameUsage<T>> leafNameUsageMap)
     {
 	if(leafNameUsageMap == null)
-	    leafNameUsageMap = Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>());
+	    leafNameUsageMap = Collections.synchronizedMap(new HashMap<String, NameUsage<T>>());
 
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    return n.putLeafNameUsagesTo(leafNameUsageMap);
 	}
@@ -2720,7 +2683,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	}
 	else if(lowerNameUsages != null) {
 	    synchronized (lowerNameUsages) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+		for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 		    getNameUsage(lowerNameUsage).putLeafNameUsagesTo(leafNameUsageMap);
 		}
 	    }
@@ -2741,9 +2704,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * lower taxa at {@code rank} under this
      * {@code NameUsage} or null if none
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLowerNameUsagesAt(Rank rank)
+    public Map<String, NameUsage<T>> getLowerNameUsagesAt(Rank rank)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLowerNameUsagesAt(rank);
 
@@ -2752,19 +2715,19 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	   !hasLowerNameUsages())
 	   return null;
 
-	Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsageMap = new HashMap<String, NameUsage<? extends N, ? extends N>>();
+	Map<String, NameUsage<T>> lowerNameUsageMap = new HashMap<String, NameUsage<T>>();
 
 	putLowerNameUsagesAt(rank, lowerNameUsageMap);
 
 	return lowerNameUsageMap;
     }
 
-    public void putLowerNameUsagesAt(Rank rank, Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsageMap)
+    public void putLowerNameUsagesAt(Rank rank, Map<String, NameUsage<T>> lowerNameUsageMap)
     {
 	if(lowerNameUsageMap == null)
-	    lowerNameUsageMap = Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>());
+	    lowerNameUsageMap = Collections.synchronizedMap(new HashMap<String, NameUsage<T>>());
 
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.putLowerNameUsagesAt(rank, lowerNameUsageMap);
 	    return;
@@ -2780,7 +2743,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	
 	if(lowerNameUsages != null) {
 	    synchronized(lowerNameUsages) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+		for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 		    getNameUsage(lowerNameUsage).putLowerNameUsagesAt(rank, lowerNameUsageMap);
 		}
 	    }
@@ -2799,7 +2762,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * leaf taxa at, or higher than {@code rank}
      * under this {@code NameUsage} or null if none
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLeafNameUsagesUntil(String rank)
+    public Map<String, NameUsage<T>> getLeafNameUsagesUntil(String rank)
     {
 	return getLeafNameUsagesUntil(Rank.get(rank));
     }
@@ -2816,9 +2779,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * leaf taxa at, or higher than {@code rank}
      * under this {@code NameUsage} or null if none
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getLeafNameUsagesUntil(Rank rank)
+    public Map<String, NameUsage<T>> getLeafNameUsagesUntil(Rank rank)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLowerNameUsagesAt(rank);
 
@@ -2827,19 +2790,19 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	   !hasLowerNameUsages())
 	   return null;
 
-	Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsageMap = new HashMap<String, NameUsage<? extends N, ? extends N>>();
+	Map<String, NameUsage<T>> lowerNameUsageMap = new HashMap<String, NameUsage<T>>();
 
 	putLeafNameUsagesUntil(rank, lowerNameUsageMap);
 
 	return lowerNameUsageMap;
     }
 
-    public void putLeafNameUsagesUntil(Rank rank, Map<String, NameUsage<? extends N, ? extends N>> leaves)
+    public void putLeafNameUsagesUntil(Rank rank, Map<String, NameUsage<T>> leaves)
     {
 	if(leaves == null)
-	    leaves = Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>());
+	    leaves = Collections.synchronizedMap(new HashMap<String, NameUsage<T>>());
 
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.putLowerNameUsagesAt(rank, leaves);
 	    return;
@@ -2856,7 +2819,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
 	if(lowerNameUsages != null) {
 	    synchronized (lowerNameUsages) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+		for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 		    getNameUsage(lowerNameUsage).putLeafNameUsagesUntil(rank, leaves);
 		}
 	    }
@@ -2872,25 +2835,25 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * lower taxa under this {@code NameUsage}
      * or null if none
      */
-    public Map<String, NameUsage<? extends N, ? extends N>> getAllLowerNameUsages()
+    public Map<String, NameUsage<T>> getAllLowerNameUsages()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getAllLowerNameUsages();
 
 	if(!hasLowerNameUsages())
 	    return null;
 
-	Map<String, NameUsage<? extends N, ? extends N>> allLowerNameUsages = Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>());
+	Map<String, NameUsage<T>> allLowerNameUsages = Collections.synchronizedMap(new HashMap<String, NameUsage<T>>());
 
 	putAllLowerNameUsagesTo(allLowerNameUsages);
 
 	return allLowerNameUsages;
     }
 
-    public void putAllLowerNameUsagesTo(Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsageMap)
+    public void putAllLowerNameUsagesTo(Map<String, NameUsage<T>> lowerNameUsageMap)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this) {
 	    n.putAllLowerNameUsagesTo(lowerNameUsageMap);
 	    return;
@@ -2900,7 +2863,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
 	if(lowerNameUsages !=  null) {
 	    synchronized(lowerNameUsages) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+		for(NameUsage<T> lowerNameUsage : lowerNameUsages) {
 		    getNameUsage(lowerNameUsage).putLeafNameUsagesTo(lowerNameUsageMap);
 		}
 	    }
@@ -2918,14 +2881,14 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * containing leaf taxa, under this {@code NameUsage},
      * indexed by their ascribed names, or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLeafNames()
+    public Map<String, Set<NameUsage<T>>> getLeafNames()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLeafNames();
 
-	Map<String, NameUsage<? extends N, ? extends N>> taxa = getLeafNameUsages();
-	Map<String, Set<NameUsage<? extends N, ? extends N>>> names = convertNameUsagesToNames(taxa);
+	Map<String, NameUsage<T>> taxa = getLeafNameUsages();
+	Map<String, Set<NameUsage<T>>> names = convertNameUsagesToNames(taxa);
 	taxa.clear();
 	return names;
     }
@@ -2945,14 +2908,14 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLowerNamesAt(Rank rank)
+    public Map<String, Set<NameUsage<T>>> getLowerNamesAt(Rank rank)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLowerNamesAt(rank);
 
-	Map<String, NameUsage<? extends N, ? extends N>> taxa = getLowerNameUsagesAt(rank);
-	Map<String, Set<NameUsage<? extends N, ? extends N>>> names = convertNameUsagesToNames(taxa);
+	Map<String, NameUsage<T>> taxa = getLowerNameUsagesAt(rank);
+	Map<String, Set<NameUsage<T>>> names = convertNameUsagesToNames(taxa);
 	taxa.clear();
 	return names;
     }
@@ -2972,7 +2935,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * under this {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLeafNamesUntil(String rank)
+    public Map<String, Set<NameUsage<T>>> getLeafNamesUntil(String rank)
     {
 	return getLeafNamesUntil(Rank.get(rank));
     }
@@ -2990,14 +2953,14 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * under this {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getLeafNamesUntil(Rank rank)
+    public Map<String, Set<NameUsage<T>>> getLeafNamesUntil(Rank rank)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLeafNamesUntil(rank);
 
-	Map<String, NameUsage<? extends N, ? extends N>> taxa = getLeafNameUsagesUntil(rank);
-	Map<String, Set<NameUsage<? extends N, ? extends N>>> names = convertNameUsagesToNames(taxa);
+	Map<String, NameUsage<T>> taxa = getLeafNameUsagesUntil(rank);
+	Map<String, Set<NameUsage<T>>> names = convertNameUsagesToNames(taxa);
 	taxa.clear();
 	return names;
     }
@@ -3011,21 +2974,21 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * lower taxa under this {@code NameUsage}, indexed by their ascribed names,
      * or null if none
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> getAllLowerNames()
+    public Map<String, Set<NameUsage<T>>> getAllLowerNames()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getAllLowerNames();
 
-	Map<String, NameUsage<? extends N, ? extends N>> taxa = getAllLowerNameUsages();
-	Map<String, Set<NameUsage<? extends N, ? extends N>>> names = convertNameUsagesToNames(taxa);
+	Map<String, NameUsage<T>> taxa = getAllLowerNameUsages();
+	Map<String, Set<NameUsage<T>>> names = convertNameUsagesToNames(taxa);
 	taxa.clear();
 	return names;
     }
 
 
     /**
-     * Returns {@code Hashtable} indexed by ascribed names
+     * Returns {@code Map} indexed by ascribed names
      * of {@code NameUsages} in {@code taxa}, i.e. name
      * list of {@code taxa}.  Because there may be two or more
      * {@code NameUsages} having the same ascribed name in
@@ -3038,22 +3001,22 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return {@code Hashtable} of {@code Hashtable}s of
      * {@code NameUsages}s indexed by asricbed names
      */
-    public Map<String, Set<NameUsage<? extends N, ? extends N>>> convertNameUsagesToNames(Map<String, NameUsage<? extends N, ? extends N>> taxa)
+    public static <N extends NameUsage<?>> Map<String, Set<N>> convertNameUsagesToNames(Map<String, N> taxa)
     {
-	Collection<NameUsage<? extends N, ? extends N>> c = taxa.values();
+	Collection<N> c = taxa.values();
 	if(c == null)
 	    return null;
-	Iterator<NameUsage<? extends N, ? extends N>> e = c.iterator();
+	Iterator<N> e = c.iterator();
 
-	Map<String, Set<NameUsage<? extends N, ? extends N>>> names = 
-	    Collections.synchronizedMap(new HashMap<String, Set<NameUsage<? extends N, ? extends N>>>());
+	Map<String, Set<N>> names = 
+	    Collections.synchronizedMap(new HashMap<String, Set<N>>());
 
 	while(e.hasNext()) {
-	    NameUsage<? extends N, ? extends N> n = e.next();
+	    N n = e.next();
 	    String name = n.getLiteral();
-	    Set<NameUsage<? extends N, ? extends N>> lowerNameUsagesSet = names.get(name);
+	    Set<N> lowerNameUsagesSet = names.get(name);
 	    if(lowerNameUsagesSet == null) {
-		lowerNameUsagesSet = Collections.synchronizedSet(new HashSet<NameUsage<? extends N, ? extends N>>(1));
+		lowerNameUsagesSet = Collections.synchronizedSet(new HashSet<N>(1));
 		names.put(name, lowerNameUsagesSet);
 	    }
 	    lowerNameUsagesSet.add(n);
@@ -3080,10 +3043,10 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return {@code Hashtable} of {@code Hashtable}s of
      * {@code NameUsages}s indexed by asricbed names
      */
-    public Map<String, Map<String, Set<NameUsage<? extends N, ? extends N>>>> convertNameUsagesToRankedNames(Map<String, NameUsage<? extends N, ? extends N>> taxa)
+    public Map<String, Map<String, Set<NameUsage<?>>>> convertNameUsagesToRankedNames(Map<String, NameUsage<?>> taxa)
     {
-	Map<String, Set<NameUsage<? extends N, ? extends N>>> names = convertNameUsagesToNames(taxa);
-	Map<String, Map<String, Set<NameUsage<? extends N, ? extends N>>>> rankedNames = convertNamesToRankedNames(names);
+	Map<String, Set<NameUsage<?>>> names = convertNameUsagesToNames(taxa);
+	Map<String, Map<String, Set<NameUsage<?>>>> rankedNames = convertNamesToRankedNames(names);
 	names.clear();
 	return rankedNames;
     }
@@ -3102,26 +3065,26 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
      * @return {@code Hashtable} of {@code Hashtable}s of
      * {@code NameUsages}s indexed by asricbed names
      */
-    public Map<String, Map<String, Set<NameUsage<? extends N, ? extends N>>>> convertNamesToRankedNames(Map<String, Set<NameUsage<? extends N, ? extends N>>> names)
+    public Map<String, Map<String, Set<NameUsage<?>>>> convertNamesToRankedNames(Map<String, Set<NameUsage<?>>> names)
     {
 	Set<String> keys = names.keySet();
 	if(keys == null  || keys.size() == 0)
 	    return null;
 
-	Map<String, Map<String, Set<NameUsage<? extends N, ? extends N>>>> rankedNames = Collections.synchronizedMap(new HashMap<String, Map<String, Set<NameUsage<? extends N, ? extends N>>>>());
+	Map<String, Map<String, Set<NameUsage<?>>>> rankedNames = Collections.synchronizedMap(new HashMap<String, Map<String, Set<NameUsage<?>>>>());
 
 	for(String name : keys) {
-	    Map<String, Set<NameUsage<? extends N, ? extends N>>> nameList = rankedNames.get(name);
+	    Map<String, Set<NameUsage<?>>> nameList = rankedNames.get(name);
 	    if(nameList == null) {
-		nameList = Collections.synchronizedMap(new HashMap<String, Set<NameUsage<? extends N, ? extends N>>>());
+		nameList = Collections.synchronizedMap(new HashMap<String, Set<NameUsage<?>>>());
 		rankedNames.put(name, nameList);
 	    }
-	    Set<NameUsage<? extends N, ? extends N>> nameUsages =  names.get(name);
-	    for(NameUsage<? extends N, ? extends N> n : nameUsages) {
+	    Set<NameUsage<?>> nameUsages =  names.get(name);
+	    for(NameUsage<?> n : nameUsages) {
 		String rankedName = n.getRankLiteral();
-		Set<NameUsage<? extends N, ? extends N>> nameSet = nameList.get(rankedName);
+		Set<NameUsage<?>> nameSet = nameList.get(rankedName);
 		if(nameSet == null) {
-		    nameSet = Collections.synchronizedSet(new HashSet<NameUsage<? extends N, ? extends N>>());
+		    nameSet = Collections.synchronizedSet(new HashSet<NameUsage<?>>());
 		    nameList.put(rankedName, nameSet);
 		}
 		nameSet.add(n);
@@ -3131,33 +3094,33 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	return rankedNames;
     }
 
-    public Map<String, NameUsage<? extends N, ? extends N>> getSiblings()
+    public Map<String, NameUsage<T>> getSiblings()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getSiblings();
 
-	NameUsage<N, T> parent = getHigherNameUsage();
+	NameUsage<T> parent = getHigherNameUsage();
 	if(parent == null)
-	    return Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>());
-	Map<String, NameUsage<? extends N, ? extends N>> siblings = 
-	    Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>(parent.getLowerNameUsagesSet()));
-	NameUsage<? extends N, ? extends N> toRemove = siblings.get(getLiteral());
+	    return Collections.synchronizedMap(new HashMap<String, NameUsage<T>>());
+	Map<String, NameUsage<T>> siblings = 
+	    Collections.synchronizedMap(new HashMap<String, NameUsage<T>>(parent.getLowerNameUsagesSet()));
+	NameUsage<T> toRemove = siblings.get(getLiteral());
 	if(toRemove == this)
 	    siblings.remove(getLiteral());
 	return siblings;
     }
 
-    public Map<String, NameUsage<? extends N, ? extends N>> getLowerNameUsagesSet()
+    public Map<String, NameUsage<T>> getLowerNameUsagesSet()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getLowerNameUsagesSet();
 
-	Map<String, NameUsage<? extends N, ? extends N>> lowerNameUsagesSet = new HashMap<String, NameUsage<? extends N, ? extends N>>();
+	Map<String, NameUsage<T>> lowerNameUsagesSet = new HashMap<String, NameUsage<T>>();
 	if(lowerNameUsages != null) {
 	    synchronized(lowerNameUsages) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage: lowerNameUsages) {
+		for(NameUsage<T> lowerNameUsage: lowerNameUsages) {
 		    lowerNameUsagesSet.put(lowerNameUsage.getLiteral(), lowerNameUsage);
 		}
 	    }
@@ -3165,9 +3128,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	return lowerNameUsagesSet;
     }
 
-    public Map<String, NameUsage<? extends N, ? extends N>> getIncludants()
+    public Map<String, NameUsage<T>> getIncludants()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getIncludants();
 
@@ -3175,11 +3138,11 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	   !hasLowerNameUsages())
 	    return includants;
 
-	includants = new HashMap<String, NameUsage<? extends N, ? extends N>>();
+	includants = new HashMap<String, NameUsage<T>>();
 	synchronized(lowerNameUsages) {
 	    if(lowerNameUsages != null) {
-		for(NameUsage<? extends N, ? extends N> lowerNameUsage: lowerNameUsages) {
-		    Map<String, NameUsage<? extends N, ? extends N>> lowers = getNameUsage(lowerNameUsage).getIncludants();
+		for(NameUsage<T> lowerNameUsage: lowerNameUsages) {
+		    Map<String, NameUsage<T>> lowers = getNameUsage(lowerNameUsage).getIncludants();
 		    if(lowers == null)
 			includants.put(n.getRankedName(true), n);
 		    else
@@ -3198,9 +3161,9 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     }
 
     @Override
-    public  Map<String, NameUsage<? extends N, ? extends N>> getExcludants()
+    public  Map<String, NameUsage<T>> getExcludants()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getExcludants();
 
@@ -3209,11 +3172,11 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	   n == null)
 	    return excludants;
 
-	excludants = Collections.synchronizedMap(new HashMap<String, NameUsage<? extends N, ? extends N>>());
-	List<NameUsage<N, T>> lowerNameUsagesList = n.getLowerNameUsages();
-	Map<String, NameUsage<? extends N, ? extends N>> h = null;
-	for(NameUsage<N, T> lowerNameUsage : lowerNameUsagesList) {
-	    NameUsage<N, T> taxon = getNameUsage(lowerNameUsage).getNameUsage();
+	excludants = Collections.synchronizedMap(new HashMap<String, NameUsage<T>>());
+	List<NameUsage<T>> lowerNameUsagesList = n.getLowerNameUsages();
+	Map<String, NameUsage<T>> h = null;
+	for(NameUsage<T> lowerNameUsage : lowerNameUsagesList) {
+	    NameUsage<T> taxon = getNameUsage(lowerNameUsage).getNameUsage();
 	    if(lowerNameUsage == this || taxon == this)
 		continue;
 	    h = taxon.getIncludants();
@@ -3271,7 +3234,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
     public String getRankedName(boolean abbreviate)
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.getRankedName();
 
@@ -3358,16 +3321,16 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
     }
 
-    protected int findLowerNameUsage(NameUsage<? extends N, ? extends N> nameUsage)
+    protected int findLowerNameUsage(NameUsage<?> nameUsage)
     {
 	if(nameUsage == null || lowerNameUsages == null)
 	    return -1;
 	
-	//nameUsage = (NameUsage<? extends N, ? extends N>)nameUsage.getEntity();
+	//nameUsage = (NameUsage<?>)nameUsage.getEntity();
 	nameUsage = getNameUsage(nameUsage.getEntity());
 
 	int i = 0;
-	for(NameUsage<? extends N, ? extends N> lowerNameUsage : lowerNameUsages) {
+	for(NameUsage<T> lowerNameUsage : lowerNameUsages) {
 	    if(lowerNameUsage.getEntity() == nameUsage)
 		return i;
 	    i++;
@@ -3393,13 +3356,13 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     }
     */
 
-    protected abstract AbstractNameUsage<N, T> createNameUsage();
+    protected abstract AbstractNameUsage<T> createNameUsage();
 
-    protected abstract NameUsage<N, T> createNameUsage(Name<?, ?> name);
+    protected abstract NameUsage<T> createNameUsage(Name<?> name);
 
-    protected abstract NameUsage<N, T> createNameUsage(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage);
+    protected abstract NameUsage<T> createNameUsage(NameUsage<?> nameUsage);
 
-    protected abstract NameUsage<N, T> createNameUsage(String persistentID);
+    protected abstract NameUsage<T> createNameUsage(String persistentID);
 
     public boolean isResolved()
     {
@@ -3418,12 +3381,12 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
     public boolean isLowerNameUsagesResolved()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.isLowerNameUsagesResolved();
 
-	List<NameUsage<N, T>> empty = Collections.emptyList();
-	List<NameUsage<N, T>> lowers = getLowerNameUsages();	
+	List<NameUsage<T>> empty = Collections.emptyList();
+	List<NameUsage<T>> lowers = getLowerNameUsages();	
 	if (Objects.equals(empty, lowers))
 	    return true;
 
@@ -3432,7 +3395,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
 	boolean lowerResolved = true;
 	
-	for (NameUsage<N, T> lower : lowers) {
+	for (NameUsage<T> lower : lowers) {
 	    lowerResolved &= lower.isContentsResolved();
 	}
 
@@ -3441,7 +3404,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
     public boolean isHierarchyResolved()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.isHierarchyResolved();
 
@@ -3451,7 +3414,7 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 
     public boolean isResolvedInFullDepth()
     {
-	NameUsage<N, T> n = getNameUsage();
+	NameUsage<T> n = getNameUsage();
 	if(n != this)
 	    return n.isResolvedInFullDepth();
 
@@ -3460,8 +3423,8 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
 	if(!resolvedInFullDepth)
 	    return false;
 
-	List<NameUsage<N, T>> lowers = getLowerNameUsages();	
-	for (NameUsage<N, T> lower : lowers) {
+	List<NameUsage<T>> lowers = getLowerNameUsages();	
+	for (NameUsage<T> lower : lowers) {
 	    resolvedInFullDepth &= lower.isResolvedInFullDepth();
 	}
 
@@ -3469,20 +3432,27 @@ public abstract class AbstractNameUsage<N extends NameUsage<?, ?>, T extends N>
     }
 
 
-    @SuppressWarnings({"unchecked"})
-    public NameUsage<N, T> getNameUsage(Object object) {
-	if(isAssignableFrom(object))
-	    return (NameUsage<N, T>) getClass().cast(object);
-	else
+
+    public NameUsage<T> getNameUsage(Object object) {
+	if(isAssignableFrom(object)) {
+	    @SuppressWarnings("unchecked")
+	    NameUsage<T> theUsage =  getClass().cast(object);
+	    return theUsage;
+	}
+	else {
 	    return null;
+	}
     }
 
-    @SuppressWarnings({"unchecked"})
-    public AbstractNameUsage<N, T> getAbstractNameUsage(Object object) {
-	if(isAssignableFrom(object))
-	    return getClass().cast(object);
-	else
-	    return null;
+    public AbstractNameUsage<T> getAbstractNameUsage(Object object) {
+	if(isAssignableFrom(object)) {
+	    @SuppressWarnings({"unchecked"})
+	    AbstractNameUsage<T> theUsage = getClass().cast(object);
+	    return theUsage;
+	}
+	else {
+	return null;
+	}
     }
 
     public Integer getDescendantCount()

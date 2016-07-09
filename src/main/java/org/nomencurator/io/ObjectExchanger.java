@@ -2,7 +2,7 @@
  * ObjectExchanger.java: interface definition to exchange Objects with
  * a data source
  *
- * Copyright (c) 2006,2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2006,2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -27,57 +27,54 @@ import java.util.Collection;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>ObjectExchanger</CODE> defines an intereface to exchange
- * <CODE>Object</CODE>s of specified type with a data source
+ * {@code ObjectExchanger} defines an intereface to exchange
+ * {@code Object}s of specified type with a data source
  *
- * @version 	07 Sep. 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface ObjectExchanger<N extends NamedObject<?, ?>, T extends N>
+public interface ObjectExchanger<T extends NamedObject<?>>
 {
     /**
-     * Returnes an array of <CODE>E</CODE>, each of which
-     * matches to <CODE>queryParameter</CODE>, in the data source.
-     * If there is no data of type <CODE>E</CODE> matches
-     * to <CODE>queryParameter</CODE>, it returns a zero-sized array.
+     * Returnes an array of {@code E}, each of which
+     * matches to {@code queryParameter}, in the data source.
+     * If there is no data of type {@code E} matches
+     * to {@code queryParameter}, it returns a zero-sized array.
      *
      * @param queryParameter used to search in the data source
      *
-     * @return array of <CODE>E</CODE> matching to <CODE>queryParameter</CODE>
+     * @return array of {@code E} matching to {@code queryParameter}
      */
-    //public Collection<NamedObject<N, T>> getObjects(QueryParameter<N, T> queryParameter);
-    public Collection<T> getObjects(QueryParameter<N, T> queryParameter);
+    public Collection<T> getObjects(QueryParameter<T> queryParameter);
 
     /**
-     * Returnes an array of <CODE>E</CODE>, each of which
-     * matches to <CODE>queryParameter</CODE>, in the data source.
-     * If there is no data of type <CODE>E</CODE> matches
-     * to <CODE>queryParameter</CODE>, it returns a zero-sized array.
+     * Returnes an array of {@code E}, each of which
+     * matches to {@code queryParameter}, in the data source.
+     * If there is no data of type {@code E} matches
+     * to {@code queryParameter}, it returns a zero-sized array.
      *
      * @param queryParameter used to search in the data source
      *
-     * @return array of <CODE>E</CODE> matching to <CODE>queryParameter</CODE>
+     * @return array of {@code E} matching to {@code queryParameter}
      */
-    //public Collection<NamedObject<N, T>> getObjects(String query);
     public Collection<T> getObjects(String query);
 
     /**
-     * Returnes an array of <CODE>E</CODE>, each of which
-     * matches to <CODE>queryParameter</CODE>, in the data source
-     * using matching type <CODE>queryType</CODE>.
-     * If there is no data of type <CODE>E</CODE> matchies
-     * to <CODE>queryParameter</CODE>, it returns a zero-sized array.
+     * Returnes an array of {@code E}, each of which
+     * matches to {@code queryParameter}, in the data source
+     * using matching type {@code queryType}.
+     * If there is no data of type {@code E} matchies
+     * to {@code queryParameter}, it returns a zero-sized array.
      *
      * @param queryParameter used to search in the data source
      * @param queryType type of query to the data source
      *
-     * @return <CODE>E</CODE> having <CODE>queryParameter</CODE>
+     * @return {@code E} having {@code queryParameter}
      */
-    //public Collection<NamedObject<N, T>> getObjects(String query, MatchingMode matchingMode);
     public Collection<T> getObjects(String query, MatchingMode matchingMode);
 
     /**
-     * Sets <CODE>queryType</CODE> as default type of query
+     * Sets {@code queryType} as default type of query
      *
      * @param queryType type of query
      */
@@ -86,19 +83,15 @@ public interface ObjectExchanger<N extends NamedObject<?, ?>, T extends N>
     /**
      * Returns default matching mode
      *
-     * @param defaul <tt>MatchingMode</tt>
      */
     public MatchingMode getDefaultMatchingMode();
 
     /**
      * Returns default query mode
-     *
-     * @param defaul <tt>QueryMode</tt>
      */
     //public QueryMode getDefaultQueryMode();
 
-    //public ObjectExchanger<N, T> getExchanger(NamedObject<N, T> namedObject);
-    public ObjectExchanger<?, ?> getExchanger(NamedObject<?, ?> namedObject);
+    public ObjectExchanger<?> getExchanger(NamedObject<?> namedObject);
 
     /**
      * Clears object cache if the <code>Exchanger</code> has.

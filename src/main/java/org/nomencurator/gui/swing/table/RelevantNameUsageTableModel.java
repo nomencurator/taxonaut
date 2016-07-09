@@ -42,7 +42,7 @@ import org.nomencurator.resources.ResourceKey;
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  * @see org.nomencurator.model.Annotation
  *
- * @version 	29 June 2016
+ * @version 	03 Ju 2016
  * @author 	Nozomi `James' Ytow
  */
 public class RelevantNameUsageTableModel
@@ -125,7 +125,7 @@ public class RelevantNameUsageTableModel
 
     protected static final int[] emptyIndices = new int[0];
 
-    public int[] getIndicesOf(NameUsage<?, ?> nameUsage)
+    public int[] getIndicesOf(NameUsage<?> nameUsage)
     {
 	if(nameUsage == null)
 	    return emptyIndices;
@@ -144,7 +144,7 @@ public class RelevantNameUsageTableModel
 	}
     }
 
-    public int[] getIndicesOf(NameUsage<?, ?>[] nameUsages)
+    public int[] getIndicesOf(NameUsage<?>[] nameUsages)
     {
 	if(nameUsages == null ||
 	   nameUsages.length == 0)
@@ -153,7 +153,7 @@ public class RelevantNameUsageTableModel
 	List<Annotation>list = new ArrayList<Annotation>();
 	List<Annotation> namedObjects = getObjects();
 	synchronized (namedObjects) {
-	    for(NameUsage<?, ?> nameUsage: nameUsages) {
+	    for(NameUsage<?> nameUsage: nameUsages) {
 		addAnnotationsOn(nameUsage, list);
 	    }
 	    int[] indices = getIndicesOf(list);
@@ -174,7 +174,7 @@ public class RelevantNameUsageTableModel
     }
 
 
-    protected List<Annotation> addAnnotationsOn(NameUsage<?, ?> nameUsage, List<Annotation>annotations)
+    protected List<Annotation> addAnnotationsOn(NameUsage<?> nameUsage, List<Annotation>annotations)
     {
 	if(annotations == null)
 	    annotations = new ArrayList<Annotation>();
@@ -182,12 +182,12 @@ public class RelevantNameUsageTableModel
 	synchronized (namedObjects) {
 	    String pid = nameUsage.getPersistentID();
 	    for(Annotation annotation: namedObjects) {
-		Iterator<NameUsage<?, ?>> annotatants = annotation.getAnnotatants();
+		Iterator<NameUsage<?>> annotatants = annotation.getAnnotatants();
 		if(annotatants == null)
 		    continue;
 		boolean found = false;
 		while(annotatants.hasNext()) {
-		    NameUsage<?, ?> annotatant = annotatants.next();
+		    NameUsage<?> annotatant = annotatants.next();
 		    if(annotatant != null &&(
 		       annotatant == nameUsage ||
 		       (pid != null &&

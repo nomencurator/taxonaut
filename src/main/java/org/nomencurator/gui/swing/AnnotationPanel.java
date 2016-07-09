@@ -99,7 +99,7 @@ import org.nomencurator.resources.ResourceKey;
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  * @see org.nomencurator.model.Author
  *
- * @version 	28 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class AnnotationPanel
@@ -504,7 +504,7 @@ public class AnnotationPanel
 	NameUsageTableModel model = 
 	    (NameUsageTableModel)annotatorTaxa.getModel();
 	model.clear();
-	Iterator<NameUsage<?, ?>> nameUsages = annotation.getAnnotators();
+	Iterator<NameUsage<?>> nameUsages = annotation.getAnnotators();
 	while (nameUsages.hasNext()) {
 	    model.add(nameUsages.next());
 	}
@@ -552,7 +552,7 @@ public class AnnotationPanel
 	}
 	linkType.setSelectedItem(linkTypeToSelect);
 	annotation.clearAnnotators();
-	Iterator<NameUsage<?, ?>> iterator = ((NameUsageTableModel)annotatorTaxa.getModel()).iterator();
+	Iterator<NameUsage<?>> iterator = ((NameUsageTableModel)annotatorTaxa.getModel()).iterator();
 	if(iterator != null) {
 	    while(iterator.hasNext()) {
 		annotation.addAnnotator(iterator.next());

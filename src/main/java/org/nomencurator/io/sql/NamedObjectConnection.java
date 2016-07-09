@@ -81,10 +81,10 @@ import org.nomencurator.resources.ResourceKey;
  * @see org.nomencurator.model.NamedObject
  * @see java.sql.Connection
  *
- * @version 	27 June 2016
+ * @version 	05 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NamedObjectConnection<N extends NamedObject<?, ?>>
+public class NamedObjectConnection<T extends NamedObject<?>>
     implements Connection
 {
     /** Constant to specify nominal mode in access to the database */
@@ -100,13 +100,13 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
     protected static Map<String, Set<Connection>> connections;
 
     /** Mappings from object ID to {@code NamedObject} */
-    protected static Map<String, Map<String, NamedObject<?, ?>>> oidToObjectMaps;
+    protected static Map<String, Map<String, NamedObject<?>>> oidToObjectMaps;
 
     /** Mappings from persistent ID to {@code NamedObject} */
-    protected static Map<String, Map<String, NamedObject<?, ?>>> pidToObjectMaps;
+    protected static Map<String, Map<String, NamedObject<?>>> pidToObjectMaps;
 
     /** Mappings from {@code NamedObject} to object ID */
-    protected static Map<String, Map<NamedObject<?, ?>, Integer>> objectToOIDMaps;
+    protected static Map<String, Map<NamedObject<?>, Integer>> objectToOIDMaps;
 
     /** Mapping from locale name to {@code Locale} for each {@code dataSource} */
     protected static Map<String, Map<String, Locale>> localeMaps;
@@ -458,15 +458,15 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      *
      * @exception SQLException
      */
-    public NamedObject<?, ?> getNamedObject(int objectID,
+    public NamedObject<?> getNamedObject(int objectID,
 				      String objectType,
 				      int mode)
 	throws SQLException
     {
 	if(oidToObjectMaps != null) {
-	    Map<String, NamedObject<?, ?>> map = oidToObjectMaps.get(dataSource);
+	    Map<String, NamedObject<?>> map = oidToObjectMaps.get(dataSource);
 	    if(map != null) {
-		NamedObject<?, ?> o = map.get(Integer.toString(objectID));
+		NamedObject<?> o = map.get(Integer.toString(objectID));
 		if(o != null)
 		    return o;
 	    }
@@ -480,7 +480,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 					       objectType);
 	query.setInt(1, objectID);
 
-	NamedObject<?, ?> object = null;
+	NamedObject<?> object = null;
 	ResultSet result = query.executeQuery();
 	if(result.next()) {
 	    object = createNamedObject(result, mode);
@@ -718,7 +718,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      * in the database behind this {@code Connection}, or zero
      * if the {@code object} is not in the database
      */
-    public int getObjectID(NamedObject<?, ?> object)
+    public int getObjectID(NamedObject<?> object)
 	throws SQLException
     {
 	return getObjectID(object, false);
@@ -737,12 +737,12 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      * in the database behind this {@code Connection}, or zero
      * if the {@code object} is not in the database
      */
-    public int getObjectID(NamedObject<?, ?> object, boolean withInsertion)
+    public int getObjectID(NamedObject<?> object, boolean withInsertion)
 	throws SQLException
     {
 	
 	if(objectToOIDMaps != null) {
-	    Map<NamedObject<?, ?>, Integer> h = objectToOIDMaps.get(dataSource);
+	    Map<NamedObject<?>, Integer> h = objectToOIDMaps.get(dataSource);
 	    
 	    if(h != null) {
 		Integer objectID = h.get(object);
@@ -789,17 +789,17 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      * @param object {@code NamedObject} to which the
      * {@code objectID} to be assigned
      */
-    public void setObjectID(int objectID, NamedObject<?, ?> object)
+    public void setObjectID(int objectID, NamedObject<?> object)
     {
 	if(objectToOIDMaps == null) {
-	    objectToOIDMaps = Collections.synchronizedMap(new HashMap<String, Map<NamedObject<?, ?>, Integer>>());
-	    oidToObjectMaps =  Collections.synchronizedMap(new HashMap<String, Map<String, NamedObject<?, ?>>>());
+	    objectToOIDMaps = Collections.synchronizedMap(new HashMap<String, Map<NamedObject<?>, Integer>>());
+	    oidToObjectMaps =  Collections.synchronizedMap(new HashMap<String, Map<String, NamedObject<?>>>());
 	}
 
-	Map<NamedObject<?, ?>, Integer> o2oidMap = objectToOIDMaps.get(dataSource);
+	Map<NamedObject<?>, Integer> o2oidMap = objectToOIDMaps.get(dataSource);
 
 	if(o2oidMap == null) {
-	    o2oidMap = Collections.synchronizedMap(new HashMap<NamedObject<?, ?>, Integer>());
+	    o2oidMap = Collections.synchronizedMap(new HashMap<NamedObject<?>, Integer>());
 	    objectToOIDMaps.put(dataSource, o2oidMap);
 	}
 
@@ -807,10 +807,10 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 
 	o2oidMap.put(object, id);
 
-	Map<String, NamedObject<?, ?>> map = oidToObjectMaps.get(dataSource);
+	Map<String, NamedObject<?>> map = oidToObjectMaps.get(dataSource);
 
 	if(map == null) {
-	    map = Collections.synchronizedMap(new HashMap<String, NamedObject<?, ?>>());
+	    map = Collections.synchronizedMap(new HashMap<String, NamedObject<?>>());
 	    oidToObjectMaps.put(dataSource, map);
 	}
 
@@ -911,7 +911,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      *
      * @exception SQLException
      */
-    public NamedObject<?, ?> getNamedObject(int objectID,
+    public NamedObject<?> getNamedObject(int objectID,
 				      int mode)
 	throws SQLException
     {
@@ -936,7 +936,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      *
      * @exception SQLException
      */
-    public NamedObject<?, ?> getNamedObject(String persistentID,
+    public NamedObject<?> getNamedObject(String persistentID,
 				      int mode)
 	throws SQLException
     {
@@ -961,15 +961,15 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      *
      * @exception SQLException
      */
-    public NamedObject<?, ?> getNamedObject(String persistentID,
+    public NamedObject<?> getNamedObject(String persistentID,
 				      String objectType,
 				      int mode)
 	throws SQLException
     {
 	if(pidToObjectMaps != null) {
-	    Map<String, NamedObject<?, ?>> map = pidToObjectMaps.get(dataSource);
+	    Map<String, NamedObject<?>> map = pidToObjectMaps.get(dataSource);
 	    if(map != null) {
-		NamedObject<?, ?> o = map.get(persistentID);
+		NamedObject<?> o = map.get(persistentID);
 		if(o != null)
 		    return o;
 	    }
@@ -984,7 +984,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	query.setString(1, persistentID);
 
 	ResultSet result = query.executeQuery();
-	NamedObject<?, ?> object = null;
+	NamedObject<?> object = null;
 	if(result.next()) {
 	    object = createNamedObject(result, mode);
 	}
@@ -1032,7 +1032,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      *
      * @exception SQLException
      */
-    protected NamedObject<?, ?> createNamedObject(ResultSet result,
+    protected NamedObject<?> createNamedObject(ResultSet result,
 					    int mode)
 	throws SQLException
     {
@@ -1077,7 +1077,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      *
      * @exception SQLException
      */
-    protected void setValues(NamedObject<?, ?> object, ResultSet result)
+    protected void setValues(NamedObject<?> object, ResultSet result)
 	throws SQLException
     {
 	setObjectID(result.getInt("object_id"), object);
@@ -1170,7 +1170,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	Publication container = null;
 
 	if(oidToObjectMaps != null) {
-	    Map<String, NamedObject<?, ?>> map = oidToObjectMaps.get(dataSource);
+	    Map<String, NamedObject<?>> map = oidToObjectMaps.get(dataSource);
 	    if(map != null) {
 		container = 
 		    (Publication)map.get(Integer.toString(containerID));
@@ -1222,7 +1222,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	Publication publication = null;
 
 	if(oidToObjectMaps != null) {
-	    Map<String, NamedObject<?, ?>> map = oidToObjectMaps.get(dataSource);
+	    Map<String, NamedObject<?>> map = oidToObjectMaps.get(dataSource);
 	    if(map != null) {
 		publication = (Publication)map.get(Integer.toString(publicationID));
 	    }
@@ -1252,7 +1252,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	Appearance appearance = null;
 
 	if(oidToObjectMaps != null) {
-	    Map<String, NamedObject<?, ?>> map = oidToObjectMaps.get(dataSource);
+	    Map<String, NamedObject<?>> map = oidToObjectMaps.get(dataSource);
 	    if(map != null) {
 		appearance = 
 		    (Appearance)map.get(Integer.toString(objectID));
@@ -1317,7 +1317,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	Object object = null;
 
 	if(oidToObjectMaps != null) {
-	    Map<String, NamedObject<?, ?>> map = oidToObjectMaps.get(dataSource);
+	    Map<String, NamedObject<?>> map = oidToObjectMaps.get(dataSource);
 	    if(map != null) {
 		object = map.get(Integer.toString(objectID));
 	    }
@@ -1330,27 +1330,27 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      * Returns {@code NameUsage} of {@code objectID},
      * or null it is not found. 
      */
-    protected NameUsage<?, ?> getNameUsage(int objectID, int mode)
+    protected NameUsage<?> getNameUsage(int objectID, int mode)
 	throws SQLException
     {
-	NameUsage<?, ?> nameUsage = null;
+	NameUsage<?> nameUsage = null;
 
 	Object object = getCachedObject(objectID);
 	if(object instanceof NameUsage)
-	    nameUsage = (NameUsage<?, ?>)object;
+	    nameUsage = (NameUsage<?>)object;
 
 	if (nameUsage == null) {
 	    if((mode & NOMINAL) != 0) {
 		String pid = getPersistentID(objectID);
 		if(pid != null && pid.length() > 0) {
-		    nameUsage = (NameUsage<?, ?>)new DefaultNameUsage();
+		    nameUsage = (NameUsage<?>)new DefaultNameUsage();
 		    nameUsage.setLiteral(pid);
 		}
 	    }
 	    else {
 		object = getNamedObject(objectID, mode);
-		if(object instanceof NameUsage<?, ?>)
-		    nameUsage = (NameUsage<?, ?>)object;
+		if(object instanceof NameUsage<?>)
+		    nameUsage = (NameUsage<?>)object;
 	    }
 	}
 
@@ -1489,14 +1489,14 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
      *
      * @exception SQLException
      */
-    protected NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> createNameUsage(ResultSet result, int mode)
+    protected NameUsage<?> createNameUsage(ResultSet result, int mode)
 	throws SQLException
     {
 	int i = result.getInt("object_id");
-	NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage = null;
+	NameUsage<?> nameUsage = null;
 	Object object = getCachedObject(i);
 	if(object instanceof NameUsage)
-	    nameUsage = (NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>)object;
+	    nameUsage = (NameUsage<?>)object;
 	if(nameUsage == null) {
 	    nameUsage = new DefaultNameUsage();
 	}
@@ -1535,7 +1535,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	i = result.getInt("type");
 	if(i != 0) {
 	    nameUsage.setType(true);
-	    nameUsage.setTypeOfType(result.getString("type_of_type"));
+	    nameUsage.setTypeStatus(result.getString("type_of_type"));
 	}
 	nameUsage.setIncertaeSedis(1 == result.getInt("insertae_sedis"));
 
@@ -1648,7 +1648,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
     }
 
 
-    public int insert(NamedObject<?, ?> object)
+    public int insert(NamedObject<?> object)
 	throws SQLException
     {
 	if(startTransaction == null) {
@@ -1765,7 +1765,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
     }
 
     public int setValues(PreparedStatement statement,
-			 NamedObject<?, ?> namedObject,
+			 NamedObject<?> namedObject,
 			 int index)
 	throws SQLException
     {
@@ -1851,7 +1851,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
     }
 
     public int setValues(PreparedStatement statement,
-			 NameUsage<?, ?> nameUsage,
+			 NameUsage<?> nameUsage,
 			 int index)
 	throws SQLException
     {
@@ -1870,7 +1870,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 
 	setString(statement, index++, nameUsage.getLiteral());
 
-	NamedObject<?, ?> object = nameUsage.getAppearance();
+	NamedObject<?> object = nameUsage.getAppearance();
 	if(object == null)
 	    statement.setNull(index++, java.sql.Types.NULL);
 	else
@@ -1897,7 +1897,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	}
 	if(nameUsage.isType()) {
 		statement.setInt(index++, 1);
-		setString(statement, index++, nameUsage.getTypeOfType());
+		setString(statement, index++, nameUsage.getTypeStatus().getTypeStatus());
 	}
 	else{
 		statement.setNull(index++, java.sql.Types.NULL);
@@ -1917,7 +1917,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
 	throws SQLException
     {
 	setString(statement, index++, annotation.getLinkType());
-	NamedObject<?, ?> object = annotation.getAppearance();
+	NamedObject<?> object = annotation.getAppearance();
 	if(object == null)
 	    statement.setNull(index++, java.sql.Types.NULL);
 	else
@@ -1930,7 +1930,7 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
     }
 
     public int setValues(PreparedStatement statement,
-			 NameUsageNode<?, ?> nameUsageNode,
+			 NameUsageNode<?> nameUsageNode,
 			 int index)
 	throws SQLException
     {
@@ -1938,14 +1938,14 @@ public class NamedObjectConnection<N extends NamedObject<?, ?>>
     }
     /*
     protected int setValues(CallableStatement statement,
-			    NamedObject<?, ?> object,
+			    NamedObject<?> object,
 			    int index)
     {
 	return index;
     }
 
     protected int setValues(PreparedStatement statement, 
-			    NamedObject<?, ?> object,
+			    NamedObject<?> object,
 			    int index)
     {
 	return -1;

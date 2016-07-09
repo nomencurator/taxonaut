@@ -40,102 +40,101 @@ import java.util.Observer;
 import java.util.Set;
 import java.util.Vector;
 
-//import org.nomencurator.sql.NamedObjectConnection;
 import org.nomencurator.io.sql.NamedObjectConnection;
 
 import org.w3c.dom.Element;
 
 /**
- * An implementation of <code>NameUsageNode</code> in Nomencurator
+ * An implementation of {@code NameUsageNode} in Nomencurator
  * data model.  It was referred to as NRnode in the original publication.
- * It wraps a <code>NameUsage</code> for efficient navigation over 
- * annotated <code>NameUsage</code>s.
+ * It wraps a {@code NameUsage} for efficient navigation over 
+ * annotated {@code NameUsage}s.
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	24 June 2016
+ * @version 	07 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T extends N>
-    extends AbstractNameUsage <N, T>
-    implements NameUsageNode<N, T>, Observer 
+public abstract class AbstractNameUsageNode<T extends NameUsageNode<?>>
+    extends AbstractNameUsage <T>
+    implements NameUsageNode<T>, Observer 
 {
     private static final long serialVersionUID = -5158717413357780340L;
 
     /**
-     * <tt>Hashtable</tt> holding pointer to
-     * <tt>Annotation</tt>s used to refer to
+     * {@code Hashtable} holding pointer to
+     * {@code Annotation}s used to refer to
      * this object.
      */ 
     protected Set<Annotation> relevantAnnotations;
 
     /**
-     * <tt>Hashtable</tt> holding pointers to
-     * <tt>Annotation</tt> used to refer to
-     * this object.  Link type of <tt>Annotation</tt>s
+     * {@code Hashtable} holding pointers to
+     * {@code Annotation} used to refer to
+     * this object.  Link type of {@code Annotation}s
      * are used as keys.
      */ 
     protected Map<String, Set<Annotation>>annotationsByLinkType;
 
     /**
-     * <tt>Hashtable</tt> holding pointer to
-     * <tt>NameUsageNode</tt>s referring to or
+     * {@code Hashtable} holding pointer to
+     * {@code NameUsageNode}s referring to or
      * referred to by this object.  
-     * <tt>NameUsageNode</tt> is used as a key.
+     * {@code NameUsageNode} is used as a key.
      */ 
-    protected Set<NameUsageNode<N, ? extends T>> relevantNodes;
+    protected Set<NameUsageNode<?/* extends T*/>> relevantNodes;
 
     /**
-     * <tt>Hashtable</tt> holding pointer to
-     * <tt>NameUsageNode</tt>s referring to or
-     * referred to by this object.  <tt>Annotation</tt>
-     * referring to the <tt>NameUsage</tt> is used as a key.
+     * {@code Hashtable} holding pointer to
+     * {@code NameUsageNode}s referring to or
+     * referred to by this object.  {@code Annotation}
+     * referring to the {@code NameUsage} is used as a key.
      */ 
-    protected Map<Annotation, Set<NameUsageNode<N, ? extends T>>> nodesByAnnotation;
+    protected Map<Annotation, Set<NameUsageNode<?/* extends T*/>>> nodesByAnnotation;
 
     /**
-     * <tt>Hashtable</tt> holding pointer to
-     * <tt>NameUsageNode</tt>s referring to or
+     * {@code Hashtable} holding pointer to
+     * {@code NameUsageNode}s referring to or
      * referred to by this object.  Ascribed name
-     * of <tt>NameUsage</tt> is used as a key.
+     * of {@code NameUsage} is used as a key.
      */ 
-    protected Map<String, Map<NameUsageNode<N, ? extends T>, Annotation>> nodesByName;
+    protected Map<String, Map<NameUsageNode<?/* extends T*/>, Annotation>> nodesByName;
 
 
     /**
-     * <tt>Hashtable</tt> holding pointer to
-     * <tt>NameUsageNode</tt>s referring to or
+     * {@code Hashtable} holding pointer to
+     * {@code NameUsageNode}s referring to or
      * referred to by this object.  The contents of
      * persistent ID, i.e. part of a PID other than
-     * class name, of <tt>NameUsageNode</tt>
+     * class name, of {@code NameUsageNode}
      * is used as a key.
      */ 
-    protected Map<String, Map<NameUsageNode<N, ? extends T>, Annotation>> nodesByPID;
+    protected Map<String, Map<NameUsageNode<?/* extends T*/>, Annotation>> nodesByPID;
 
-    /** Constructs an "empty" <code>NameUsageNode</code> */
+    /** Constructs an "empty" {@code NameUsageNode} */
     protected AbstractNameUsageNode()
     {
 	super();
     }
 
     /**
-     * Constructs a <COCE>NameUsageNode</tt> using
-     * existing <tt>NameUsage</tt>
+     * Constructs a <COCE>NameUsageNode} using
+     * existing {@code NameUsage}
      *
-     * @param nameUsage existing <tt>NameUsage</tt>
+     * @param nameUsage existing {@code NameUsage}
      * to be pointed by this object
      */
-    protected AbstractNameUsageNode(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage)
+    protected AbstractNameUsageNode(NameUsage<?> nameUsage)
     {
 	super(nameUsage);
 	initializeReferants();
     }
 
     /**
-     * Constructs an "empty" <code>NameUsageNode</code>
-     * appeared in <tt>appearance</tt>
+     * Constructs an "empty" {@code NameUsageNode}
+     * appeared in {@code appearance}
      *
-     * @param appearance <tt>Appearance</tt> where the name used
+     * @param appearance {@code Appearance} where the name used
      */
     protected AbstractNameUsageNode(Appearance apperance)
     {
@@ -143,8 +142,8 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Constructs a <code>NameUsageNode</code> object having
-     * <code>persistentID</code> as its representation,
+     * Constructs a {@code NameUsageNode} object having
+     * {@code persistentID} as its representation,
      */
     protected AbstractNameUsageNode(String persistentID)
     {
@@ -152,40 +151,40 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Constructs a <code>NameUsageNode</code> based on
-     * <code>nameUsage</code>
+     * Constructs a {@code NameUsageNode} based on
+     * {@code nameUsage}
      */
-    protected AbstractNameUsageNode(Name<N, ? extends T> nameUsage)
+    protected AbstractNameUsageNode(Name<? extends T> nameUsage)
     {
 	super(nameUsage);
 	initializeReferants();
     }
 
     /**
-     * Constructs a <tt>NameUsage</tt> by giving
+     * Constructs a {@code NameUsage} by giving
      * its attributes.
      *
-     * @param rank <tt>String</tt> indicating name of rank
-     * @param name <tt>String</tt> indicating ascribed name
-     * @param auth <tt>Name</tt> of authoritative name usage
-     * @param rec  <tt>Name</tt> of recording name usage
-     * @param type boolean, true if the <tt>NameUsage</tt> is name bearing type
-     * @param higher <tt>Name</tt> of higher taxon
-     * @param lower array of lower taxa's <tt>Name</tt>s
+     * @param rank {@code String} indicating name of rank
+     * @param name {@code String} indicating ascribed name
+     * @param auth {@code Name} of authoritative name usage
+     * @param rec  {@code Name} of recording name usage
+     * @param type boolean, true if the {@code NameUsage} is name bearing type
+     * @param higher {@code Name} of higher taxon
+     * @param lower array of lower taxa's {@code Name}s
      */
-    protected AbstractNameUsageNode(String rank, String name,
-				    Name<N, T> auth, Name<N, T> rec,
+    protected <N extends T>AbstractNameUsageNode(String rank, String name,
+				    Name<N> auth, Name<N> rec,
 				    boolean type,
-				    Name<N, T> higher, Name<N, T> [] lower)
+				    Name<N> higher, Name<N> [] lower)
     {
 	super(rank, name, auth, rec, type, higher, lower);
     }
 
     /**
-     * Constructs an <tt>NameUage</tt> object using XML data
-     * given by <tt>xml</tt>
+     * Constructs an {@code NameUage} object using XML data
+     * given by {@code xml}
      *
-     * @param xml <tt>Element</tt> specifying a <tt>NameUsage</tt>
+     * @param xml {@code Element} specifying a {@code NameUsage}
      *
      */
     protected AbstractNameUsageNode(Element xml)
@@ -195,11 +194,11 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Constructs an <tt>NameUage</tt> object using XML data
-     * given by <tt>xml</tt>
+     * Constructs an {@code NameUage} object using XML data
+     * given by {@code xml}
      *
-     * @param xml <tt>Element</tt> specifying a <tt>NameUsage</tt>
-     * @param appearance <tt>Appearance</tt> where the name used
+     * @param xml {@code Element} specifying a {@code NameUsage}
+     * @param appearance {@code Appearance} where the name used
      */
     protected AbstractNameUsageNode(Element xml, Appearance ap)
     {
@@ -235,15 +234,15 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Adds <code>Annotation</code> to the list of <code>Annotation</code>s made by this <code>NameUsage</code>
-     * It returns true if the <code>annotation</code> added to the
-     * list successfuly, or false if the <code>annotation</code> is
+     * Adds {@code Annotation} to the list of {@code Annotation}s made by this {@code NameUsage}
+     * It returns true if the {@code annotation} added to the
+     * list successfuly, or false if the {@code annotation} is
      * already in the list.
      *
-     * @param annotation <code>Annotation</code> to be added to the list of <code>Annotation</code>s made by this <code>NameUsage</code>
+     * @param annotation {@code Annotation} to be added to the list of {@code Annotation}s made by this {@code NameUsage}
      *
-     * @return true if <code>annotation</code> was appended to the list of <code>Annotation</code>s made by this <code>NameUsage</code>
-     * successfully, or false if <code>annotation</code> is already in the list
+     * @return true if {@code annotation} was appended to the list of {@code Annotation}s made by this {@code NameUsage}
+     * successfully, or false if {@code annotation} is already in the list
      */
     public boolean addAnnotation(Annotation annotation)
     {
@@ -251,7 +250,7 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	    throw new IllegalArgumentException(getClass().getName() + 
 					       "#addAnnotation(): null argument");
 
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.addAnnotation(annotation);
 
@@ -264,9 +263,9 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Removes <code>annotation</code> from the list of <code>Annotation</code>s made by this <code>NameUsage</code>
+     * Removes {@code annotation} from the list of {@code Annotation}s made by this {@code NameUsage}
      *
-     * @param annotation <code>NameUsage</code> to be removed fromthe list of <code>Annotation</code>s made by this <code>NameUsage</code>
+     * @param annotation {@code NameUsage} to be removed fromthe list of {@code Annotation}s made by this {@code NameUsage}
      */
     public boolean removeAnnotation(Annotation annotation)
     {
@@ -277,7 +276,7 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	    */
 	    return false;
 
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this) {
 	    return n.removeAnnotation(annotation);
 	}
@@ -286,16 +285,16 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Returns <tt>Collection</tt> of 
-     * relevant <tt>Annotations</tt>, or null
-     * if there is no <tt>Annotations</tt>
-     * relevant to this <tt>NameUsageNode</tt>
+     * Returns {@code Collection} of 
+     * relevant {@code Annotations}, or null
+     * if there is no {@code Annotations}
+     * relevant to this {@code NameUsageNode}
      *
-     * @return Collection of relevant <tt>Annotation</tt>s
+     * @return Collection of relevant {@code Annotation}s
      */
     public Collection<Annotation> getRelevantAnnotations()
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.getRelevantAnnotations();
 
@@ -304,21 +303,21 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 
 
     /**
-     * Returns <tt>Collection</tt> of 
-     * relevant <tt>Annotations</tt> with specified
-     * <tt>linkType</tt>, or null
-     * if there is no <tt>Annotations</tt> having
-     * <tt>linkType</tt>.
+     * Returns {@code Collection} of 
+     * relevant {@code Annotations} with specified
+     * {@code linkType}, or null
+     * if there is no {@code Annotations} having
+     * {@code linkType}.
      *
-     * @param linkType link type of <tt>Annotation</tt> to be
+     * @param linkType link type of {@code Annotation} to be
      * returned
      *
-     * @return Collection of <tt>Annotation</tt>s having
-     * <tt>linkType</tt>
+     * @return Collection of {@code Annotation}s having
+     * {@code linkType}
      */
     public Collection<Annotation> getRelevantAnnotations(String linkType)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.getRelevantAnnotations();
 
@@ -326,19 +325,19 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Adds <tt>annotation</tt> to the list of
-     * <tt>Annotation</tt>s relevant to the
-     * <tt>NameUsage</tt> and provide cross
-     * references between relevant <tt>NameUsage</tt>s
+     * Adds {@code annotation} to the list of
+     * {@code Annotation}s relevant to the
+     * {@code NameUsage} and provide cross
+     * references between relevant {@code NameUsage}s
      *
-     * @param annotation <tt>Annotation</tt> to be added to
-     * the list of relevant <tt>Annotation</tt>s
+     * @param annotation {@code Annotation} to be added to
+     * the list of relevant {@code Annotation}s
      *
-     * @return number of <tt>NameUsageNode</tt> added
+     * @return number of {@code NameUsageNode} added
      */
     public int addRelevantAnnotation(Annotation annotation)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.addRelevantAnnotation(annotation);
 
@@ -349,7 +348,7 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	if(relevantAnnotations == null) {
 	    relevantAnnotations   = Collections.synchronizedSet(new HashSet<Annotation>());
 	    annotationsByLinkType = Collections.synchronizedMap(new HashMap<String, Set<Annotation>>());
-	    nodesByAnnotation     = Collections.synchronizedMap(new HashMap<Annotation, Set<NameUsageNode<N, ? extends T>>>());
+	    nodesByAnnotation  = Collections.synchronizedMap(new HashMap<Annotation, Set<NameUsageNode<?/*T*/>>>());
 	}
 
 	relevantAnnotations.add(annotation);
@@ -367,16 +366,16 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Removes <tt>annotation</tt> from the list of
-     * <tt>Annotation</tt>s relevant to the
-     * <tt>NameUsage</tt> and cross
-     * references between relevant <tt>NameUsage</tt>s
+     * Removes {@code annotation} from the list of
+     * {@code Annotation}s relevant to the
+     * {@code NameUsage} and cross
+     * references between relevant {@code NameUsage}s
      *
-     * @param annotation <tt>Annotatation</tt> to be remvoed
+     * @param annotation {@code Annotatation} to be remvoed
      */
     public boolean removeRelevantAnnotation(Annotation annotation)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this) {
 	    return n.removeRelevantAnnotation(annotation);
 	}
@@ -415,18 +414,17 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Returns <tt>Enumeration</tt> of 
-     * relevant <tt>NameUsageNode</tt>s, or null
-     * if there is no <tt>NameUsageNode</tt>
-     * relevant to this <tt>NameUsageNode</tt>
+     * Returns {@code Enumeration} of 
+     * relevant {@code NameUsageNode}s, or null
+     * if there is no {@code NameUsageNode}
+     * relevant to this {@code NameUsageNode}
      *
-     * @return Enumeration of relevant <tt>NameUsageNode</tt>
+     * @return Enumeration of relevant {@code NameUsageNode}
      * or null if none
      */
-    //public Collection<NameUsageNode<? extends N, ? extends T>> getRelevantNodes()
-    public Collection<NameUsageNode<N, ? extends T>> getRelevantNodes()
+    public Collection<NameUsageNode<?/* extends T*/>> getRelevantNodes()
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.getRelevantNodes();
 
@@ -434,20 +432,20 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Returns <tt>Collection</tt> of 
-     * relevant <tt>NameUsageNode</tt>s with
-     * <tt>name</tt>, or null
-     * if there is no <tt>NameUsageNode</tt>
-     * ascribed as <tt>name</tt>
+     * Returns {@code Collection} of 
+     * relevant {@code NameUsageNode}s with
+     * {@code name}, or null
+     * if there is no {@code NameUsageNode}
+     * ascribed as {@code name}
      *
-     * @param name ascribed name of <tt>NameUsageNode</tt>s
+     * @param name ascribed name of {@code NameUsageNode}s
      *
-     * @return Collection of relevant <tt>NameUsageNode</tt>
-     * with <tt>name</tt> or null if none
+     * @return Collection of relevant {@code NameUsageNode}
+     * with {@code name} or null if none
      */
-    public Collection <NameUsageNode<N, ? extends T>>getRelevantNodesOfName(String name)
+    public Collection <NameUsageNode<?/* extends T*/>>getRelevantNodesOfName(String name)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.getRelevantNodesOfName(name);
 
@@ -455,24 +453,24 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Returns <tt>Enumeration</tt> of 
-     * relevant <tt>NameUsageNode</tt>s with
-     * persisntet ID <tt>id</tt>, or null
-     * if there is no <ptt>NameUsageNode</tt>
-     * ascribed as <tt>name</tt>.
-     * Class name part of <tt>id</tt> will be dropped
-     * when looking for <tt>NameUsageNode</tt>s so
-     * persistent ID of either <tt>NameUsage</tt>
-     * <tt>NameUsageNode</tt> will accepted.
+     * Returns {@code Enumeration} of 
+     * relevant {@code NameUsageNode}s with
+     * persisntet ID {@code id}, or null
+     * if there is no <ptt>NameUsageNode}
+     * ascribed as {@code name}.
+     * Class name part of {@code id} will be dropped
+     * when looking for {@code NameUsageNode}s so
+     * persistent ID of either {@code NameUsage}
+     * {@code NameUsageNode} will accepted.
      *
-     * @param id persisntet ID of <tt>NameUsageNode</tt>s
+     * @param id persisntet ID of {@code NameUsageNode}s
      *
-     * @return Enumeration of relevant <tt>NameUsageNode</tt>
-     * with <tt>id</tt> or null if none
+     * @return Enumeration of relevant {@code NameUsageNode}
+     * with {@code id} or null if none
      */
-    public Collection<NameUsageNode<N, ? extends T>> getRelevantNodesOfID(String id)
+    public Collection<NameUsageNode<?/* extends T*/>> getRelevantNodesOfID(String id)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.getRelevantNodesOfName(id);
 
@@ -480,25 +478,25 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Adds <tt>NameUsageNode</tt>s relevant to 
-     * <tt>NameUsage</tt> referred to by <tt>annotation</tt>
+     * Adds {@code NameUsageNode}s relevant to 
+     * {@code NameUsage} referred to by {@code annotation}
      *
-     * @param annotation <tt>Annotation</tt> where relevant
-     * <tt>NameUsage</tt> should be retrieved
+     * @param annotation {@code Annotation} where relevant
+     * {@code NameUsage} should be retrieved
      *
-     * @param annotation <tt>Annotation</tt> to be added
+     * @param annotation {@code Annotation} to be added
      *
-     * @return number of <tt>NameUsageNode</tt> added
+     * @return number of {@code NameUsageNode} added
      */
     public int addRelevantNodes(Annotation annotation)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.addRelevantNodes(annotation);
 
-	Set<NameUsageNode<N, ? extends T>> nodeSet = nodesByAnnotation.get(annotation);
+	Set<NameUsageNode<?/* extends T*/>> nodeSet = nodesByAnnotation.get(annotation);
 	if(nodeSet == null) {
-	    nodeSet = Collections.synchronizedSet(new HashSet<NameUsageNode<N, ? extends T>>());
+	    nodeSet = Collections.synchronizedSet(new HashSet<NameUsageNode<?/* extends T*/>>());
 	    nodesByAnnotation.put(annotation, nodeSet);
 	}
 
@@ -510,47 +508,47 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Adds <tt>NameUsageNode</tt>s representing
-     * <tt>NameUsage</tt>s enumerated in <tt>nodes</tt>
-     * to the list of <tt>NameUsageNode</tt> relevant to this,
-     * with pointer to <tt>annotation</tt>.
+     * Adds {@code NameUsageNode}s representing
+     * {@code NameUsage}s enumerated in {@code nodes}
+     * to the list of {@code NameUsageNode} relevant to this,
+     * with pointer to {@code annotation}.
      *
-     * @param annotation <tt>Annotation</tt> to be added
-     * @param nodes <tt>Enumeration</tt> of <tt>NameUsage</tt>
+     * @param annotation {@code Annotation} to be added
+     * @param nodes {@code Enumeration} of {@code NameUsage}
      * to be added
-     * @param nodeList <tt>Hashtable</tt> 
-     * to hold <tt>NameUsageNode</tt>s 
-     * relevant to the <tt>annotation</tt>
+     * @param nodeList {@code Hashtable} 
+     * to hold {@code NameUsageNode}s 
+     * relevant to the {@code annotation}
      *
-     * @return number of <tt>NameUsageNode</tt> added
+     * @return number of {@code NameUsageNode} added
      */
     public int addRelevantNodes(Annotation annotation,
-				Collection<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nodes,
-				Set<NameUsageNode<N, ? extends T>> nodeSet)
+				Collection<? extends NameUsage<?>> nodes,
+				Set<NameUsageNode<?>> nodeSet)
     {
 	return addRelevantNodes(annotation, nodes.iterator(), nodeSet);
     }
     
     /**
-     * Adds <tt>NameUsageNode</tt>s representing
-     * <tt>NameUsage</tt>s enumerated in <tt>nodes</tt>
-     * to the list of <tt>NameUsageNode</tt> relevant to this,
-     * with pointer to <tt>annotation</tt>.
+     * Adds {@code NameUsageNode}s representing
+     * {@code NameUsage}s enumerated in {@code nodes}
+     * to the list of {@code NameUsageNode} relevant to this,
+     * with pointer to {@code annotation}.
      *
-     * @param annotation <tt>Annotation</tt> to be added
-     * @param nodes <tt>Enumeration</tt> of <tt>NameUsage</tt>
+     * @param annotation {@code Annotation} to be added
+     * @param nodes {@code Iterator} of {@code NameUsage}
      * to be added
-     * @param nodeList <tt>Hashtable</tt> 
-     * to hold <tt>NameUsageNode</tt>s 
-     * relevant to the <tt>annotation</tt>
+     * @param nodeList {@code Hashtable} 
+     * to hold {@code NameUsageNode}s 
+     * relevant to the {@code annotation}
      *
-     * @return number of <tt>NameUsageNode</tt> added
+     * @return number of {@code NameUsageNode} added
      */
     public int addRelevantNodes(Annotation annotation,
-				Iterator<NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>>> nodes,
-				Set<NameUsageNode<N, ? extends T>> nodeSet)
+				Iterator<? extends NameUsage<?>> nodes,
+				Set<NameUsageNode<?>> nodeSet)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.addRelevantNodes(annotation, nodes, nodeSet);
 
@@ -558,22 +556,22 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	    return 0;
 	
 	if(relevantNodes == null) {
-	    relevantNodes = Collections.synchronizedSet(new HashSet<NameUsageNode<N, ? extends T>>());
-	    nodesByName  = Collections.synchronizedMap(new HashMap<String, Map<NameUsageNode<N, ? extends T>, Annotation>>());
-	    nodesByPID  = Collections.synchronizedMap(new HashMap<String, Map<NameUsageNode<N, ? extends T>, Annotation>>());
+	    relevantNodes = Collections.synchronizedSet(new HashSet<NameUsageNode<?/* extends T*/>>());
+	    nodesByName  = Collections.synchronizedMap(new HashMap<String, Map<NameUsageNode<?/* extends T*/>, Annotation>>());
+	    nodesByPID  = Collections.synchronizedMap(new HashMap<String, Map<NameUsageNode<?/* extends T*/>, Annotation>>());
 	}
 
 	int i = 0;
 
 	while(nodes.hasNext()) {
-	    NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> usage = nodes.next();
+	    NameUsage<?> usage = nodes.next();
 	    if(usage == null || usage == this || 
 	       usage.getEntity() == getNameUsage().getEntity() ||
 	       usage.getPersistentID().equals(getNameUsageID())
 	       )
 		continue;
 
-	    NameUsageNode<N, T> node = getNameUsageNode(usage);
+	    NameUsageNode<?> node = getNameUsageNode(usage);
 
 	    if(node.getPersistentID().equals(getPersistentID()))
 		continue;
@@ -582,9 +580,9 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	    relevantNodes.add(node);
 
 	    String key = node.getLiteral();
-	    Map<NameUsageNode<N, ? extends T>, Annotation> annotationMap = nodesByName.get(key);
+	    Map<NameUsageNode<?/* extends T*/>, Annotation> annotationMap = nodesByName.get(key);
 	    if(annotationMap == null) {
-		annotationMap = Collections.synchronizedMap(new HashMap<NameUsageNode<N, ? extends T>, Annotation>());
+		annotationMap = Collections.synchronizedMap(new HashMap<NameUsageNode<?/* extends T*/>, Annotation>());
 		nodesByName.put(key, annotationMap);
 	    }
 	    annotationMap.put(node, annotation);
@@ -592,7 +590,7 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	    key = node.getPersistentIDContents();
 	    annotationMap = nodesByPID.get(key);
 	    if(annotationMap == null) {
-		annotationMap = Collections.synchronizedMap(new HashMap<NameUsageNode<N, ? extends T>, Annotation>());
+		annotationMap = Collections.synchronizedMap(new HashMap<NameUsageNode<?/* extends T*/>, Annotation>());
 		nodesByPID.put(key, annotationMap);
 	    }
 	    annotationMap.put(node, annotation);
@@ -604,24 +602,24 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Removes <tt>NameUsageNode</tt>s relevant to
-     * <tt>annotation</tt> from cross
+     * Removes {@code NameUsageNode}s relevant to
+     * {@code annotation} from cross
      * references between them.
      *
-     * @param annotation to which relevant <tt>NameUsageNode</tt>s 
+     * @param annotation to which relevant {@code NameUsageNode}s 
      * to be removed
      *
-     * @return number of removed <tt>NameUsageNode</tt>s 
+     * @return number of removed {@code NameUsageNode}s 
      */
     public int removeRelevantNodes(Annotation annotation)
     {
 	int i = 0;
 
-	Set<NameUsageNode<N, ? extends T>> keys = nodesByAnnotation.get(annotation);
+	Set<NameUsageNode<?/* extends T*/>> keys = nodesByAnnotation.get(annotation);
 
-	for(NameUsageNode<N, ? extends T> node: keys) {
+	for(NameUsageNode<?/* extends T*/> node: keys) {
 	    String key = node.getPersistentIDContents();
-	    Map<NameUsageNode<N, ? extends T>, Annotation> nodes = nodesByPID.get(key);
+	    Map<NameUsageNode<?/* extends T*/>, Annotation> nodes = nodesByPID.get(key);
 	    i += removeRelevantNodes(annotation, nodes);
 	    if(nodes.isEmpty())
 		nodesByPID.remove(key);
@@ -641,30 +639,30 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Removes <tt>annotation</tt> from the list of
-     * <tt>Annotation</tt>s relevant to then
-     * <tt>NameUsage</tt> and cross
-     * references between relevant <tt>NameUsage</tt>s
+     * Removes {@code annotation} from the list of
+     * {@code Annotation}s relevant to then
+     * {@code NameUsage} and cross
+     * references between relevant {@code NameUsage}s
      *
-     * @param annotation <tt>Annotation</tt> of which 
-     * relevant <tt>NameUsageNode</tt> to be remvoed
-     * @param nodes <tt>Hashtable</tt> from which 
-     * <tt>NameUsageNode</tt> relevant to 
-     * <tt>annotation</tt> to be remvoed
+     * @param annotation {@code Annotation} of which 
+     * relevant {@code NameUsageNode} to be remvoed
+     * @param nodes {@code Hashtable} from which 
+     * {@code NameUsageNode} relevant to 
+     * {@code annotation} to be remvoed
      *
      */
-    public int removeRelevantNodes(Annotation annotation, Map<NameUsageNode<N, ? extends T>, Annotation> nodes)
+    public int removeRelevantNodes(Annotation annotation, Map<? extends NameUsageNode<?/* extends T*/>, Annotation> nodes)
     {
-	Set<NameUsageNode<N, ? extends T>> toBeRemoved = new HashSet<NameUsageNode<N, ? extends T>>();
+	Set<NameUsageNode<?/* extends T*/>> toBeRemoved = new HashSet<NameUsageNode<?/* extends T*/>>();
 
-	for(NameUsageNode<N, ? extends T> key : nodes.keySet()) {
+	for(NameUsageNode<?/* extends T*/> key : nodes.keySet()) {
 	    if(annotation == nodes.get(key)) {
 		toBeRemoved.add(key);
 	    }
 	}
 
 	int i = 0;
-	for(NameUsageNode<N, ? extends T> key : toBeRemoved) {
+	for(NameUsageNode<?/* extends T*/> key : toBeRemoved) {
 	    nodes.remove(key);
 	    i++;
 	}
@@ -682,14 +680,14 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Returns persistent ID as a <tt>NameUsage</tt>,
-     * instead of as <tt>NameUsageNode</tt>
+     * Returns persistent ID as a {@code NameUsage},
+     * instead of as {@code NameUsageNode}
      *
-     * @return String persisten ID of this as a <tt>NameUsage</tt>
+     * @return String persisten ID of this as a {@code NameUsage}
      */
     public String getNameUsageID()
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.getNameUsageID();
 
@@ -700,17 +698,16 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Returns <code>NameUsageNode</code> representing higher name usage
+     * Returns {@code NameUsageNode} representing higher name usage
      *
-     * @return <code>NameUsageNode</code> representing higher name usage
+     * @return {@code NameUsageNode} representing higher name usage
      */
-    public NameUsageNode<N, T> getHigherNameUsageNode()
+    public NameUsageNode<T> getHigherNameUsageNode()
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this) 
 	    return n.getHigherNameUsageNode();
-
-	NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> nameUsage = getHigherNameUsage();
+	NameUsage<?> nameUsage = getHigherNameUsage();
 	if(nameUsage == null ||
 	   nameUsage instanceof NameUsageNode)
 	    return getNameUsageNode(nameUsage);
@@ -720,19 +717,19 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	    getNameUsageNode(nameUsage)
 	*/
 
-	NameUsageNode<N, T> node = createNameUsageNode(nameUsage);
+	NameUsageNode<T> node = createNameUsageNode(nameUsage);
 	setHigherNameUsage(node);
 	return node;
     }
 
     /**
-     * Sets <code>nameUsage</code> as higher name usage
+     * Sets {@code nameUsage} as higher name usage
      *
-     * @param nameUsage <code>NameUsage</code> representing higher name uage
+     * @param nameUsage {@code NameUsage} representing higher name uage
      */
-    public boolean setHigherNameUsage(NameUsage<N, T> higherNameUsage)
+    public boolean setHigherNameUsage(NameUsage<T> higherNameUsage)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this) {
 	    return n.setHigherNameUsage(higherNameUsage);
 	}
@@ -746,19 +743,19 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Adds <code>nameUsage</code> to the list of lower taxa.
-     * It returns true if the <code>nameUsage</code> added to the
-     * list successfuly, or false if the <code>nameUsage</code> is
+     * Adds {@code nameUsage} to the list of lower taxa.
+     * It returns true if the {@code nameUsage} added to the
+     * list successfuly, or false if the {@code nameUsage} is
      * already in the list.
      *
-     * @param nameUsage <code>NameUsage</code> to be added to the list of lower taxa
+     * @param nameUsage {@code NameUsage} to be added to the list of lower taxa
      *
-     * @return true if <code>nameUsage</code> was appended to the list of lower taxa
-     * successfully, or false if <code>nameUsage</code> is already in the list
+     * @return true if {@code nameUsage} was appended to the list of lower taxa
+     * successfully, or false if {@code nameUsage} is already in the list
      */
-    public boolean addLowerNameUsage(NameUsage<N, T> nameUsage)
+    public boolean addLowerNameUsage(NameUsage<T> nameUsage)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    return n.addLowerNameUsage(nameUsage);
 
@@ -769,13 +766,13 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Sets <code>sensu</code> as authority <code>NameUsage</code> of this object.
+     * Sets {@code sensu} as authority {@code NameUsage} of this object.
      *
-     * @param sensu <code>NameUsage</code> representing authority of this <code>NameUsage</code>
+     * @param sensu {@code NameUsage} representing authority of this {@code NameUsage}
      */
-    public void setSensu(NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> sensu)
+    public void setSensu(NameUsage<?> sensu)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 
 	if(n != this)
 	    n.setSensu(sensu);
@@ -784,15 +781,15 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Sets <tt>type</tt> as type of this <tt>NameUsage</tt>.
-     * The  <tt>type</tt> may be null.
+     * Sets {@code type} as type of this {@code NameUsage}.
+     * The  {@code type} may be null.
      *
-     * @param type <tt>NameUsage</tt> to be designated as the type of
-     * this <tt>NameUsage</tt>
+     * @param type {@code NameUsage} to be designated as the type of
+     * this {@code NameUsage}
      */
-    public void setType(NameUsage<N, ? extends T> typeUsage)
+    public void setType(NameUsage<?/* extends T*/> typeUsage)
     {
-	NameUsageNode<N, T> n = getNameUsageNode();
+	NameUsageNode<T> n = getNameUsageNode();
 	if(n != this)
 	    n.setTypeUsage(typeUsage);
 	else
@@ -800,15 +797,15 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
     }
 
     /**
-     * Converts <tt>usage</tt> to <tt>NameUsageNode</tt>.
-     * If <tt>usage</tt> is an instance of <tt>NameUsageNode</tt>,
+     * Converts {@code usage} to {@code NameUsageNode}.
+     * If {@code usage} is an instance of {@code NameUsageNode},
      * it does nothing.
      *
-     * @param usage <tt>NameUsage</tt> to be converted.
+     * @param usage {@code NameUsage} to be converted.
      *
-     * @return NameUsageNode representing <tt>uasge</tt>
+     * @return NameUsageNode representing {@code uasge}
      */
-    public NameUsageNode<N, T> getNameUsageNode(Object object)
+    public NameUsageNode<T> getNameUsageNode(Object object)
     {
 	if(object == null)
 	    return null;
@@ -828,7 +825,7 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	}
 	*/
 
-	//if(object instanceof NameUsage<? extends N, ? extends T>)
+	//if(object instanceof NameUsage<?/* extends T*/>)
 	if(object instanceof NameUsage)
 	    return createNameUsageNode(getNameUsage(object));
 
@@ -845,16 +842,16 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 
 
     /**
-     * Sets valuse of this <tt>NamedObject</tt> to
-     * <tt>statement</tt> using <tt>connection</tt>.
-     * from specified <tt>index</tt> of the <tt>statement</tt>
+     * Sets valuse of this {@code NamedObject} to
+     * {@code statement} using {@code connection}.
+     * from specified {@code index} of the {@code statement}
      *
-     * @param statement <tt>PraredStatement</tt> to which
-     * value of the this <tt>NamedObject</tt> to be set
-     * @param connection <tt>NamedObjectConnection</tt>
+     * @param statement {@code PraredStatement} to which
+     * value of the this {@code NamedObject} to be set
+     * @param connection {@code NamedObjectConnection}
      * to be used to set values
-     * @param index <tt>int</tt> from where values to be set
-     * into the <tt>statement</tt>
+     * @param index {@code int} from where values to be set
+     * into the {@code statement}
      *
      * @return int index of the next parameter to be set if there is
      *
@@ -868,62 +865,62 @@ public abstract class AbstractNameUsageNode<N extends NameUsageNode<?, ?>, T ext
 	return connection.setValues(statement, this, index);
     }
     
-    public AbstractNameUsageNode<N, T> create()
+    public AbstractNameUsageNode<T> create()
     {
 	return createNameUsageNode();
     }
 
-    protected abstract AbstractNameUsageNode<N, T> createNameUsageNode();
+    protected abstract AbstractNameUsageNode<T> createNameUsageNode();
 
-    protected abstract AbstractNameUsageNode<N, T> createNameUsageNode(NameUsage<?, ?> nameUsage);
+    protected abstract AbstractNameUsageNode<T> createNameUsageNode(NameUsage<?> nameUsage);
 
-    protected abstract AbstractNameUsageNode<N, T> createNameUsageNode(String persistentID);
+    protected abstract AbstractNameUsageNode<T> createNameUsageNode(String persistentID);
 
-    protected AbstractNameUsage<N, T> createNameUsage()
+    protected AbstractNameUsage<T> createNameUsage()
     {
 	return createNameUsageNode();
     }
 
-    protected AbstractNameUsage<N, T> createNameUsage(NameUsage<?, ?> nameUsage)
+    protected AbstractNameUsage<T> createNameUsage(NameUsage<?> nameUsage)
     {
 	return createNameUsageNode(nameUsage);
     }
 
-    protected AbstractNameUsage<N, T> createNameUsage(String persistentID)
+    protected AbstractNameUsage<T> createNameUsage(String persistentID)
     {
 	return createNameUsageNode(persistentID);
     }
 
-    protected AbstractNameUsage<N, T> createNameUsage(Name<?, ?> name)
+    protected AbstractNameUsage<T> createNameUsage(Name<?> name)
     {
 	if (name instanceof NameUsage)
-	    return createNameUsageNode((NameUsage<?, ?>)name);
+	    return createNameUsageNode((NameUsage<?>)name);
 	return createNameUsage();
     }
 
-    public NameUsageNode<N, T> clone()
+    public NameUsageNode<T> clone()
     {
-	AbstractNameUsageNode<N, T> node = create();
+	AbstractNameUsageNode<T> node = create();
 	copyTo(node);
 	return node;
     }
 
-    protected void copy(AbstractNameUsageNode<N, T> source)
+    protected void copy(AbstractNameUsageNode<T> source)
     {
 	source.copyTo(this);
     }
 
-    protected void copyTo(AbstractNameUsageNode<N, T> dest)
+    protected void copyTo(AbstractNameUsageNode<T> dest)
     {
-	super.copyTo((AbstractNameUsage<N, T>) dest);
+	super.copyTo((AbstractNameUsage<T>) dest);
     }
 
    /**
-     * Returns <tt>NameUsageNode</tt> proxied by this <tt>NameUsagNode</tt>
+     * Returns {@code NameUsageNode} proxied by this {@code NameUsagNode}
      *
-     * @return NameUsageNode proxied by this <tt>NameUsagNode</tt>
+     * @return NameUsageNode proxied by this {@code NameUsagNode}
      */
-    public NameUsageNode<N, T> getNameUsageNode()
+    public NameUsageNode<T> getNameUsageNode()
     {
 	if(entity == null || !isAssignableFrom(entity))
 	    return this;

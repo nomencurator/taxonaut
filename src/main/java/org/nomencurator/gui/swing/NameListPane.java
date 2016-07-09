@@ -97,11 +97,11 @@ import lombok.Setter;
  * {@code NameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	30 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
-class NameListPane<N extends NameUsage<?, ?>>
-    extends AbstractNameListPane<N>
+class NameListPane<T extends NameUsage<?>>
+    extends AbstractNameListPane<T>
 {
     private static final long serialVersionUID = 505307850078236355L;
 
@@ -132,15 +132,15 @@ class NameListPane<N extends NameUsage<?, ?>>
 
     protected LanguageMenu languageMenu;
 
-    protected Hierarchies<N> currentHierarchies;
+    protected Hierarchies<T> currentHierarchies;
     
-    protected List<Hierarchies<N>> hierarchies;
+    protected List<Hierarchies<T>> hierarchies;
 
-    protected HierarchiesFrame<N> currentFrame;
+    protected HierarchiesFrame<T> currentFrame;
 
-    protected List<HierarchiesFrame<N>> frames;
+    protected List<HierarchiesFrame<T>> frames;
 
-    protected List<MultiplexNameUsageQuery<N, N>> getHierarchies = null;
+    protected List<MultiplexNameUsageQuery<T>> getHierarchies = null;
 
     protected static String[] heightValues = {
 	"", "0", "1", "2", "3" };
@@ -426,7 +426,7 @@ class NameListPane<N extends NameUsage<?, ?>>
 	}
     }
 
-    protected ComparisonQueryParameter/*<N>*/ createComparisonQueryParameter() {
+    protected ComparisonQueryParameter/*<T>*/ createComparisonQueryParameter() {
 	String value = (String)heightComboBox.getSelectedItem();
 	int height = NameUsageExchanger.FULL_HEIGHT;
 	if(!heightDepthValues[0].equals(value))
@@ -436,7 +436,7 @@ class NameListPane<N extends NameUsage<?, ?>>
 	if(!heightDepthValues[0].equals(value))
 	    depth = Integer.valueOf(value).intValue();
 
-	ComparisonQueryParameter/*<N>*/ parameter = new ComparisonQueryParameter/*<N>*/();
+	ComparisonQueryParameter/*<T>*/ parameter = new ComparisonQueryParameter/*<T>*/();
 	parameter.setHeight(height);
 	parameter.setDepth(depth);
 	parameter.setQueryMode(QueryMode.HIERARCHIES);
@@ -444,7 +444,7 @@ class NameListPane<N extends NameUsage<?, ?>>
 	parameter.setHigher(higherRank.getSelectedItem());
 	parameter.setLower(lowerRank.getSelectedItem());
 
-	NameTableModel/*<N>*/ model = (NameTableModel/*<N>*/)nameTable.getModel();
+	NameTableModel/*<T>*/ model = (NameTableModel/*<T>*/)nameTable.getModel();
 	int[] selections = getSelectedModelRows();
 	for(int i = 0; i < selections.length; i++) {
 	    parameter.add(model.getNamedObject(selections[i]));
@@ -455,15 +455,15 @@ class NameListPane<N extends NameUsage<?, ?>>
     }
 
     @SuppressWarnings("unchecked")
-    public NameUsageQueryParameter<N, N> getQueryParameter(NameUsage<?, ?> nameUsage)
+    public NameUsageQueryParameter<T> getQueryParameter(NameUsage<?> nameUsage)
     {
-	NameUsageQueryParameter<N, N> parameter = getQueryParameter();
-	parameter.setFilter((NameUsage<N, N>)nameUsage);
+	NameUsageQueryParameter<T> parameter = getQueryParameter();
+	parameter.setFilter((NameUsage<T>)nameUsage);
 	return parameter;
     }
 
 
-    public NameUsageQueryParameter<N, N> getQueryParameter()
+    public NameUsageQueryParameter<T> getQueryParameter()
     {
 	String value = (String)heightComboBox.getSelectedItem();
 	int height = NameUsageExchanger.FULL_HEIGHT;
@@ -474,8 +474,8 @@ class NameListPane<N extends NameUsage<?, ?>>
 	if(value.length() > 0 /* !heightDepthValues[0].equals(value) */)
 	    depth = Integer.valueOf(value).intValue();
 
-	NameUsageQueryParameter<N, N> parameter =
-	    new NameUsageQueryParameter<N, N>();
+	NameUsageQueryParameter<T> parameter =
+	    new NameUsageQueryParameter<T>();
 	parameter.setHeight(height);
 	parameter.setDepth(depth);
 	parameter.setQueryMode(QueryMode.PARTIAL_HIERARCHIES);
@@ -512,19 +512,19 @@ class NameListPane<N extends NameUsage<?, ?>>
 	    return;
 
 	currentHierarchies = 
-	    ((HierarchiesFrame<N>)window).getHierarchies();
+	    ((HierarchiesFrame<T>)window).getHierarchies();
     }
 
     public void windowLostFocus(WindowEvent event)
     {
     }
 
-    public void setObjectExchanger(ObjectExchanger<NameUsage<?, ?>, NameUsage<?, ?>> manager)
+    public void setObjectExchanger(ObjectExchanger<NameUsage<?>> manager)
     {
 	nameTable.setObjectExchanger(manager);
     }
 
-    public ObjectExchanger<NameUsage<?, ?>, NameUsage<?, ?>> getObjectExchanger()
+    public ObjectExchanger<NameUsage<?>> getObjectExchanger()
     {
 	return nameTable.getObjectExchanger();
     }
@@ -535,7 +535,7 @@ class NameListPane<N extends NameUsage<?, ?>>
 	return nameTable.getNames(name, rank, authority, year, queryType);
     }
 
-    public String getNames(Collection<? extends NameUsage<?, ?>> nameUsages, String name, Rank rank, String authority, String year, MatchingMode queryType)
+    public String getNames(Collection<? extends NameUsage<?>> nameUsages, String name, Rank rank, String authority, String year, MatchingMode queryType)
     {
 	return nameTable.getNames(nameUsages, name, rank, authority, year, queryType);
     }

@@ -26,14 +26,14 @@ import java.util.EventListener;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>QueryResultListener</CODE> defines API to receive 
- * a <CODE>QueryResultEvent</CODE>
+ * {@code QueryResultListener} defines API to receive 
+ * a {@code QueryResultEvent}..
  *
- * @version 	25 June 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface QueryResultListener<N extends NamedObject<?, ?>, T extends N>
+public interface QueryResultListener<T extends NamedObject<?>>
     extends EventListener
 {
-    public void queryReturned(QueryResultEvent<N, T> event);
+    public void queryReturned(QueryResultEvent<T> event);
 }

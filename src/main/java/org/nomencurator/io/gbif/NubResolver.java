@@ -1,7 +1,7 @@
 /*
  * NubResolver.java:  a GBIF CheklistBank NameUsage resolover with cache
  *
- * Copyright (c) 2014 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -60,6 +60,12 @@ import org.w3c.dom.NodeList;
 
 import lombok.Getter;
 
+/**
+ * {@code NubResolver} resolved NameUsages in GBIF chcklistBank.
+ *
+ * @version 	03 July 2016
+ * @author 	Nozomi `James' Ytow
+ */
 public class NubResolver
 //    extends AbstractNameUsageExchanger<NubNameUsage>
 {
@@ -124,7 +130,7 @@ public class NubResolver
 
     public NubNameUsage getRoot(NubNameUsage nameUsage)
     {
-	NameUsage<NubNameUsage, NubNameUsage> root = nameUsage.getRoot();
+	NameUsage<NubNameUsage> root = nameUsage.getRoot();
 	if(root instanceof NubNameUsage)
 	    return (NubNameUsage)root;
 	else if (root.getEntity() instanceof NubNameUsage)

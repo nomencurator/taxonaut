@@ -41,6 +41,7 @@ import java.text.ParsePosition;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -67,12 +68,11 @@ import org.w3c.dom.Text;
  * @see org.nomencurator.model.Name
  * @see java.lang.String
  *
- * @version 	27 June 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
-					//public interface NamedObject <T>
-    extends Name <N, T>
+public interface NamedObject <T extends NamedObject<?>>
+    extends Name <T>
 {
     /*
      * Object class of Java has toString() method, so why do we need NamedObject?
@@ -189,7 +189,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      * @return this if no equivalent object is not in {@code nomencurator},
      * or the equivalent object found in {@code nomencurator}
      */
-    public NamedObject<?, ?> putTo(Nomencurator nomencurator);
+    public NamedObject<?> putTo(Nomencurator nomencurator);
 
     /**
      * Returns {@code NamedObject} having no entity object or an eitity instance
@@ -199,16 +199,15 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      * 
      * @return NamedObject have no enitity or non-{@code NamedObject} entity
      */
-    //public NamedObject<?, ?> getNamedObject();
-    public NamedObject<N, T> getNamedObject();
+    public NamedObject<T> getNamedObject();
 
     /**
-     * Merge the given <tt>namedObejct</tt> to this, with returning true if successful.
+     * Merge the given {@code namedObejct} to this, with returning true if successful.
      *
-     * @paramn namedObject <tt>NamedObject</tt> to be merged.
+     * @paramn namedObject {@code NamedObject} to be merged.
      * @return true if mergerd successfully.
      */
-    public boolean merge(NamedObject<?, ?> namedObject);
+    public boolean merge(NamedObject<?> namedObject);
     
     public String trim();
 
@@ -265,7 +264,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      *
      * @return NamedObject source of this object
      */
-    public NamedObject<?, ?> getSource();
+    public NamedObject<?> getSource();
 
     /**
      * Sets {@code source} of this object which gives a context
@@ -273,7 +272,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      *
      * @param source where this object appeared
      */
-    public void setSource(NamedObject<?, ?> source);
+    public void setSource(NamedObject<?> source);
 
     /**
      * Returns name of whom contributed this object
@@ -399,7 +398,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      * @return an array of {@code NamedObject}s
      * represented by this object
      */
-    public NamedObject<?, ?>[] getSourceObjects();
+    public Collection<NamedObject<?>> getSourceObjects();
 
     /**
      * Set {@code NamedObject}s in {@code sources}
@@ -408,7 +407,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      * @param sources an array of {@code NamedObject}s
      * to be represented by this object
      */
-    public void setSourceObjects(NamedObject<N, ? extends T>[] sources);
+    public void setSourceObjects(NamedObject<?>[] sources);
 
     /**
      * Set {@code NamedObject}s in {@code sources}
@@ -417,7 +416,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      * @param sources a {@code List} of {@code NamedObject}s
      * to be represented by this object
      */
-    public void setSourceObjects(List<? extends NamedObject<N, ? extends T>>  sources);
+    public void setSourceObjects(Collection<? extends NamedObject<?>>  sources);
 
     /**
      * Adds {@code source} to the list of {@code NamedObject}s
@@ -426,7 +425,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      * @param source a {@code NamedObject} to be 
      * represented by this object
      */
-    public void addSourceObject(NamedObject<N, ? extends T> source);
+    public void addSourceObject(NamedObject<?> source);
 
     /**
      * Removes {@code source} from the list of {@code NamedObject}s
@@ -435,7 +434,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      * @param source a {@code NamedObject} to be 
      * removed from list of {@code NamedObject} represented by this object
      */
-    public void removeSourceObject(NamedObject<N, ? extends T> source);
+    public void removeSourceObject(NamedObject<?> source);
 
     /**
      * Returns {@code NamedObject} overridden by this
@@ -443,7 +442,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      *
      * @return {@code NamedObject} overridden by this
      */
-    //public NamedObject<?, ?> getOverrides();
+    //public NamedObject<?> getOverrides();
 
     /**
      * Sets {@code namedObject} as the {@code NamedObject}
@@ -452,7 +451,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
      *
      * @param namedObject {@code NamedObject} to be overriden
      */
-    //public void setOverrides(NamedObject<?, ?> namedObject);
+    //public void setOverrides(NamedObject<?> namedObject);
 
     /**
      * Returns XML {@code String} representing this object
@@ -526,7 +525,7 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Returns a detailed expression of this {@code NamedObject}
-     * in a single <tt>String</tt> object.
+     * in a single {@code String} object.
      *
      * @return String representing detail of this {@code NamedObject}
      */
@@ -534,12 +533,12 @@ public interface NamedObject <N extends NamedObject<?, ?>, T extends N>
 
     /**
      * Returns a detailed expression of this {@code NamedObject}
-     * in a single <tt>Document</tt> object.
+     * in a single {@code Document} object.
      *
      * @return Docuemnt representing detail of this {@code NamedObject}
      */
     public Document getDetailDocument();
 
-    public NamedObject<N, T> getNamedObject(Object object);
+    public NamedObject<T> getNamedObject(Object object);
 
 }

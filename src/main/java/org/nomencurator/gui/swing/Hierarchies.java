@@ -75,10 +75,10 @@ import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
  * @version 	29 June 2016
  * @author 	Nozomi `James' Ytow
  */
-public class Hierarchies<N extends NameUsage<?, ?>>
+public class Hierarchies<T extends NameUsage<?>>
     extends JApplet
     implements ChangeListener,
-	       QueryResultListener<N, N>,
+	       QueryResultListener<T>,
 	       Runnable
 {
     private static final long serialVersionUID = 4656853135577095323L;
@@ -88,12 +88,12 @@ public class Hierarchies<N extends NameUsage<?, ?>>
     protected LanguageMenu languageMenu;
 
     /** Panel to display components for query */
-    protected QueryPanel<N, N> query;
+    protected QueryPanel<T> query;
 
     /** Panel to show two tables representing hierarchies */
-    protected HierarchiesPane<N> views;
+    protected HierarchiesPane<T> views;
 
-    protected NameTreeTable<N>[] tables;
+    protected NameTreeTable<T>[] tables;
 
     protected UnitedNameTreeModel unitedTreeModel;
 
@@ -147,8 +147,8 @@ public class Hierarchies<N extends NameUsage<?, ?>>
      */
     protected void createComponents(UnitedNameTreeModel model)
     {
-	query = new QueryPanel<N, N>();
-	views = new HierarchiesPane<N>(model);
+	query = new QueryPanel<T>();
+	views = new HierarchiesPane<T>(model);
 	//FIXME 20141201
 	//query.setQueryManager(table.getAlignerTree());
     }
@@ -167,12 +167,12 @@ public class Hierarchies<N extends NameUsage<?, ?>>
     {
     }
 
-    public QueryPanel<N, N> getQueryPanel()
+    public QueryPanel<T> getQueryPanel()
     {
 	return query;
     }
 
-    public HierarchiesPane<N> getHierarchiesPane()
+    public HierarchiesPane<T> getHierarchiesPane()
     {
 	return views;
     }
@@ -234,20 +234,20 @@ public class Hierarchies<N extends NameUsage<?, ?>>
 	setLocale(languageMenu.getLocale());
     }
 
-    protected List<MultiplexNameUsageQuery<N, N>> threads = null;
+    protected List<MultiplexNameUsageQuery<T>> threads = null;
 
-    public void add(MultiplexNameUsageQuery<N, N> thread)
+    public void add(MultiplexNameUsageQuery<T> thread)
     {
 	if(thread == null)
 	    return;
 
 	if(threads == null)
-	    threads = new ArrayList<MultiplexNameUsageQuery<N, N>>();
+	    threads = new ArrayList<MultiplexNameUsageQuery<T>>();
 	thread.addQueryResultListener(this);
 	threads.add(thread);
     }
 
-    public void remove(MultiplexNameUsageQuery<N, N> thread)
+    public void remove(MultiplexNameUsageQuery<T> thread)
     {
 	if(thread == null)
 	    return;
@@ -275,13 +275,13 @@ public class Hierarchies<N extends NameUsage<?, ?>>
     }
 
 
-    public synchronized void queryReturned(QueryResultEvent<N, N> event)
+    public synchronized void queryReturned(QueryResultEvent<T> event)
     {
-	Collection<N> nodes = event.getResults();
+	Collection<T> nodes = event.getResults();
 	if(nodes == null)
 	    return;
-	Iterator<N> iterator = nodes.iterator();
-	N node = iterator.next();
+	Iterator<T> iterator = nodes.iterator();
+	T node = iterator.next();
 	NameTreeModel model = new NameTreeModel(node);
 	model.setViewName(node.getViewName());
 

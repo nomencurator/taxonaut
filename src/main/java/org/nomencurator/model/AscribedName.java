@@ -33,18 +33,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An <CODE>AscribedName</CODE> provides a vertex in a name graph.
- * It has an ascribed name as its value, lists of <CODE>NameUsageNode</CODE>s
- * used the ascribed name, higher and lower <CODE>AscribedName</CODE>s
- * of which names are used <CODE>NameUsage</CODE>s represented by
- * <CODE>NameUsageNode</CODE>s in the list.  The name graph enables
+ * An {@code AscribedName} provides a vertex in a name graph.
+ * It has an ascribed name as its value, lists of {@code NameUsageNode}s
+ * used the ascribed name, higher and lower {@code AscribedName}s
+ * of which names are used {@code NameUsage}s represented by
+ * {@code NameUsageNode}s in the list.  The name graph enables
  * detection of inconsistency in name usages.
  *
- * @version 	24 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class AscribedName
-    extends AbstractName <AscribedName, AscribedName>
+    extends AbstractName <AscribedName>
 {
     private static final long serialVersionUID = -2541306348846950537L;
 

@@ -1,7 +1,7 @@
 /*
  * Ngrammer.java:  a class to provide a N-gram search
  *
- * Copyright (c) 2005, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2005, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -36,9 +36,9 @@ import org.nomencurator.model.Name;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <tt>Ngrammer</code> provides a N-gram
+ * {@code Ngrammer} provides a N-gram
  *
- * @version 	16 July 2015
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Ngrammer
@@ -109,7 +109,7 @@ public class Ngrammer
     {
 	String key = null;
 	if(object instanceof Name)
-	    key = ((Name<?, ?>)object).getLiteral();
+	    key = ((Name<?>)object).getLiteral();
 	else
 	    key = object.toString();
 

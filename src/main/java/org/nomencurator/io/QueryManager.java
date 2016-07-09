@@ -1,7 +1,7 @@
 /*
  * QueryManager.java: an interface to manage multiple ObjectExchangers
  *
- * Copyright (c) 2006, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2006, 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -25,37 +25,24 @@ import java.util.Collection;
 
 import org.nomencurator.model.NamedObject;
 
-import org.nomencurator.util.ArrayUtility;
-
 /**
- * <CODE>QueryManager</CODE> manages queries to multiple
- * <CODE>DataExchanger</CODE>s
+ * {@code QueryManager} manages queries to multiple
+ * {@code DataExchanger}s
  *
- * @version 	10 July 2015
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-//public interface QueryManager <N extends NamedObject<?, ?>, T extends N>
-//    extends QueryResultListener<N, T>, ObjectExchanger<N, T>
-public interface QueryManager <N extends NamedObject<?, ?>, T extends N,
-								      //								      E extends NamedObject<N, T>,
-								      X extends ObjectExchanger<N, T>//,
-										//P extends QueryParameter<N, T>
-								      //								      Q extends ObjectQuery<N, T>>
-//public interface QueryManager <E extends NamedObject<?, ?>>,
-//					 X extends ObjectExchanger<E>
-										>
+public interface QueryManager <T extends NamedObject<?>,
+					 X extends ObjectExchanger<T>//
+						   //P extends QueryParameter<T>
+						   //Q extends ObjectQuery<T>
+						   >
 {
-    //public MultiplexQuery<N, T, Q> getQuery(P parameter);
-    public MultiplexQuery<N, T> getQuery(QueryParameter<N, T> parameter);
-    //public MultiplexQuery<E> getQuery(QueryParameter<E> parameter);
+    public MultiplexQuery<T> getQuery(QueryParameter<T> parameter);
 
     public boolean addSource(X source);
-    //public boolean addSource(ObjectExchanger<E> source);
-    //public boolean addSource(ObjectExchanger<?, ?> source);
 
     public boolean removeSource(X source);
-    //public boolean removeSource(ObjectExchanger<E> source);
-    //public boolean removeSource(ObjectExchanger<?, ?> source);
 
     public boolean setSynchronous(boolean synchronous);
 

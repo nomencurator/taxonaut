@@ -44,18 +44,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * An implementation of Author data structure of Nomencurator data model
+ * An implementation of {@code Author} data structure of Nomencurator data model
  *
  * @see 	org.nomencurator.model.NamedObject
  * @see 	org.nomencurator.model.Affiliation
  * @see 	org.nomencurator.model.Publication
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Author
-    extends AbstractNamedObject<Author, Author>
+    extends AbstractNamedObject<Author>
     implements Serializable, Cloneable
 {
     private static final long serialVersionUID = -1127397672143751913L;
@@ -124,7 +124,7 @@ public class Author
      *
      * @param name {@code Name} representation of an {@code Author}
      */
-    public Author(Name<?, ?> name)
+    public Author(Name<?> name)
     {
 	//don't use NamedObject(String) constructor
 	this();
@@ -468,7 +468,7 @@ public class Author
      *
      * @return true if merged, or false if not mergiable
      */
-    public boolean merge(NamedObject<?, ?> namedObject){
+    public boolean merge(NamedObject<?> namedObject){
 	if(!(namedObject instanceof Author))
 	    return false;
 	return false; //not yet implemented

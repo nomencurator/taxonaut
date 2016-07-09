@@ -29,12 +29,12 @@ import lombok.Getter;
 import org.nomencurator.model.NamedObject;
 
 /**
- * <CODE>QueryResultEvent</CODE> provides an event to manage a query result
+ * {@code QueryResultEvent} provides an event to manage a query result
  *
- * @version 	22 June 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class QueryResultEvent<N extends NamedObject<?, ?>, T extends N>
+public class QueryResultEvent<T extends NamedObject<?>>
     extends EventObject
 {
     private static final long serialVersionUID = 6521107034448177275L;
@@ -48,34 +48,34 @@ public class QueryResultEvent<N extends NamedObject<?, ?>, T extends N>
     @Getter
     protected int total;
 
-    public QueryResultEvent(ObjectQuery<N, T> query) {
+    public QueryResultEvent(ObjectQuery<T> query) {
 	this(query, 0, 0);
     }
 
-    public QueryResultEvent(ObjectQuery<N, T> query, int residue, int total) {
+    public QueryResultEvent(ObjectQuery<T> query, int residue, int total) {
 	this(query, residue, total, null);
     }
 
-    public QueryResultEvent(ObjectQuery<N, T> query, int residue, int total, String message) {
+    public QueryResultEvent(ObjectQuery<T> query, int residue, int total, String message) {
 	super(query);
 	this.residue = residue;
 	this.total = total;
 	this.message = message;
     }
 
-    @SuppressWarnings("unchecked")
-    public ObjectQuery<N, T> getQuery()
-	{
+    public ObjectQuery<T> getQuery()
+    {
 	Object source = getSource();
-	if(source instanceof ObjectQuery)
-	    return (ObjectQuery<N, T>)source;
-
+	if(source instanceof ObjectQuery) {
+	    @SuppressWarnings("unchecked")
+		ObjectQuery<T> query = (ObjectQuery<T>)source;
+	    return query;
+	}
 	return null;
     }
 
-    //public Collection<NamedObject<N, T>> getResults() {
     public Collection<T> getResults() {
-	ObjectQuery<N, T> query = getQuery();
+	ObjectQuery<T> query = getQuery();
 	if(query != null)
 	    return query.getResults();
 

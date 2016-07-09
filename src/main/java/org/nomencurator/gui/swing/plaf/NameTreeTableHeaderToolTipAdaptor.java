@@ -54,7 +54,7 @@ import org.nomencurator.model.NameUsage;
  * {@code NameTreeTableHeaderToolTipAdaptor} provides an addaptor
  * supporting multiple lined  {@code JToolTip} for {@code NameTreeTableHeader}.
  *
- * @version 	29 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeTableHeaderToolTipAdaptor
@@ -106,8 +106,8 @@ public class NameTreeTableHeaderToolTipAdaptor
             size.width - (insets.left + insets.right),
             size.height - (insets.top + insets.bottom));
 
-	NameTreeTableHeader<NameUsage<?, ?>> header = 
-	    (NameTreeTableHeader<NameUsage<?, ?>>)((JToolTip)c).getComponent();
+	NameTreeTableHeader<NameUsage<?>> header = 
+	    (NameTreeTableHeader<NameUsage<?>>)((JToolTip)c).getComponent();
 
 	int columns = header.getColumnModel().getColumnCount();
 	int origin = header.getHeaderRect(1).x;
@@ -220,8 +220,8 @@ public class NameTreeTableHeaderToolTipAdaptor
 
 	int height = metrics.getHeight() * maxLines;
 
-	NameTreeTableHeader<NameUsage<?, ?>> header = 
-	    (NameTreeTableHeader<NameUsage<?, ?>>)((JToolTip)c).getComponent();
+	NameTreeTableHeader<NameUsage<?>> header = 
+	    (NameTreeTableHeader<NameUsage<?>>)((JToolTip)c).getComponent();
 
 	int columns = header.getColumnModel().getColumnCount();
 	Rectangle rect = header.getHeaderRect(columns - 1);

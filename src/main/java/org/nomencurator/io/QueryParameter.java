@@ -34,12 +34,11 @@ import lombok.Setter;
  * @version 	22 June 2016
  * @author 	Nozomi `James' Ytow
  */
-public class QueryParameter <N extends NamedObject<?, ?>, T extends N>
-								    //public class QueryParameter <E extends NamedObject<?, ?>>
+public class QueryParameter <T extends NamedObject<?>>
 {
     /**/
     @Getter
-	protected NamedObject<N, ? extends T> filter;
+	protected NamedObject<? extends T> filter;
     //protected E filter;
 
     @Setter
@@ -66,7 +65,7 @@ public class QueryParameter <N extends NamedObject<?, ?>, T extends N>
 	if(object == null) return false;
 	if(getClass() != object.getClass()) return false;
 
-	QueryParameter<?, ?> that = (QueryParameter<?, ?>) object;
+	QueryParameter<?> that = (QueryParameter<?>) object;
 
 	return super.equals(object) 
 	    && Objects.equals(this.getFilter(), that.getFilter())
@@ -101,8 +100,7 @@ public class QueryParameter <N extends NamedObject<?, ?>, T extends N>
 	this(null, localKey, Boolean.FALSE, matchingMode, QueryMode.OBJECTS);
     }
 
-    public QueryParameter(NamedObject<N, T> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode) {
-	//public QueryParameter(E filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode) {
+    public QueryParameter(NamedObject<? extends T> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode) {
 	setFilter(filter);
 	setSynchronous(synchronous);
 	setMatchingMode(matchingMode);
@@ -121,7 +119,7 @@ public class QueryParameter <N extends NamedObject<?, ?>, T extends N>
 	setQueryMode(queryMode);
     }
 
-    public synchronized void setFilter(NamedObject<N, T> filter)
+    public synchronized void setFilter(NamedObject<? extends T> filter)
     {
 	if(filter != null) {
 	    setPersistentID(null);

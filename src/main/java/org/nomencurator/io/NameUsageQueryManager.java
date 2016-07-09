@@ -31,16 +31,16 @@ import org.nomencurator.model.Rank;
  * {@code NameUsageQueryManager} manages queries to multiple
  * {@code NameUsageExchanger}s
  *
- * @version 	29 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class NameUsageQueryManager<N extends NameUsage<?, ?>>
-    extends AbstractQueryManager<N, N, NameUsageExchanger<N, N>>
+public class NameUsageQueryManager<T extends NameUsage<?>>
+    extends AbstractQueryManager<T,  NameUsageExchanger<T>>
 {
 
-    public MultiplexQuery<N, N> getQuery(QueryParameter<N, N> parameter) {
+    public MultiplexQuery<T> getQuery(QueryParameter<T> parameter) {
 	if(parameter != null && parameter instanceof NameUsageQueryParameter && sources != null)
-	    return new MultiplexNameUsageQuery<N, N>((NameUsageQueryParameter<N, N>)parameter, sources);
+	    return new MultiplexNameUsageQuery<T>((NameUsageQueryParameter<T>)parameter, sources);
 	else 
 	    return null;
 	

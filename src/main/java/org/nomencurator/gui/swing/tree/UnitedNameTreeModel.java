@@ -330,7 +330,7 @@ import org.nomencurator.util.StackTracer;
  * </OL>
  * <P>
  *
- * @version 	25 June 2016
+ * @version 	05 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UnitedNameTreeModel
@@ -338,8 +338,8 @@ public class UnitedNameTreeModel
     implements TreeModelListener,
 	       NodeMapper //,
 	       //FIXME!
-	       //	       ObjectExchanger<NamedNode, NamedNode>
-	       // NameUsageExchanger<NameUsage, NameUsage>
+	       //	       ObjectExchanger<NamedNode>
+	       // NameUsageExchanger<NameUsage>
 {
     private static final long serialVersionUID = -5470307104391635186L;
 
@@ -1055,10 +1055,11 @@ public class UnitedNameTreeModel
 		else {
 		    switch (leaves.size()) {
 		    case 0:
-			primary = new NameTreeNode(new DefaultNameUsageNode());
+			DefaultNameUsageNode defaultNode= new DefaultNameUsageNode();
+			defaultNode.setImplicit(true);
+			primary = new NameTreeNode(defaultNode);
 			primary.getNameUsage().setLiteral(literal);
 			primary.getNameUsage().setRank(subtrees.get(0).getNameUsage().getRank());
-			((DefaultNameUsageNode)primary.getNameUsage()).setImplicit(true);
 			parentNode.insert(primary, parentNode.getIndex(subtrees.get(0)));
 			reduction = reduce(parentNode, primary, subtrees, reduction, skippers);
 			break;
@@ -2816,7 +2817,7 @@ public class UnitedNameTreeModel
     {
 	Set<String> unifiedIncludedNames = unified.getIncludants().keySet();
 	Set<String> unifiedExcludedNames = unified.getExcludants().keySet();
-	NameUsage<?, ?> u = node.getNameUsage();
+	NameUsage<?> u = node.getNameUsage();
 	Set<String> nodeIncludedNames = u.getIncludants().keySet();
 	Set<String> nodeExcludedNames = u.getExcludants().keySet();
 

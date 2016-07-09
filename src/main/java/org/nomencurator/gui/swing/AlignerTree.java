@@ -123,14 +123,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * {@code AlingerTree} provides node alignment
- * of nodes
+ * {@code AlingerTree} provides node alignment of nodes
  *
- * @version 	29 June 2016
+ * @version 	08 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class AlignerTree
-    extends GenericAlignerTree<NameUsage<?,?>>
+    extends GenericAlignerTree<NameUsage<?>>
 {
     private static final long serialVersionUID = 5069891953117193095L;
 
@@ -189,18 +188,18 @@ public class AlignerTree
     }
 }
 
-abstract class GenericAlignerTree<N extends NameUsage<?,?>>
+abstract class GenericAlignerTree<T extends NameUsage<?>>
     extends JTree
     implements Aligner, 
 	       //FIXME
-	       // NameUsageExchanger<N, N>,
+	       // NameUsageExchanger<T>,
 	       NameQuery,
 	       NamedTree,
 	       NodeMapper,
 	       TreeExpansionListener,
 	       TreeWillExpandListener,
 	       PropertyChangeListener,
-	       QueryResultListener<N, N>,
+	       QueryResultListener<T>,
 	       UnitedNameTreeModelListener
 {
     private static final long serialVersionUID = -7876406468599943379L;
@@ -252,13 +251,13 @@ abstract class GenericAlignerTree<N extends NameUsage<?,?>>
     */
     protected QueryMessages messages;
 
-    protected QueryResultListenerAdaptor<N, N> adaptor;
+    protected QueryResultListenerAdaptor<T> adaptor;
 
     protected NamedTreeAdaptor nameAdaptor;
 
     @Getter
     @Setter
-    protected NameUsageQueryManager<N> queryManager;
+    protected NameUsageQueryManager<T> queryManager;
 
     public JTree getTree()
     {
@@ -325,7 +324,7 @@ abstract class GenericAlignerTree<N extends NameUsage<?,?>>
 	setSynchronize(false);
 	setToolTipText("");
 
-	adaptor = new QueryResultListenerAdaptor<N, N>();
+	adaptor = new QueryResultListenerAdaptor<T>();
 
 	setLocale(getLocale());
     }
@@ -771,7 +770,7 @@ abstract class GenericAlignerTree<N extends NameUsage<?,?>>
         return tip;
     }
 
-    public String getNames(Collection<? extends NameUsage<?, ?>> nameUsages, String ascribedName, Rank rank, String authors, String year, MatchingMode queryType)
+    public String getNames(Collection<? extends NameUsage<?>> nameUsages, String ascribedName, Rank rank, String authors, String year, MatchingMode queryType)
     {
 	return getNames(ascribedName, rank, authors, year, queryType);
     }
@@ -810,7 +809,7 @@ abstract class GenericAlignerTree<N extends NameUsage<?,?>>
 	return messages.getMessage(nodes.size(), arguments);
     }
 
-    public void queryReturned(QueryResultEvent<N, N> event)
+    public void queryReturned(QueryResultEvent<T> event)
     {
     }
 
@@ -828,7 +827,7 @@ abstract class GenericAlignerTree<N extends NameUsage<?,?>>
     public Thread requestObjects(String[] names, MatchingMode queryType){ return requestObjects(names[1], Rank.get(names[0])); }
     public Thread requestObjects(String name, Rank rank)
     {
-	Thread t = new RequestNameUsages<N, N>(name, rank, this);
+	Thread t = new RequestNameUsages<T>(name, rank, this);
 	t.start();
 	return t;
     }
@@ -888,7 +887,7 @@ abstract class GenericAlignerTree<N extends NameUsage<?,?>>
     }
 
     /*
-    class RequestNameUsages<N extends NameUsage<?, ?>, T extends N>
+    class RequestNameUsages<T extends NameUsage<?>>
 	extends Thread
     {
 	Rank rank;

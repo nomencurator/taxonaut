@@ -78,7 +78,7 @@ import org.nomencurator.resources.ResourceKey;
 /**
  * {@code UBioQueryPanel} provides layouted fields for query to uBio
  *
- * @version 	27 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UBioQueryPanel<T extends UBioNameUsage>
@@ -713,7 +713,7 @@ public class UBioQueryPanel<T extends UBioNameUsage>
 
 
     //public DataExchanger getQueryManager()
-    public ObjectExchanger<?, ?> getQueryManager()
+    public ObjectExchanger<?> getQueryManager()
     {
 	return queryManager;
     }

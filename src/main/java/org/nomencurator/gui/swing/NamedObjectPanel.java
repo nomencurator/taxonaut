@@ -97,10 +97,10 @@ import org.nomencurator.gui.swing.table.NamedObjectTableModel;
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  * @see org.nomencurator.model.NamedObject
  *
- * @version 	27 June 2016
+ * @version 	02 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public abstract class NamedObjectPanel<T extends NamedObject<?, ?>>
+public abstract class NamedObjectPanel<T extends NamedObject<?>>
     extends JPanel
     implements ActionListener,
 	       ChangeListener,
@@ -165,7 +165,7 @@ public abstract class NamedObjectPanel<T extends NamedObject<?, ?>>
     protected boolean editable;
 
     /** {@code Hashtable} to retain modified {@code NamedObject}s */
-    protected static Set<NamedObject<?, ?>> modifiedObjects;
+    protected static Set<NamedObject<?>> modifiedObjects;
 
     /** {@code EmptyBorder} used as border of labels */
     protected static EmptyBorder labelBorder = new EmptyBorder(12, 6, 6, 12);
@@ -457,7 +457,7 @@ public abstract class NamedObjectPanel<T extends NamedObject<?, ?>>
 
 	if(namedObject != null && modified) {
 	    if(modifiedObjects == null)
-		modifiedObjects = new HashSet<NamedObject<?, ?>>();
+		modifiedObjects = new HashSet<NamedObject<?>>();
 	    setValues();
 	    modifiedObjects.add(namedObject);
 	}
@@ -543,7 +543,7 @@ public abstract class NamedObjectPanel<T extends NamedObject<?, ?>>
      * @return Iterator of modified {@code NamedObject}s,
      * or null if no {@code NamedObject} was modified
      */
-    public Iterator<NamedObject<?, ?>> getModifiedObjects()
+    public Iterator<NamedObject<?>> getModifiedObjects()
     {
 	if(modifiedObjects != null)
 	    return modifiedObjects.iterator();
@@ -816,7 +816,7 @@ public abstract class NamedObjectPanel<T extends NamedObject<?, ?>>
     }
 
     @SuppressWarnings("unchecked")
-    protected <E extends NamedObject<?, ?>>boolean showOptionDialog(Component source,
+    protected <E extends NamedObject<?>>boolean showOptionDialog(Component source,
 								    NamedObjectPanel<E> dialog,
 								    String title,
 								    EventObject event)

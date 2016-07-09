@@ -35,7 +35,7 @@ import java.util.SortedSet;
  * <code>AbstractRoughCollection</code> is an abstract class to provide
  * a Rough set using <tt>Collection</tt>.
  *
- * @version 	28 July 2016
+ * @version 	09 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractRoughCollection<E>

@@ -64,11 +64,11 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
  * {@code NameTable} provides a JTable to display a list of NameUsages
  * using {@code NameTreeTableModel}
  *
- * @version 	30 June 2016
+ * @version 	03 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTable
-    extends GenericNameTable<NameUsage<?, ?>>
+    extends GenericNameTable<NameUsage<?>>
 {
     private static final long serialVersionUID = 416287578673174387L;
 
@@ -82,12 +82,12 @@ public class NameTable
 	super(locale);
     }
 
-    public NameTable(final NameUsage<?, ?>[] names)
+    public NameTable(final NameUsage<?>[] names)
     {
 	this(names, Locale.getDefault());
     }
 
-    public NameTable(final NameUsage<?, ?>[] names,
+    public NameTable(final NameUsage<?>[] names,
 		     Locale locale)
     {
 	super(names, locale);
@@ -104,25 +104,25 @@ public class NameTable
 	super(nodes, locale);
     }
 
-    public NameTable(final List<? extends NameUsage<?, ?>> nodes)
+    public NameTable(final List<? extends NameUsage<?>> nodes)
     {
 	super(nodes);
     }
 
-    public NameTable(final List<? extends NameUsage<?, ?>> nodes,
+    public NameTable(final List<? extends NameUsage<?>> nodes,
 		     Locale locale)
     {
 	super(nodes, locale);
     }
 
-    public NameTable(final List<? extends NameUsage<?, ?>> nodes,
+    public NameTable(final List<? extends NameUsage<?>> nodes,
 		     Locale locale, int rows)
     {
 	super(nodes, locale, rows);
     }
 }
 
-/*public*/ class GenericNameTable<N extends NameUsage<?, ?>>
+/*public*/ class GenericNameTable<T extends NameUsage<?>>
     extends ViewportSizedTable
     implements ChangeListener, NameQuery
 {
@@ -131,7 +131,7 @@ public class NameTable
 
     protected LanguageMenu languageMenu;
 
-    protected NameUsageExchanger<N, N> queryManager;
+    protected NameUsageExchanger<T> queryManager;
     
     protected QueryMessages messages;
 
@@ -144,15 +144,15 @@ public class NameTable
 
     public GenericNameTable(Locale locale)
     {
-	this((List<N>)null, locale);
+	this((List<T>)null, locale);
     }
 
-    public GenericNameTable(final N[] names)
+    public GenericNameTable(final T[] names)
     {
 	this(names, Locale.getDefault());
     }
 
-    public GenericNameTable(final N[] names,
+    public GenericNameTable(final T[] names,
 		     Locale locale)
     {
 	super();
@@ -176,18 +176,18 @@ public class NameTable
 	setDropMode(DropMode.ON);
     }
 
-    public GenericNameTable(final List<? extends N> nodes)
+    public GenericNameTable(final List<? extends T> nodes)
     {
 	this(nodes, Locale.getDefault());
     }
 
-    public GenericNameTable(final List<? extends N> nodes,
+    public GenericNameTable(final List<? extends T> nodes,
 		     Locale locale)
     {
 	this(nodes, locale, DEFAULT_ROWS);
     }
 
-    public GenericNameTable(final List<? extends N> nodes,
+    public GenericNameTable(final List<? extends T> nodes,
 		     Locale locale, int rows)
     {
 	super(createModel(nodes, locale), rows);
@@ -204,8 +204,8 @@ public class NameTable
 	getColumnModel().getColumn(0).setMinWidth(0);
 	getColumnModel().getColumn(0).setPreferredWidth(3);
 
-	TableRowSorter<NameTableModel/*<N>*/> sorter = 
-	    new TableRowSorter<NameTableModel/*<N>*/>((NameTableModel/*<N>*/)getModel());
+	TableRowSorter<NameTableModel/*<T>*/> sorter = 
+	    new TableRowSorter<NameTableModel/*<T>*/>((NameTableModel/*<T>*/)getModel());
 	for (NameUsageAttribute attribute : attributes) {
 	    sorter.setComparator(attribute.ordinal(), new NameUsageAttributeComparator(attribute));
 	}
@@ -233,38 +233,38 @@ public class NameTable
     public static TableModel createModel(final NameTreeNode[] nodes,
 					 Locale locale)
     {
-	return new NameTableModel/*<N>*/(nodes, locale);
+	return new NameTableModel/*<T>*/(nodes, locale);
     }
 
-    public static TableModel createModel(final NameUsage<?, ?>[] names)
+    public static TableModel createModel(final NameUsage<?>[] names)
     {
 	return createModel(names, Locale.getDefault());
     }
 
-    public static TableModel createModel(final NameUsage<?, ?>[] names,
+    public static TableModel createModel(final NameUsage<?>[] names,
 					 Locale locale)
     {
 	return new NameTableModel(names, locale);
     }
 
-    public static TableModel createModel(final List<? extends NameUsage<?, ?>> names)
+    public static TableModel createModel(final List<? extends NameUsage<?>> names)
     {
 	return createModel(names, Locale.getDefault());
     }
 
-    public static TableModel createModel(final List<? extends NameUsage<?, ?>> names,
+    public static TableModel createModel(final List<? extends NameUsage<?>> names,
 					 Locale locale)
     {
 	if(names != null)
-	    return new NameTableModel/*<N>*/(names.iterator(), locale);
+	    return new NameTableModel/*<T>*/(names.iterator(), locale);
 	else
-	    return new NameTableModel/*<N>*/(locale);
+	    return new NameTableModel/*<T>*/(locale);
     }
 
 
     //    protected TableModel createDefaultDataModel()
     //    {
-    //	return new NameTableModel/*<N>*/();
+    //	return new NameTableModel/*<T>*/();
     //    }
 
     public void setModel(TableModel model)
@@ -292,7 +292,7 @@ public class NameTable
 	else
 	    messages.setLocale(locale);
 
-	((NameTableModel/*<N>*/)getModel()).setLocale(locale);
+	((NameTableModel/*<T>*/)getModel()).setLocale(locale);
 	revalidate();
     }
 
@@ -314,38 +314,38 @@ public class NameTable
 	setLocale(languageMenu.getLocale());
     }
 
-    public void setObjectExchanger(ObjectExchanger<N, N> exchanger)
+    public void setObjectExchanger(ObjectExchanger<T> exchanger)
     {
 	//how can we narrow acceptable subtype of a generic?
 	if(exchanger instanceof NameUsageExchanger)
-	    queryManager = (NameUsageExchanger<N, N>)exchanger;
+	    queryManager = (NameUsageExchanger<T>)exchanger;
     }
 
-    public ObjectExchanger<N, N> getObjectExchanger()
+    public ObjectExchanger<T> getObjectExchanger()
     {
 	return queryManager;
     }
 
     public String getNames(String name, Rank rank, String authority, String year, MatchingMode queryType)
     {
-	Collection<NameUsage<?, ?>> names = null;
+	Collection<NameUsage<?>> names = null;
 
 	if(rank != null) {
 	    names = queryManager.getNameUsages(name, rank, queryType, false, false, false, null);
 	}
 	else {
-	    Collection<? extends NamedObject<?, ?>> namedObjects = queryManager.getObjects(name, queryType);
-	    names = new ArrayList<NameUsage<?, ?>>(namedObjects.size());
-	    for (NamedObject<?, ?> namedObject : namedObjects) {
+	    Collection<? extends NamedObject<?>> namedObjects = queryManager.getObjects(name, queryType);
+	    names = new ArrayList<NameUsage<?>>(namedObjects.size());
+	    for (NamedObject<?> namedObject : namedObjects) {
 		if (namedObject instanceof NameUsage)
-		    names.add((NameUsage<?, ?>)namedObject);
+		    names.add((NameUsage<?>)namedObject);
 	    }
 	}
 
 	return getNames(names, name, rank, authority, year, queryType);
     }
 
-    public String getNames(Collection<? extends NameUsage<?, ?>> names, String name, Rank rank, String authority, String year, MatchingMode queryType)
+    public String getNames(Collection<? extends NameUsage<?>> names, String name, Rank rank, String authority, String year, MatchingMode queryType)
     {
 	if(messages == null)
 	    messages = new QueryMessages(getLocale());
@@ -363,7 +363,7 @@ public class NameTable
 	return messages.getMessage(names.size(), new Object[] {rankName, name});
     }
 
-    public void selectNameUsages(NameUsage<?, ?>[] nameUsages)
+    public void selectNameUsages(NameUsage<?>[] nameUsages)
     {
 	int[] indices = 
 	    ((NameTableModel)getModel()).getIndicesOf(nameUsages);
