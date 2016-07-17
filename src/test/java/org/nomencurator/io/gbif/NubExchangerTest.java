@@ -1,7 +1,7 @@
 /*
  * NubExchangerTest.java:  testcases of NubExchanger
  *
- * Copyright (c) 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-package org.nomencurator.api.gbif;
+package org.nomencurator.io.gbif;
 
 import com.google.common.collect.Lists;
 
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import java.text.DateFormat;
@@ -53,7 +54,7 @@ import org.nomencurator.api.gbif.DatasetAPIClient;
 import org.nomencurator.io.QueryMode;
 import org.nomencurator.io.MatchingMode;
 import org.nomencurator.io.NameUsageQueryParameter;
-import org.nomencurator.io.SynonymMode;
+
 
 import org.nomencurator.io.gbif.NubExchanger;
 
@@ -68,6 +69,9 @@ import org.nomencurator.model.gbif.NubNameUsage;
 
 /**
  * Unit test for NubExchangerTest
+ *
+ * @version 	14 July 2016
+ * @author 	Nozomi `James' Ytow
  */
 public class NubExchangerTest
 {
@@ -158,7 +162,8 @@ public class NubExchangerTest
 
     private NubNameUsage createNubNameUsage5231190() {
 	SpeciesAPIClient sut = new SpeciesAPIClient();
-	return new NubNameUsage(sut.get(5231190, null));
+	Locale locale = null;
+	return new NubNameUsage(sut.get(5231190, locale));
     }
 
     @Test
@@ -179,11 +184,9 @@ public class NubExchangerTest
 	NubNameUsage expected = createNubNameUsage5231190();
 
 	NubNameUsage actual = null;
-	Iterator<NamedObject<NubNameUsage, NubNameUsage>> results = exchanger.getObjects("5231190", MatchingMode.EXACT).iterator();
+	Iterator<NubNameUsage> results = exchanger.getObjects("5231190", MatchingMode.EXACT).iterator();
 	if(results.hasNext()) {
-	    NamedObject result = results.next();
-	    if(result instanceof NubNameUsage)
-		actual = (NubNameUsage)result;
+	    actual = results.next();
 	}
 
 	assertThat(actual, is(expected));
@@ -202,10 +205,10 @@ public class NubExchangerTest
 	    expected.add(new NubNameUsage(result));
 	}
 
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = exchanger.getNameUsages("Puma concolor", null, MatchingMode.EXACT, SynonymMode.DONT_CARE);
+	Collection<NameUsage<NubNameUsage>> actualResults = exchanger.getNameUsages("Puma concolor", null, MatchingMode.EXACT, false, false, false, null);
 
 	ArrayList<NameUsage> actual = new ArrayList<>(actualResults.size());
-	for(NameUsage<NubNameUsage,NubNameUsage> result : actualResults) {
+	for(NameUsage<NubNameUsage> result : actualResults) {
 	    actual.add(result);
 	}
 
@@ -227,13 +230,13 @@ public class NubExchangerTest
 	}
 
 	NubExchanger exchanger = new NubExchanger();
-	NameUsageQueryParameter parameter = new NameUsageQueryParameter<NubNameUsage,NubNameUsage>("Puma concolor", null, MatchingMode.EXACT);
-	//NameUsageQueryParameter parameter = new NameUsageQueryParameter<NubNameUsage,NubNameUsage>("Puma concolor", null, 0, 0, null, null, Boolean.FALSE, MatchingMode.EXACT, QueryMode.NAMEUSAGES);
+	NameUsageQueryParameter parameter = new NameUsageQueryParameter<NubNameUsage>("Puma concolor", null, MatchingMode.EXACT);
+	//NameUsageQueryParameter parameter = new NameUsageQueryParameter<NubNameUsage>("Puma concolor", null, 0, 0, null, null, Boolean.FALSE, MatchingMode.EXACT, QueryMode.NAMEUSAGES);
 	parameter.setLiteral("Puma concolor");
-	Collection<NamedObject<NubNameUsage,NubNameUsage>> actualResults = exchanger.getObjects(parameter);
+	Collection<NamedObject<NubNameUsage>> actualResults = exchanger.getObjects(parameter);
 
 	ArrayList<NameUsage> actual = new ArrayList<>(actualResults.size());
-	for(NamedObject<NubNameUsage,NubNameUsage> result : actualResults) {
+	for(NamedObject<NubNameUsage> result : actualResults) {
 	    actual.add((NameUsage)result);
 	}
 
@@ -256,18 +259,19 @@ public class NubExchangerTest
 	if(matchResult != null) {
 	    List<NameUsageMatch> alternatives = matchResult.getAlternatives();
 	    int i = 0;
+	    Locale locale = null;
 	    for(NameUsageMatch match : alternatives) {
-		rawNub = sut.get(match.getUsageKey(), null);
+		rawNub = sut.get(match.getUsageKey(), locale);
 		if(rawNub != null) {
 		    expected.add(new NubNameUsage(rawNub));
 		}
 	    }
 	}
 
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = exchanger.getNameUsages("Puma concolor", null, MatchingMode.FUZZY, SynonymMode.DONT_CARE);
+	Collection<NameUsage<NubNameUsage>> actualResults = exchanger.getNameUsages("Puma concolor", null, MatchingMode.FUZZY, false, false, false, null);
 
 	ArrayList<NameUsage> actual = new ArrayList<>(actualResults.size());
-	for(NameUsage<NubNameUsage,NubNameUsage> result : actualResults) {
+	for(NameUsage<NubNameUsage> result : actualResults) {
 	    actual.add(result);
 	}
 	
@@ -306,12 +310,12 @@ public class NubExchangerTest
 	    }
 	}
 
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = exchanger.getNameUsages("Puma", Rank.GENUS, MatchingMode.FULL_TEXT, SynonymMode.DONT_CARE);
+	Collection<NameUsage<NubNameUsage>> actualResults = exchanger.getNameUsages("Puma", Rank.GENUS, MatchingMode.FULL_TEXT, false, false, false, null);
 
 	ArrayList<NameUsage> actual = new ArrayList<>(actualResults.size());
 	ArrayList<org.gbif.api.model.checklistbank.NameUsage> actualRaw = new ArrayList<>();
 	List<NameUsageSearchResult> actualSearchResults =new ArrayList<>();
-	for(NameUsage<NubNameUsage,NubNameUsage> result : actualResults) {
+	for(NameUsage<NubNameUsage> result : actualResults) {
 	    actual.add(result);
 	    actualRaw.add(((NubNameUsage)result).getScientificNameUsage());
 	    actualSearchResults.add(((NubNameUsage)result).getNameUsageSearchResult());
@@ -344,10 +348,10 @@ public class NubExchangerTest
 	    }
 	}
 
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = exchanger.getNameUsages("Puma con", null, MatchingMode.SUGGEST, SynonymMode.DONT_CARE);
+	Collection<NameUsage<NubNameUsage>> actualResults = exchanger.getNameUsages("Puma con", null, MatchingMode.SUGGEST, false, false, false, null);
 
 	ArrayList<NameUsage> actual = new ArrayList<>(actualResults.size());
-	for(NameUsage<NubNameUsage,NubNameUsage> result : actualResults) {
+	for(NameUsage<NubNameUsage> result : actualResults) {
 	    actual.add(result);
 	}
 
@@ -360,8 +364,8 @@ public class NubExchangerTest
     @Test
     public void test_getNameUsage_String_wo_Rank_CONTAINS() {
 	NubExchanger exchanger = new NubExchanger();
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = null;
-	actualResults = exchanger.getNameUsages("Lembus", null, MatchingMode.CONTAINS, SynonymMode.DONT_CARE);
+	Collection<NameUsage<NubNameUsage>> actualResults = null;
+	actualResults = exchanger.getNameUsages("Lembus", null, MatchingMode.CONTAINS, false, false, false, null);
 
 	assertTrue(true);
     }
@@ -369,11 +373,11 @@ public class NubExchangerTest
     @Test
     public void test_getHigher() {
 	NubExchanger exchanger = new NubExchanger();
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = 
-	    exchanger.getNameUsages("Lembus", null, MatchingMode.EXACT, SynonymMode.DONT_CARE);
+	Collection<NameUsage<NubNameUsage>> actualResults = 
+	    exchanger.getNameUsages("Lembus", null, MatchingMode.EXACT, false, false, false, null);
 
-	for(NameUsage<NubNameUsage,NubNameUsage> result : actualResults) {
-	    Collection<NameUsage<NubNameUsage,NubNameUsage>> highers = exchanger.getHigher(result, -1);
+	for(NameUsage<NubNameUsage> result : actualResults) {
+	    Collection<NameUsage<NubNameUsage>> highers = exchanger.getHigher(result, -1);
 	}
 
 	assertTrue(true);
@@ -383,15 +387,15 @@ public class NubExchangerTest
     @Test
     public void test_getLowerNameUsages() {
 	NubExchanger exchanger = new NubExchanger();
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = 
+	Collection<NameUsage<NubNameUsage>> actualResults = 
 	    //exchanger.getNameUsages("Lembus", null, MatchingMode.EXACT);
 	    //exchanger.getNameUsages("Cohnilembidae", null, MatchingMode.EXACT);
 	    exchanger.getNameUsages("Hymenostomatida", null, MatchingMode.EXACT);
 
-	for(NameUsage<NubNameUsage,NubNameUsage> result : actualResults) {
+	for(NameUsage<NubNameUsage> result : actualResults) {
 	    // if(924 != ((NubNameUsage)result).getScientificNameUsage().getKey()) continue;
 	    long start = System.currentTimeMillis();
-	    Collection<NameUsage<NubNameUsage,NubNameUsage>> children = exchanger.getLowerNameUsages(result, 1);
+	    Collection<NameUsage<NubNameUsage>> children = exchanger.getLowerNameUsages(result, 1);
 	    long finish = System.currentTimeMillis();
 	    int numDescendants = ((NubNameUsage)result).getLowerNameUsages().size();
 	    System.out.println("get " + numDescendants + " lowers in " + (double)(finish - start)/1000.0d + " s");
@@ -403,16 +407,16 @@ public class NubExchangerTest
     @Test
     public void test_getPartialHierarchies() {
 	NubExchanger exchanger = new NubExchanger();
-	Collection<NameUsage<NubNameUsage,NubNameUsage>> actualResults = 
+	Collection<NameUsage<NubNameUsage>> actualResults = 
 	    //exchanger.getNameUsages("Lembus", null, MatchingMode.EXACT);
 	    //exchanger.getNameUsages("Cohnilembidae", null, MatchingMode.EXACT);
 	    exchanger.getNameUsages("Hymenostomatida", null, MatchingMode.EXACT);
 
-	for(NameUsage<NubNameUsage,NubNameUsage> result : actualResults) {
+	for(NameUsage<NubNameUsage> result : actualResults) {
 	    // if(924 != ((NubNameUsage)result).getScientificNameUsage().getKey()) continue;
 	    int numDescendants = ((NubNameUsage)result).getScientificNameUsage().getNumDescendants();
 	    long start = System.currentTimeMillis();
-	    Collection<NameUsage<NubNameUsage,NubNameUsage>> children = exchanger.getPartialHierarchies(result);
+	    Collection<NameUsage<NubNameUsage>> children = exchanger.getPartialHierarchies(result);
 	    long finish = System.currentTimeMillis();
 	    System.out.println("get " + numDescendants + " partials in " + (double)(finish - start)/1000.0d + " s");
 	}

@@ -1,7 +1,7 @@
 /*
  * SpeciesAPIClientTest.java:  testcases of SpeciesAPIClient
  *
- * Copyright (c) 2014 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -52,13 +52,10 @@ import java.util.Vector;
 import java.util.UUID;
 
 import org.gbif.api.model.checklistbank.Description;
-// import org.gbif.api.model.checklistbank.Distribution;
-//import org.gbif.api.model.checklistbank.Image;
 import org.gbif.api.model.checklistbank.NameUsage;
 import org.gbif.api.model.checklistbank.NameUsageMatch;
 import org.gbif.api.model.checklistbank.NameUsageMediaObject;
 import org.gbif.api.model.checklistbank.NameUsageMetrics;
-//import org.gbif.api.model.checklistbank.ParsedName;
 import org.gbif.api.model.checklistbank.Reference;
 import org.gbif.api.model.checklistbank.SpeciesProfile;
 import org.gbif.api.model.checklistbank.TypeSpecimen;
@@ -95,11 +92,13 @@ import org.nomencurator.api.gbif.SpeciesAPIClient;
 
 import org.nomencurator.api.gbif.model.checklistbank.Distribution;
 import org.nomencurator.api.gbif.model.checklistbank.ParsedName;
-// import org.nomencurator.api.gbif.model.checklistbank.search.NameUsageSearchResult;
 
 
 /**
  * Unit test for SpeciesAPIClientTest
+ *
+ * @version 	14 July 2016
+ * @author 	Nozomi `James' Ytow
  */
 public class SpeciesAPIClientTest
 {
@@ -324,7 +323,7 @@ public class SpeciesAPIClientTest
 	int usageKey = 1234;
 	SpeciesAPIClient sut = new SpeciesAPIClient();
 	String expected = sut.getSpeciesURL() + "/" + usageKey;
-	String actual = sut.getResourceURL(usageKey);
+	String actual = sut.getResourceURL(usageKey).toString();
 	assertThat(actual, is(expected));
     }
 
@@ -334,7 +333,7 @@ public class SpeciesAPIClientTest
 	String modifier = "name";
 	SpeciesAPIClient sut = new SpeciesAPIClient();
 	String expected = sut.getSpeciesURL() + "/" + usageKey + "/" + modifier;
-	String actual = sut.getResourceURL(usageKey, modifier);
+	String actual = sut.getResourceURL(usageKey, modifier).toString();
 	assertThat(actual, is(expected));
     }
 
@@ -397,7 +396,7 @@ public class SpeciesAPIClientTest
 	       nameUsage.setVernacularName("House Sparrow");
 	}
 	nameUsage.setAuthorship(" (Linnaeus, 1758)");
-	nameUsage.setNameType(NameType.WELLFORMED);
+	nameUsage.setNameType(NameType.SCIENTIFIC);
 	nameUsage.setRank(Rank.SPECIES);
 	nameUsage.setOrigin(Origin.SOURCE);
 	nameUsage.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -440,7 +439,8 @@ public class SpeciesAPIClientTest
     public void get_w_null_locale () {
 	SpeciesAPIClient sut = new SpeciesAPIClient();
 	NameUsage expected = createNameUsage5231190(null);
-	NameUsage actual = sut.get(5231190, null);
+	Locale locale = null;
+	NameUsage actual = sut.get(5231190, locale);
 
 	printObjects("get_w_null_locale", actual, expected);
 
@@ -478,7 +478,7 @@ public class SpeciesAPIClientTest
 	expected.setCanonicalNameWithMarker("Passer domesticus");
 	expected.setCanonicalNameComplete("Passer domesticus (Linnaeus, 1758)");
 	expected.setCanonicalName("Passer domesticus");
-	expected.setType(NameType.WELLFORMED);
+	expected.setType(NameType.SCIENTIFIC);
 	expected.setBracketAuthorship("Linnaeus");
 	expected.setBracketYear("1758");
 	expected.setGenusOrAbove("Passer");
@@ -550,7 +550,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Acer sterculiaceum");
 	result.setCanonicalName("Acer sterculiaceum");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -608,7 +608,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Puma concolor");
 	result.setVernacularName("Cougar");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -653,7 +653,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Puma concolor");
 	result.setVernacularName("Cougar");
 	result.setAuthorship("Linnaeus, 1771");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
@@ -700,7 +700,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
@@ -746,7 +746,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Puma concolor");
 	result.setVernacularName("Cougar");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -789,7 +789,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
@@ -835,7 +835,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Puma concolor");
 	result.setVernacularName("Cougar");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
@@ -871,7 +871,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Puma concolor");
 	result.setVernacularName("Cougar");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
@@ -931,7 +931,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Puma concolor");
 	result.setVernacularName("Cougar");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -995,7 +995,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor (Linnaeus, 1771)");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
@@ -1044,7 +1044,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
@@ -1085,7 +1085,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor (Linnaeus, 1771)");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
 	result.setRemarks("Especie objeto de conservación");
@@ -1127,7 +1127,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor (Linnaeus, 1771)");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	// result.setNomenclaturalStatus(null);
 	result.setNumDescendants(0);
@@ -1168,7 +1168,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor Linnaeus, 1771");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship("Linnaeus, 1771");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
 	result.setTaxonID("urn:lsid:catalogueoflife.org:taxon:92e0ed20-d976-11e1-a7f8-569cdfeac142:col20130401");
@@ -1201,7 +1201,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor (Linnaeus, 1771)");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setOrigin(Origin.SOURCE);
 	result.setRank(Rank.SPECIES);
@@ -1223,7 +1223,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor (Linnaeus, 1771)");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
 	result.setModified(parseDateTime("2014-06-16T03:20:29.626+0000"));
@@ -1259,7 +1259,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Puma concolor (Linnaeus, 1771)");
 	result.setCanonicalName("Puma concolor");
 	result.setAuthorship(" (Linnaeus, 1771)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setNumDescendants(0);
 	result.setModified(parseDateTime("2014-07-07T15:31:34.633+0000"));
 	result.setLastInterpreted(parseDateTime("2014-11-03T15:22:26.302+0000"));
@@ -1307,7 +1307,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1352,7 +1352,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. bactrianus");
 	result.setCanonicalName("Passer domesticus bactrianus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1397,7 +1397,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. balearoibericus");
 	result.setCanonicalName("Passer domesticus balearoibericus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1442,7 +1442,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. biblicus");
 	result.setCanonicalName("Passer domesticus biblicus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1487,7 +1487,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. hufufae");
 	result.setCanonicalName("Passer domesticus hufufae");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1532,7 +1532,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. hyrcanus");
 	result.setCanonicalName("Passer domesticus hyrcanus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1577,7 +1577,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. indicus");
 	result.setCanonicalName("Passer domesticus indicus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1622,7 +1622,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. niloticus");
 	result.setCanonicalName("Passer domesticus niloticus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1667,7 +1667,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. parkini");
 	result.setCanonicalName("Passer domesticus parkini");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1712,7 +1712,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. persicus");
 	result.setCanonicalName("Passer domesticus persicus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1757,7 +1757,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. rufidorsalis");
 	result.setCanonicalName("Passer domesticus rufidorsalis");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1802,7 +1802,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus subsp. tingitanus");
 	result.setCanonicalName("Passer domesticus tingitanus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBSPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1846,7 +1846,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Animalia");
 	result.setVernacularName("animals");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.KINGDOM);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1881,7 +1881,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Chordata");
 	// result.setVernacularName("chordates");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.PHYLUM);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1918,7 +1918,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Aves");
 	result.setVernacularName("birds");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.CLASS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1958,7 +1958,7 @@ public class SpeciesAPIClientTest
 	//result.setVernacularName("Perching Birds");
 	result.setVernacularName("Passerines");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.ORDER);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -1999,7 +1999,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passeridae");
 	result.setVernacularName("old world sparrows & snowfinches");
 	result.setAuthorship("Illiger, 1811");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.FAMILY);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2041,7 +2041,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer Brisson, 1760");
 	result.setCanonicalName("Passer");
 	result.setAuthorship("Brisson, 1760");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2100,7 +2100,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2127,7 +2127,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House sparrow");
 	result.setAuthorship("Linnaeus");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2175,7 +2175,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
 	/*
@@ -2214,7 +2214,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -2259,7 +2259,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2315,7 +2315,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2372,7 +2372,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2411,7 +2411,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -2445,7 +2445,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(7);
@@ -2489,7 +2489,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2529,7 +2529,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
 	/*
@@ -2561,7 +2561,7 @@ public class SpeciesAPIClientTest
 	result.setScientificName("Passer domesticus");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -2603,7 +2603,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -2647,7 +2647,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2691,7 +2691,7 @@ public class SpeciesAPIClientTest
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship(" (Linnaeus)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2713,7 +2713,7 @@ public class SpeciesAPIClientTest
 
 	// actual[15]:
 	/*
-NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passeriformes, family=Passeridae, genus=Passer, subgenus=null, species=Passer domesticus, kingdomKey=131483712, phylumKey=null, classKey=131482664, orderKey=131483170, familyKey=131483169, genusKey=131483164, subgenusKey=null, speciesKey=131483165, datasetKey=79f243f4-9c38-4305-997f-fa8ac3089dba, subDatasetKey=null, nubKey=5231190, parentKey=131483164, parent=Passer, proParteKey=null, acceptedKey=null, accepted=null, basionymKey=null, basionym=null, scientificName=Passer domesticus (Linnaeus, 1758), canonicalName=Passer domesticus, vernacularName=null, authorship= (Linnaeus, 1758), nameType=WELLFORMED, taxonomicStatus=null, nomenclaturalStatus=[], rank=SPECIES, publishedIn=null, accordingTo=null, numDescendants=0, isSynonym=false, origin=SOURCE, remarks=parentNameUsage in parentname, references=null, taxonID=20659, modified=null, lastCrawled=null, lastInterpreted=null}
+NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passeriformes, family=Passeridae, genus=Passer, subgenus=null, species=Passer domesticus, kingdomKey=131483712, phylumKey=null, classKey=131482664, orderKey=131483170, familyKey=131483169, genusKey=131483164, subgenusKey=null, speciesKey=131483165, datasetKey=79f243f4-9c38-4305-997f-fa8ac3089dba, subDatasetKey=null, nubKey=5231190, parentKey=131483164, parent=Passer, proParteKey=null, acceptedKey=null, accepted=null, basionymKey=null, basionym=null, scientificName=Passer domesticus (Linnaeus, 1758), canonicalName=Passer domesticus, vernacularName=null, authorship= (Linnaeus, 1758), nameType=SCIENTIFIC, taxonomicStatus=null, nomenclaturalStatus=[], rank=SPECIES, publishedIn=null, accordingTo=null, numDescendants=0, isSynonym=false, origin=SOURCE, remarks=parentNameUsage in parentname, references=null, taxonID=20659, modified=null, lastCrawled=null, lastInterpreted=null}
 	*/
 	result = new NameUsage();
 	expected.add(result);
@@ -2737,7 +2737,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setRemarks("parentNameUsage in parentname");
@@ -2782,7 +2782,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("house sparrow");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
@@ -2833,7 +2833,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -2890,7 +2890,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -2938,7 +2938,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setScientificName("Passer domesticus");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
 	/*
@@ -2988,7 +2988,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setCanonicalName("Passer domesticus");
 	// result.setVernacularName("House Sparrow");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -3031,7 +3031,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SPECIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -3060,7 +3060,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	result.setScientificName("Passer domesticus (Linnaeus, 1758)");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship(" (Linnaeus, 1758)");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	try{
 	    result.setReferences(new URI("http://inpn.mnhn.fr/espece/cd_nom/4525"));
@@ -3073,7 +3073,7 @@ NameUsage{key=131483165, kingdom=Animalia, phylum=null, clazz=Aves, order=Passer
 	// result.setSynonym(false);
 
 	/*
-NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, family=null, genus=null, subgenus=null, species=null, kingdomKey=null, phylumKey=null, classKey=null, orderKey=null, familyKey=null, genusKey=null, subgenusKey=null, speciesKey=null, datasetKey=84392896-f762-11e1-a439-00145eb45e9a, subDatasetKey=null, nubKey=5231190, parentKey=null, parent=null, proParteKey=null, acceptedKey=null, accepted=null, basionymKey=null, basionym=null, scientificName=Passer domesticus, canonicalName=Passer domesticus, vernacularName=null, authorship=, nameType=WELLFORMED, taxonomicStatus=null, nomenclaturalStatus=[], rank=null, publishedIn=null, accordingTo=null, numDescendants=0, isSynonym=false, origin=SOURCE, remarks=null, references=null, taxonID=null, modified=null, lastCrawled=null, lastInterpreted=null}
+NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, family=null, genus=null, subgenus=null, species=null, kingdomKey=null, phylumKey=null, classKey=null, orderKey=null, familyKey=null, genusKey=null, subgenusKey=null, speciesKey=null, datasetKey=84392896-f762-11e1-a439-00145eb45e9a, subDatasetKey=null, nubKey=5231190, parentKey=null, parent=null, proParteKey=null, acceptedKey=null, accepted=null, basionymKey=null, basionym=null, scientificName=Passer domesticus, canonicalName=Passer domesticus, vernacularName=null, authorship=, nameType=SCIENTIFIC, taxonomicStatus=null, nomenclaturalStatus=[], rank=null, publishedIn=null, accordingTo=null, numDescendants=0, isSynonym=false, origin=SOURCE, remarks=null, references=null, taxonID=null, modified=null, lastCrawled=null, lastInterpreted=null}
 	*/
 
 	// actual[23]:
@@ -3085,7 +3085,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Passer domesticus");
 	result.setCanonicalName("Passer domesticus");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setOrigin(Origin.SOURCE);
 	result.setModified(parseDateTime("2014-06-16T05:16:47.995+0000"));
 	result.setLastInterpreted(parseDateTime("2014-11-03T15:22:26.302+0000"));
@@ -3117,7 +3117,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Plantae");
 	result.setCanonicalName("Plantae");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.KINGDOM);
 	result.setOrigin(Origin.DENORMED_CLASSIFICATION);
 	result.setNumDescendants(75397);
@@ -3140,7 +3140,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Plumbaginoideae");
 	result.setCanonicalName("Plumbaginoideae");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBFAMILY);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(13);
@@ -3165,7 +3165,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Staticoideae");
 	result.setCanonicalName("Staticoideae");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBFAMILY);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(88);
@@ -3192,7 +3192,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Ceratotropis");
 	result.setCanonicalName("Ceratotropis");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(20);
@@ -3220,7 +3220,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Dolichovigna");
 	result.setCanonicalName("Dolichovigna");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(1);
@@ -3248,7 +3248,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Glycine");
 	result.setCanonicalName("Glycine");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(28);
@@ -3276,7 +3276,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Haydonia");
 	result.setCanonicalName("Haydonia");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(3);
@@ -3303,7 +3303,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Macrorhyncha");
 	result.setCanonicalName("Macrorhyncha");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -3331,7 +3331,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Plectrotropis");
 	result.setCanonicalName("Plectrotropis");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(11);
@@ -3358,7 +3358,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Sigmoidotropis");
 	result.setCanonicalName("Sigmoidotropis");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(18);
@@ -3386,7 +3386,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Soja");
 	result.setCanonicalName("Soja");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(2);
@@ -3414,7 +3414,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Vigna");
 	result.setCanonicalName("Vigna");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SUBGENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(56);
@@ -3439,7 +3439,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Meyerianae");
 	result.setCanonicalName("Meyerianae");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SECTION);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(5);
@@ -3464,7 +3464,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Ridleyanae");
 	result.setCanonicalName("Ridleyanae");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SECTION);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(2);
@@ -3489,7 +3489,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Schlechterianae");
 	result.setCanonicalName("Schlechterianae");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SECTION);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(1);
@@ -3514,7 +3514,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Australiensis");
 	result.setCanonicalName("Australiensis");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SERIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(1);
@@ -3539,7 +3539,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Brachyantha");
 	result.setCanonicalName("Brachyantha");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SERIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(1);
@@ -3564,7 +3564,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Chaenocarpa");
 	result.setCanonicalName("Chaenocarpa");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SERIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(27);
@@ -3589,7 +3589,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Clistocarpa");
 	result.setCanonicalName("Clistocarpa");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SERIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(1);
@@ -3614,7 +3614,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Fuscoveratrum");
 	result.setCanonicalName("Fuscoveratrum");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SERIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -3637,7 +3637,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Fuscoveratrum");
 	result.setCanonicalName("Fuscoveratrum");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.SERIES);
 	result.setOrigin(Origin.SOURCE);
 	result.setNumDescendants(0);
@@ -3690,7 +3690,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Alvarius Girard, 1859");
 	result.setCanonicalName("Alvarius");
 	result.setAuthorship("Girard, 1859");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
@@ -3724,7 +3724,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Lembus Günther, 1859");
 	result.setCanonicalName("Lembus");
 	result.setAuthorship("Günther, 1859");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
@@ -3758,7 +3758,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Pelmatia Browne, 1789");
 	result.setCanonicalName("Pelmatia");
 	result.setAuthorship("Browne, 1789");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
@@ -3791,7 +3791,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Sobiomorus Fischer, 1808");
 	result.setCanonicalName("Sobiomorus");
 	result.setAuthorship("Fischer, 1808");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
@@ -3838,7 +3838,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Lembus Cohn, 1866");
 	result.setCanonicalName("Lembus");
 	result.setAuthorship("Cohn, 1866");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
@@ -3883,7 +3883,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Lembus Cohn, 1866");
 	result.setCanonicalName("Lembus");
 	result.setAuthorship("Cohn, 1866");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setOrigin(Origin.SOURCE);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
@@ -4135,7 +4135,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setAuthorship("Jardine, 1834");
 	result.setPublishedIn("Natur. Libr. p. 266-267");
 	result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(17);
@@ -4187,7 +4187,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma Jardine, 1834");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("Jardine, 1834");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(3);
 	result.setNumOccurrences(0);
@@ -4230,7 +4230,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma Jardine, 1834");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("Jardine, 1834");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(6);
 	result.setNumOccurrences(0);
@@ -4270,7 +4270,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma Jardine, 1834");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("Jardine, 1834");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(16);
@@ -4297,7 +4297,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(17);
 	result.setNumOccurrences(0);
@@ -4327,7 +4327,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(16);
 	result.setNumOccurrences(0);
@@ -4359,7 +4359,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(5);
 	result.setNumOccurrences(0);
@@ -4389,7 +4389,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(3);
 	result.setNumOccurrences(0);
@@ -4408,7 +4408,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(3);
 	result.setNumOccurrences(0);
@@ -4434,7 +4434,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(2);
 	result.setNumOccurrences(0);
@@ -4465,7 +4465,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(2);
 	result.setNumOccurrences(0);
@@ -4517,7 +4517,7 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(1);
 	result.setNumOccurrences(0);
@@ -4552,7 +4552,7 @@ NameUsageSearchResult{key=131076089, datasetKey=e632b198-5b2f-47ee-b7a6-6531ea43
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(1);
 	result.setNumOccurrences(0);
@@ -4581,7 +4581,7 @@ NameUsageSearchResult{key=131076089, datasetKey=e632b198-5b2f-47ee-b7a6-6531ea43
 	result.setScientificName("Puma");
 	result.setCanonicalName("Puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(1);
 	result.setNumOccurrences(0);
@@ -4589,7 +4589,7 @@ NameUsageSearchResult{key=131076089, datasetKey=e632b198-5b2f-47ee-b7a6-6531ea43
 
 	/*
 actual[15]:
-NameUsageSearchResult{key=103371272, datasetKey=672aca30-f1b5-43d3-8a2b-c1606125fa1b, nubKey=2435098, parentKey=103371072, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Animalia', phylum='null', clazz='null', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=134536083, phylumKey=null, classKey=null, orderKey=103371070, familyKey=103371072, genusKey=103371272, subgenusKey=null, speciesKey=null, scientificName='Puma Jardine, 1834', canonicalName='Puma', authorship='Jardine, 1834', publishedIn='Natur. Libr. p. 266-267', accordingTo='null', nameType=WELLFORMED, taxonomicStatus=null, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=16, numOccurrences=0, taxonID='14000203', extinct=null, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[]}
+NameUsageSearchResult{key=103371272, datasetKey=672aca30-f1b5-43d3-8a2b-c1606125fa1b, nubKey=2435098, parentKey=103371072, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Animalia', phylum='null', clazz='null', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=134536083, phylumKey=null, classKey=null, orderKey=103371070, familyKey=103371072, genusKey=103371272, subgenusKey=null, speciesKey=null, scientificName='Puma Jardine, 1834', canonicalName='Puma', authorship='Jardine, 1834', publishedIn='Natur. Libr. p. 266-267', accordingTo='null', nameType=SCIENTIFIC, taxonomicStatus=null, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=16, numOccurrences=0, taxonID='14000203', extinct=null, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[]}
 	*/
 	result = new NameUsageSearchResult();
 	results.add(result);
@@ -4610,7 +4610,7 @@ NameUsageSearchResult{key=103371272, datasetKey=672aca30-f1b5-43d3-8a2b-c1606125
 	result.setCanonicalName("Puma");
 	result.setAuthorship("Jardine, 1834");
 	result.setPublishedIn("Natur. Libr. p. 266-267");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(16);
 	result.setNumOccurrences(0);
@@ -4620,7 +4620,7 @@ NameUsageSearchResult{key=103371272, datasetKey=672aca30-f1b5-43d3-8a2b-c1606125
 
 	/*
 actual[16]:
-NameUsageSearchResult{key=102497493, datasetKey=0938172b-2086-439c-a1dd-c21cb0109ed5, nubKey=2435098, parentKey=101148668, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=101719444, phylumKey=102545028, classKey=102402290, orderKey=102303328, familyKey=101148668, genusKey=102497493, subgenusKey=null, speciesKey=null, scientificName='Puma Jardine, 1834', canonicalName='Puma', authorship='Jardine, 1834', publishedIn='Nat. Library (Mamm. ), 4, 266.', accordingTo='SN2000/Wilson & Reeder, 1993; Nomenclator Zoologicus', nameType=WELLFORMED, taxonomicStatus=ACCEPTED, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=2, numOccurrences=0, taxonID='1405111', extinct=false, marine=false, threatStatuses=[], descriptions=[], vernacularNames=[]}
+NameUsageSearchResult{key=102497493, datasetKey=0938172b-2086-439c-a1dd-c21cb0109ed5, nubKey=2435098, parentKey=101148668, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=101719444, phylumKey=102545028, classKey=102402290, orderKey=102303328, familyKey=101148668, genusKey=102497493, subgenusKey=null, speciesKey=null, scientificName='Puma Jardine, 1834', canonicalName='Puma', authorship='Jardine, 1834', publishedIn='Nat. Library (Mamm. ), 4, 266.', accordingTo='SN2000/Wilson & Reeder, 1993; Nomenclator Zoologicus', nameType=SCIENTIFIC, taxonomicStatus=ACCEPTED, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=2, numOccurrences=0, taxonID='1405111', extinct=false, marine=false, threatStatuses=[], descriptions=[], vernacularNames=[]}
 	*/
 
 	result = new NameUsageSearchResult();
@@ -4647,7 +4647,7 @@ NameUsageSearchResult{key=102497493, datasetKey=0938172b-2086-439c-a1dd-c21cb010
 	result.setAuthorship("Jardine, 1834");
 	result.setPublishedIn("Nat. Library (Mamm. ), 4, 266.");
 	result.setAccordingTo("SN2000/Wilson & Reeder, 1993; Nomenclator Zoologicus");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(2);
@@ -4660,7 +4660,7 @@ NameUsageSearchResult{key=102497493, datasetKey=0938172b-2086-439c-a1dd-c21cb010
 
 	/*
 actual[17]:
-NameUsageSearchResult{key=128044165, datasetKey=e632b198-5b2f-47ee-b7a6-6531ea435fa3, nubKey=2435098, parentKey=128015003, parent='Viruses', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Viruses', phylum='null', clazz='null', order='null', family='null', genus='puma', subgenus='null', species='null', kingdomKey=128015003, phylumKey=null, classKey=null, orderKey=null, familyKey=null, genusKey=128044165, subgenusKey=null, speciesKey=null, scientificName='puma', canonicalName='null', authorship='', publishedIn='null', accordingTo='null', nameType=SCINAME, taxonomicStatus=null, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='34428', extinct=null, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[]}
+NameUsageSearchResult{key=128044165, datasetKey=e632b198-5b2f-47ee-b7a6-6531ea435fa3, nubKey=2435098, parentKey=128015003, parent='Viruses', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Viruses', phylum='null', clazz='null', order='null', family='null', genus='puma', subgenus='null', species='null', kingdomKey=128015003, phylumKey=null, classKey=null, orderKey=null, familyKey=null, genusKey=128044165, subgenusKey=null, speciesKey=null, scientificName='puma', canonicalName='null', authorship='', publishedIn='null', accordingTo='null', nameType=SCIENTIFIC, taxonomicStatus=null, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='34428', extinct=null, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[]}
 	*/
 	result = new NameUsageSearchResult();
 	// results.add(result);
@@ -4675,7 +4675,7 @@ NameUsageSearchResult{key=128044165, datasetKey=e632b198-5b2f-47ee-b7a6-6531ea43
 	result.setGenusKey(128044165);
 	result.setScientificName("puma");
 	result.setAuthorship("");
-	result.setNameType(NameType.SCINAME);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(0);
 	result.setNumOccurrences(0);
@@ -4685,7 +4685,7 @@ NameUsageSearchResult{key=128044165, datasetKey=e632b198-5b2f-47ee-b7a6-6531ea43
 
 	/*
 actual[18]:
-NameUsageSearchResult{key=102350511, datasetKey=0938172b-2086-439c-a1dd-c21cb0109ed5, nubKey=3221678, parentKey=101584795, parent='Rhodospirillaceae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Bacteria', phylum='Proteobacteria', clazz='Alphaproteobacteria', order='Rhodospirillales', family='Rhodospirillaceae', genus='Inquilinus', subgenus='null', species='null', kingdomKey=102392280, phylumKey=102545096, classKey=101831183, orderKey=102317164, familyKey=101584795, genusKey=102350511, subgenusKey=null, speciesKey=null, scientificName='Inquilinus Coenye, Goris, Spilker, Vandamme & LiPuma, 2002', canonicalName='Inquilinus', authorship='', publishedIn='null', accordingTo='CoL2006/BIOS; Euzéby, 2008; WoRMS (Mar 2013)', nameType=SCINAME, taxonomicStatus=ACCEPTED, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=1, numOccurrences=0, taxonID='1258334', extinct=false, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[]}
+NameUsageSearchResult{key=102350511, datasetKey=0938172b-2086-439c-a1dd-c21cb0109ed5, nubKey=3221678, parentKey=101584795, parent='Rhodospirillaceae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Bacteria', phylum='Proteobacteria', clazz='Alphaproteobacteria', order='Rhodospirillales', family='Rhodospirillaceae', genus='Inquilinus', subgenus='null', species='null', kingdomKey=102392280, phylumKey=102545096, classKey=101831183, orderKey=102317164, familyKey=101584795, genusKey=102350511, subgenusKey=null, speciesKey=null, scientificName='Inquilinus Coenye, Goris, Spilker, Vandamme & LiPuma, 2002', canonicalName='Inquilinus', authorship='', publishedIn='null', accordingTo='CoL2006/BIOS; Euzéby, 2008; WoRMS (Mar 2013)', nameType=SCIENTIFIC, taxonomicStatus=ACCEPTED, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=1, numOccurrences=0, taxonID='1258334', extinct=false, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[]}
 	*/
 
 	// actual[16]:
@@ -4712,7 +4712,7 @@ NameUsageSearchResult{key=102350511, datasetKey=0938172b-2086-439c-a1dd-c21cb010
 	result.setCanonicalName("Inquilinus");
 	result.setAuthorship("");
 	result.setAccordingTo("CoL2006/BIOS; Euzéby, 2008; WoRMS (Mar 2013)");
-	result.setNameType(NameType.SCINAME);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(1);
@@ -4725,7 +4725,7 @@ NameUsageSearchResult{key=102350511, datasetKey=0938172b-2086-439c-a1dd-c21cb010
 
 	/*
 actual[19]:
-NameUsageSearchResult{key=107363528, datasetKey=9ca92552-f23a-41a8-a140-01abaa31c931, nubKey=2435077, parentKey=107363517, parent='Felinae', acceptedKey=107363530, accepted='Puma Jardine, 1834', basionymKey=null, basionym='null', isSynonym=true, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=107264513, phylumKey=107216119, classKey=107239517, orderKey=107240212, familyKey=107240258, genusKey=107363530, subgenusKey=null, speciesKey=null, scientificName='Herpailurus Severtzov, 1858', canonicalName='Herpailurus', authorship='Severtzov, 1858', publishedIn='null', accordingTo='null', nameType=WELLFORMED, taxonomicStatus=SYNONYM, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='552373', extinct=null, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[VernacularName{vernacularName=jaguarundis, language=ENGLISH, lifeStage=null, sex=null, country=null, area=null, source=null, sourceTaxonKey=null, preferred=null, plural=null}]}
+NameUsageSearchResult{key=107363528, datasetKey=9ca92552-f23a-41a8-a140-01abaa31c931, nubKey=2435077, parentKey=107363517, parent='Felinae', acceptedKey=107363530, accepted='Puma Jardine, 1834', basionymKey=null, basionym='null', isSynonym=true, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=107264513, phylumKey=107216119, classKey=107239517, orderKey=107240212, familyKey=107240258, genusKey=107363530, subgenusKey=null, speciesKey=null, scientificName='Herpailurus Severtzov, 1858', canonicalName='Herpailurus', authorship='Severtzov, 1858', publishedIn='null', accordingTo='null', nameType=SCIENTIFIC, taxonomicStatus=SYNONYM, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='552373', extinct=null, marine=null, threatStatuses=[], descriptions=[], vernacularNames=[VernacularName{vernacularName=jaguarundis, language=ENGLISH, lifeStage=null, sex=null, country=null, area=null, source=null, sourceTaxonKey=null, preferred=null, plural=null}]}
 	*/
 	result = new NameUsageSearchResult();
 	results.add(result);
@@ -4751,7 +4751,7 @@ NameUsageSearchResult{key=107363528, datasetKey=9ca92552-f23a-41a8-a140-01abaa31
 	result.setScientificName("Herpailurus Severtzov, 1858");
 	result.setCanonicalName("Herpailurus");
 	result.setAuthorship("Severtzov, 1858");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(0);
@@ -4792,7 +4792,7 @@ NameUsageSearchResult{key=107363528, datasetKey=9ca92552-f23a-41a8-a140-01abaa31
 	result.setAuthorship("Severtzov, 1858");
 	result.setPublishedIn("Rev. Mag. Zool. , (2) 10, 385.");
 	result.setAccordingTo("Integrated Taxonomic Information System");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(0);
@@ -4811,7 +4811,7 @@ NameUsageSearchResult{key=107363528, datasetKey=9ca92552-f23a-41a8-a140-01abaa31
 
 	/*
 actual[17]
-NameUsageSearchResult{key=100772213, datasetKey=0938172b-2086-439c-a1dd-c21cb0109ed5, nubKey=2435077, parentKey=101148668, parent='Felidae', acceptedKey=102497493, accepted='Puma Jardine, 1834', basionymKey=null, basionym='null', isSynonym=true, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=101719444, phylumKey=102545028, classKey=102402290, orderKey=102303328, familyKey=101148668, genusKey=102497493, subgenusKey=null, speciesKey=null, scientificName='Herpailurus Sewertzow, 1858', canonicalName='Herpailurus', authorship='Sewertzow, 1858', publishedIn='Rev. Mag. Zool. , (2) 10, 385.', accordingTo='SN2000/Wilson & Reeder, 1993; Nomenclator Zoologicus', nameType=WELLFORMED, taxonomicStatus=SYNONYM, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='1015084', extinct=false, marine=false, threatStatuses=[], descriptions=[], vernacularNames=[]}
+NameUsageSearchResult{key=100772213, datasetKey=0938172b-2086-439c-a1dd-c21cb0109ed5, nubKey=2435077, parentKey=101148668, parent='Felidae', acceptedKey=102497493, accepted='Puma Jardine, 1834', basionymKey=null, basionym='null', isSynonym=true, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Puma', subgenus='null', species='null', kingdomKey=101719444, phylumKey=102545028, classKey=102402290, orderKey=102303328, familyKey=101148668, genusKey=102497493, subgenusKey=null, speciesKey=null, scientificName='Herpailurus Sewertzow, 1858', canonicalName='Herpailurus', authorship='Sewertzow, 1858', publishedIn='Rev. Mag. Zool. , (2) 10, 385.', accordingTo='SN2000/Wilson & Reeder, 1993; Nomenclator Zoologicus', nameType=SCIENTIFIC, taxonomicStatus=SYNONYM, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='1015084', extinct=false, marine=false, threatStatuses=[], descriptions=[], vernacularNames=[]}
 	 */
 	result = new NameUsageSearchResult();
 	results.add(result);
@@ -4839,7 +4839,7 @@ NameUsageSearchResult{key=100772213, datasetKey=0938172b-2086-439c-a1dd-c21cb010
 	result.setAuthorship("Sewertzow, 1858");
 	result.setPublishedIn("Rev. Mag. Zool. , (2) 10, 385.");
 	result.setAccordingTo("SN2000/Wilson & Reeder, 1993; Nomenclator Zoologicus");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(0);
@@ -4851,7 +4851,7 @@ NameUsageSearchResult{key=100772213, datasetKey=0938172b-2086-439c-a1dd-c21cb010
 
 	/*
 actual[18]
-NameUsageSearchResult{key=2435269, datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c, nubKey=2435269, parentKey=9703, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Acinonyx', subgenus='null', species='null', kingdomKey=1, phylumKey=44, classKey=359, orderKey=732, familyKey=9703, genusKey=2435269, subgenusKey=null, speciesKey=null, scientificName='Acinonyx Brookes, 1828', canonicalName='Acinonyx', authorship='Brookes, 1828', publishedIn='Cat. Anat. Zool. Mus. Joshua Brookes, London p. 16, 33', accordingTo='The Catalogue of Life, 3rd January 2011', nameType=WELLFORMED, taxonomicStatus=ACCEPTED, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=10, numOccurrences=0, taxonID='121039393', extinct=false, marine=false, threatStatuses=[], descriptions=[Description{type=null, language=null, description=Acinonyx aicha Geraads, 1997 † Acinonyx intermedius Thenius, 1954 † Acinonyx jubatus Schreber, 1775 – cheetah "Acinonyx kurteni" Christiansen and Mazák, 2008Christiansen, P.; Mazak, J. H. (2009): A primitive Late Pliocene cheetah, and evolution of the cheetah lineage, Proceedings of the National Academy of Sciences, 106(2): pp. 512–5 † (no longer a valid species, probably fraudulent)Knevitt, Oliver (January 9, 2011): 5 Greatest Palaeontology Fakes Of All Time #5: The Linxia Cheetah. Science 2.0Mazák JH (2012): Retraction for Christiansen and Mazák, A primitive Late Pliocene cheetah, and evolution of the cheetah lineage, Proc Natl Acad Sci USA, 109(37): pp. 15072 Acinonyx pardinensis Croizet e Joubert, 1828 - Giant cheetah †, source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Acinonyx is a genus of mammals from the family Felidae. It is currently distributed in Africa and Asia, but at one time was also present in Europe. The cheetah is the only living species in the genus. Wozencraft (1993) put the genus Acinonyx in their own monophyletic subfamily, Acinonychinae. Salles (1992), Johnson & O'Brien (1997), Bininda-Emonds et al. (1999), and Mattern and McLennan (2000) consider Acinonyx, Puma concolor, and Puma (= Herpailurus) yagouaroundi as representatives of closely related sister groups., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}], vernacularNames=[]}
+NameUsageSearchResult{key=2435269, datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae36c, nubKey=2435269, parentKey=9703, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='Animalia', phylum='Chordata', clazz='Mammalia', order='Carnivora', family='Felidae', genus='Acinonyx', subgenus='null', species='null', kingdomKey=1, phylumKey=44, classKey=359, orderKey=732, familyKey=9703, genusKey=2435269, subgenusKey=null, speciesKey=null, scientificName='Acinonyx Brookes, 1828', canonicalName='Acinonyx', authorship='Brookes, 1828', publishedIn='Cat. Anat. Zool. Mus. Joshua Brookes, London p. 16, 33', accordingTo='The Catalogue of Life, 3rd January 2011', nameType=SCIENTIFIC, taxonomicStatus=ACCEPTED, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=10, numOccurrences=0, taxonID='121039393', extinct=false, marine=false, threatStatuses=[], descriptions=[Description{type=null, language=null, description=Acinonyx aicha Geraads, 1997 † Acinonyx intermedius Thenius, 1954 † Acinonyx jubatus Schreber, 1775 – cheetah "Acinonyx kurteni" Christiansen and Mazák, 2008Christiansen, P.; Mazak, J. H. (2009): A primitive Late Pliocene cheetah, and evolution of the cheetah lineage, Proceedings of the National Academy of Sciences, 106(2): pp. 512–5 † (no longer a valid species, probably fraudulent)Knevitt, Oliver (January 9, 2011): 5 Greatest Palaeontology Fakes Of All Time #5: The Linxia Cheetah. Science 2.0Mazák JH (2012): Retraction for Christiansen and Mazák, A primitive Late Pliocene cheetah, and evolution of the cheetah lineage, Proc Natl Acad Sci USA, 109(37): pp. 15072 Acinonyx pardinensis Croizet e Joubert, 1828 - Giant cheetah †, source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Acinonyx is a genus of mammals from the family Felidae. It is currently distributed in Africa and Asia, but at one time was also present in Europe. The cheetah is the only living species in the genus. Wozencraft (1993) put the genus Acinonyx in their own monophyletic subfamily, Acinonychinae. Salles (1992), Johnson & O'Brien (1997), Bininda-Emonds et al. (1999), and Mattern and McLennan (2000) consider Acinonyx, Puma concolor, and Puma (= Herpailurus) yagouaroundi as representatives of closely related sister groups., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}], vernacularNames=[]}
 	 */
 	result = new NameUsageSearchResult();
 	results.add(result);
@@ -4877,7 +4877,7 @@ NameUsageSearchResult{key=2435269, datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae3
 	result.setAuthorship("Brookes, 1828");
 	result.setPublishedIn("Cat. Anat. Zool. Mus. Joshua Brookes, London p. 16, 33");
 	result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(10);
@@ -4898,7 +4898,7 @@ NameUsageSearchResult{key=2435269, datasetKey=d7dddbf4-2cf0-4f39-9b2a-bb099caae3
 
 	/*
 actual[19]
-NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003aa02, nubKey=4833952, parentKey=137012570, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='null', phylum='null', clazz='null', order='Carnivora', family='Felidae', genus='Miracinonyx', subgenus='null', species='null', kingdomKey=null, phylumKey=null, classKey=null, orderKey=137012553, familyKey=137012570, genusKey=125812601, subgenusKey=null, speciesKey=null, scientificName='Miracinonyx Adams, 1979', canonicalName='Miracinonyx', authorship='Adams, 1979', publishedIn='null', accordingTo='null', nameType=WELLFORMED, taxonomicStatus=null, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='5313509', extinct=true, marine=null, threatStatuses=[], descriptions=[Description{type=null, language=null, description=Die Amerikanischen Geparde wurden zu Beginn als frühe Vertreter der Pumas angesehen, in den 1970er Jahren aber als nahe Verwandte des Gepards neu klassifiziert.Adams, Daniel B. (14. September 1979): The Cheetah: Native American, Science, 205(4411): pp. 1155–1158 Diese Theorie geht davon aus, dass sich die Vorfahren des Gepards aus der Linie der Pumas auf dem amerikanischen Kontinent (die Neue Welt) entwickelten und über die Beringbrücke wieder in die Alte Welt (vor allem Asien und Afrika) wanderten.Johnson, W.E., Eizirik, E., Pecon-Slattery, J., Murphy, W.J., Antunes, A., Teeling, E. & O'Brien, S.J. (2006-01-06): The Late Miocene radiation of modern Felidae: A genetic assessment, Science, 311(5757): pp. 73–77Andere Forschungen, wie etwa die von Ross Barnett, welche die Untersuchung der mitochondrialen DNA der Knochenfunde sowie eine neue Analyse der Morphologie mit einschloss, sehen die Amerikanischen Geparde als nahe Verwandte des Pumas, die Gepard-ähnliche Merkmale aufgrund von konvergenter Evolution entwickelten.Barnett, Ross (9. August 2005): Evolution of the extinct Sabretooths and the American cheetah-like cat, Current Biology, 15(15): pp. R589–R590 Ein weiterer naher Verwandter ist dabei der Jaguarundi, der jedoch eher kleinkatzenähnlich ist.Der vermutete amerikanische Ursprung der Geparde ist daher als äquivokal anzusehen, denn es wird angenommen, dass sie sich sowohl in der Alten Welt als auch in der Neuen Welt (Amerika) aus Puma-ähnlichen Vorfahren entwickelt haben. Dabei sollen sich Puma und Miracinonyx trumani vor etwa 3 Millionen Jahren von einer gleichen Vorfahrenlinie evolutionär abgespalten haben, die genaue Einordnung der zweiten Art Miracinonyx inexpectatus ist indes nicht endgültig geklärt, obwohl es sich wahrscheinlich um eine primitivere Art als Miracinonyx trumani handelt.Haaramo, Mikko (2005-11-15): Mikko's Phylogeny Archive - Felidae: Felinae – small catsVom Amerikanischen Gepard wurden bislang zwei Arten beschrieben: Miracinonyx trumani und Miracynonix inexpectatus. Teilweise wird auch eine dritte Art Miracinonyx studeri angeführt, diese gilt jedoch als jüngeres Synonym für Miracynonix trumani. Beide Arten waren dem heutigen Gepard sehr ähnlich, mit verkürzten runden Schädeln und vergrößerten Nasengängen für einen größeren Atemdurchsatz sowie speziell für schnelles Rennen proportionierte extrem lange Gliedmaßen und einem langen Schwanz. Ebenso soll das Gebiss gegenüber anderen Katzen stark verkleinert und relativ schwach gewesen sein. Dennoch wurden die Ähnlichkeiten nicht durch einen direkten gemeinsamen Vorfahren vererbt, sondern waren das Ergebnis von entweder paralleler oder konvergenter Evolution.Durch genetische und immunologische Untersuchungen konnte ermittelt werden, dass die heutigen Geparde wahrscheinlich alle von einer sehr kleinen Stammgruppe abstammen (→ genetischer Flaschenhals), die vor etwa 10.000 Jahren gelebt hat.M. Menotti-Raymond, S. J. O'Brien: Dating the genetic bottleneck of the African cheetah. In: Proceedings of the National Academy of Sciences of the United States of America. 1993; 90(8): 3172-3176Modellberechnung der genetischen Drift Damals starb der Amerikanische Gepard aus, und der gewöhnliche Gepard in Afrika und Asien entging diesem Schicksal offenbar nur knapp. Er breitete sich jedoch in den Savannen Afrikas und Asiens wieder aus und konnte daher bis in unsere Zeit überleben. Diese Untersuchung genießt in Fachkreisen hohes Ansehen und wird mittlerweile als klassisches Beispiel in der Populationsgenetik benutzt.Die genauen Gründe, die zum Aussterben der Amerikanischen Geparde geführt haben oder geführt haben könnten, sind trotz aller Forschung dazu bislang nicht abschließend aufgeklärt. Einige Experten vermuten zusätzlich zum genannten genetischen Flaschenhals durchaus auch weitere Einflüsse wie einsetzende Klimaveränderungen und eine verstärkte Nahrungskonkurrenz. Dafür spricht etwa der Umstand, dass etwa 10.000 Jahren vor unserer Zeitrechnung etliche andere Großtierarten Amerikas ausgestorben sind, wie etwa der Amerikanische Löwe., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Die Amerikanischen Geparden (Miracinonyx) sind eine ausgestorbene Gattung aus der Familie der Katzen (Felidae), die vom späten Pliozän bis zum späten Pleistozän (Jungpleistozän) 1.800.000 bis 11.000 Jahre vor unserer Zeitrechnung endemisch in Nordamerika lebte.PaleoBiology Database: Miracinonyx, basic info Es gab mindestens zwei Arten dieser Gattung, die von der Morphologie her dem heutigen Gepard ähnlich waren. Sie sind nur durch Skelett-Bruchstücke bekannt., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Miracinonyx trumani war den echten Geparden morphologisch am ähnlichsten. Er lebte in der Prärie sowie den weiten Ebenen des westlichen Nordamerikas und jagte sehr wahrscheinlich Huftiere der Great Plains, wie den heute noch lebenden Gabelbock. Es besteht Grund zur Annahme, dass seine maximal erreichbare Geschwindigkeit jener der heutigen Geparden nur wenig nachstand und mindestens um die 100 km/h gelegen haben dürfte.Die Nachstellung durch den Miracinonyx trumani könnte der Grund gewesen sein, weshalb die Gabelböcke die Fähigkeit entwickelten derart schnell zu laufen. Ihre maximale Höchstgeschwindigkeit von 97 km/h ist weit höher als nötig, um den noch heute lebenden amerikanischen Raubtieren wie dem Puma und dem Wolf zu entkommen.Byers, John (1998): American Pronghorn: Social Adaptations and the Ghosts of Predators Past: pp. 318. Chicago University PressDie Ähnlichkeit zwischen Miracinonyx trumani und dem Gepard ist ein Beispiel für parallele Evolution. Als weite Graslandschaften sowohl in Nordamerika als auch in Afrika während des Pleistozäns häufiger wurden, entwickelten sich Puma-ähnliche Katzenarten auf beiden Kontinenten zu schnellen Läufern, um die neu aufkommenden schnellen Pflanzenfresser jagen zu können. Die Krallen von Miracinonyx trumani entwickelten sich dabei derart, dass sie – wie auch beim Gepard – nur noch teilweise einziehbar waren, um die Bodengriffigkeit beim schnellen Rennen zu erhöhen., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Kleinkatzen Großkatzen, source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Miracynonix inexpectatus war dem Puma ähnlicher als dem Gepard. Er hatte vollständig einziehbare Krallen und konnte aufgrund seines schlanken Körperbaus wahrscheinlich schneller laufen als der Puma. Eventuell konnte er noch klettern und hatte seinen Lebensraum weniger in der Prärie als in stärker bewaldeten Regionen. Aufgrund des etwas kühleren Lebensraumes könnte er ein längeres Fell gehabt haben., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}], vernacularNames=[VernacularName{vernacularName=Amerikanische Geparden, language=GERMAN, lifeStage=null, sex=null, country=null, area=null, source=null, sourceTaxonKey=null, preferred=null, plural=null}]}
+NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003aa02, nubKey=4833952, parentKey=137012570, parent='Felidae', acceptedKey=null, accepted='null', basionymKey=null, basionym='null', isSynonym=false, kingdom='null', phylum='null', clazz='null', order='Carnivora', family='Felidae', genus='Miracinonyx', subgenus='null', species='null', kingdomKey=null, phylumKey=null, classKey=null, orderKey=137012553, familyKey=137012570, genusKey=125812601, subgenusKey=null, speciesKey=null, scientificName='Miracinonyx Adams, 1979', canonicalName='Miracinonyx', authorship='Adams, 1979', publishedIn='null', accordingTo='null', nameType=SCIENTIFIC, taxonomicStatus=null, nomenclaturalStatus=[], rank=GENUS, origin=null, numDescendants=0, numOccurrences=0, taxonID='5313509', extinct=true, marine=null, threatStatuses=[], descriptions=[Description{type=null, language=null, description=Die Amerikanischen Geparde wurden zu Beginn als frühe Vertreter der Pumas angesehen, in den 1970er Jahren aber als nahe Verwandte des Gepards neu klassifiziert.Adams, Daniel B. (14. September 1979): The Cheetah: Native American, Science, 205(4411): pp. 1155–1158 Diese Theorie geht davon aus, dass sich die Vorfahren des Gepards aus der Linie der Pumas auf dem amerikanischen Kontinent (die Neue Welt) entwickelten und über die Beringbrücke wieder in die Alte Welt (vor allem Asien und Afrika) wanderten.Johnson, W.E., Eizirik, E., Pecon-Slattery, J., Murphy, W.J., Antunes, A., Teeling, E. & O'Brien, S.J. (2006-01-06): The Late Miocene radiation of modern Felidae: A genetic assessment, Science, 311(5757): pp. 73–77Andere Forschungen, wie etwa die von Ross Barnett, welche die Untersuchung der mitochondrialen DNA der Knochenfunde sowie eine neue Analyse der Morphologie mit einschloss, sehen die Amerikanischen Geparde als nahe Verwandte des Pumas, die Gepard-ähnliche Merkmale aufgrund von konvergenter Evolution entwickelten.Barnett, Ross (9. August 2005): Evolution of the extinct Sabretooths and the American cheetah-like cat, Current Biology, 15(15): pp. R589–R590 Ein weiterer naher Verwandter ist dabei der Jaguarundi, der jedoch eher kleinkatzenähnlich ist.Der vermutete amerikanische Ursprung der Geparde ist daher als äquivokal anzusehen, denn es wird angenommen, dass sie sich sowohl in der Alten Welt als auch in der Neuen Welt (Amerika) aus Puma-ähnlichen Vorfahren entwickelt haben. Dabei sollen sich Puma und Miracinonyx trumani vor etwa 3 Millionen Jahren von einer gleichen Vorfahrenlinie evolutionär abgespalten haben, die genaue Einordnung der zweiten Art Miracinonyx inexpectatus ist indes nicht endgültig geklärt, obwohl es sich wahrscheinlich um eine primitivere Art als Miracinonyx trumani handelt.Haaramo, Mikko (2005-11-15): Mikko's Phylogeny Archive - Felidae: Felinae – small catsVom Amerikanischen Gepard wurden bislang zwei Arten beschrieben: Miracinonyx trumani und Miracynonix inexpectatus. Teilweise wird auch eine dritte Art Miracinonyx studeri angeführt, diese gilt jedoch als jüngeres Synonym für Miracynonix trumani. Beide Arten waren dem heutigen Gepard sehr ähnlich, mit verkürzten runden Schädeln und vergrößerten Nasengängen für einen größeren Atemdurchsatz sowie speziell für schnelles Rennen proportionierte extrem lange Gliedmaßen und einem langen Schwanz. Ebenso soll das Gebiss gegenüber anderen Katzen stark verkleinert und relativ schwach gewesen sein. Dennoch wurden die Ähnlichkeiten nicht durch einen direkten gemeinsamen Vorfahren vererbt, sondern waren das Ergebnis von entweder paralleler oder konvergenter Evolution.Durch genetische und immunologische Untersuchungen konnte ermittelt werden, dass die heutigen Geparde wahrscheinlich alle von einer sehr kleinen Stammgruppe abstammen (→ genetischer Flaschenhals), die vor etwa 10.000 Jahren gelebt hat.M. Menotti-Raymond, S. J. O'Brien: Dating the genetic bottleneck of the African cheetah. In: Proceedings of the National Academy of Sciences of the United States of America. 1993; 90(8): 3172-3176Modellberechnung der genetischen Drift Damals starb der Amerikanische Gepard aus, und der gewöhnliche Gepard in Afrika und Asien entging diesem Schicksal offenbar nur knapp. Er breitete sich jedoch in den Savannen Afrikas und Asiens wieder aus und konnte daher bis in unsere Zeit überleben. Diese Untersuchung genießt in Fachkreisen hohes Ansehen und wird mittlerweile als klassisches Beispiel in der Populationsgenetik benutzt.Die genauen Gründe, die zum Aussterben der Amerikanischen Geparde geführt haben oder geführt haben könnten, sind trotz aller Forschung dazu bislang nicht abschließend aufgeklärt. Einige Experten vermuten zusätzlich zum genannten genetischen Flaschenhals durchaus auch weitere Einflüsse wie einsetzende Klimaveränderungen und eine verstärkte Nahrungskonkurrenz. Dafür spricht etwa der Umstand, dass etwa 10.000 Jahren vor unserer Zeitrechnung etliche andere Großtierarten Amerikas ausgestorben sind, wie etwa der Amerikanische Löwe., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Die Amerikanischen Geparden (Miracinonyx) sind eine ausgestorbene Gattung aus der Familie der Katzen (Felidae), die vom späten Pliozän bis zum späten Pleistozän (Jungpleistozän) 1.800.000 bis 11.000 Jahre vor unserer Zeitrechnung endemisch in Nordamerika lebte.PaleoBiology Database: Miracinonyx, basic info Es gab mindestens zwei Arten dieser Gattung, die von der Morphologie her dem heutigen Gepard ähnlich waren. Sie sind nur durch Skelett-Bruchstücke bekannt., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Miracinonyx trumani war den echten Geparden morphologisch am ähnlichsten. Er lebte in der Prärie sowie den weiten Ebenen des westlichen Nordamerikas und jagte sehr wahrscheinlich Huftiere der Great Plains, wie den heute noch lebenden Gabelbock. Es besteht Grund zur Annahme, dass seine maximal erreichbare Geschwindigkeit jener der heutigen Geparden nur wenig nachstand und mindestens um die 100 km/h gelegen haben dürfte.Die Nachstellung durch den Miracinonyx trumani könnte der Grund gewesen sein, weshalb die Gabelböcke die Fähigkeit entwickelten derart schnell zu laufen. Ihre maximale Höchstgeschwindigkeit von 97 km/h ist weit höher als nötig, um den noch heute lebenden amerikanischen Raubtieren wie dem Puma und dem Wolf zu entkommen.Byers, John (1998): American Pronghorn: Social Adaptations and the Ghosts of Predators Past: pp. 318. Chicago University PressDie Ähnlichkeit zwischen Miracinonyx trumani und dem Gepard ist ein Beispiel für parallele Evolution. Als weite Graslandschaften sowohl in Nordamerika als auch in Afrika während des Pleistozäns häufiger wurden, entwickelten sich Puma-ähnliche Katzenarten auf beiden Kontinenten zu schnellen Läufern, um die neu aufkommenden schnellen Pflanzenfresser jagen zu können. Die Krallen von Miracinonyx trumani entwickelten sich dabei derart, dass sie – wie auch beim Gepard – nur noch teilweise einziehbar waren, um die Bodengriffigkeit beim schnellen Rennen zu erhöhen., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Kleinkatzen Großkatzen, source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}, Description{type=null, language=null, description=Miracynonix inexpectatus war dem Puma ähnlicher als dem Gepard. Er hatte vollständig einziehbare Krallen und konnte aufgrund seines schlanken Körperbaus wahrscheinlich schneller laufen als der Puma. Eventuell konnte er noch klettern und hatte seinen Lebensraum weniger in der Prärie als in stärker bewaldeten Regionen. Aufgrund des etwas kühleren Lebensraumes könnte er ein längeres Fell gehabt haben., source=null, sourceTaxonKey=null, creator=null, contributor=null, license=null}], vernacularNames=[VernacularName{vernacularName=Amerikanische Geparden, language=GERMAN, lifeStage=null, sex=null, country=null, area=null, source=null, sourceTaxonKey=null, preferred=null, plural=null}]}
 	 */
 	result = new NameUsageSearchResult();
 	//results.add(result);
@@ -4916,7 +4916,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setScientificName("Miracinonyx Adams, 1979");
 	result.setCanonicalName("Miracinonyx");
 	result.setAuthorship("Adams, 1979");
-	result.setNameType(NameType.WELLFORMED);
+	result.setNameType(NameType.SCIENTIFIC);
 	result.setRank(Rank.GENUS);
 	result.setNumDescendants(0);
 	result.setNumOccurrences(0);
@@ -4992,7 +4992,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	// result.setAuthorship(" (Linnaeus, 1771)");
 	// result.setPublishedIn("Mantissa Plantarum vol. 2 p. 266");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SPECIES);
 	// result.setNumDescendants(6);
@@ -5211,7 +5211,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	// result.setAuthorship("");
 	// result.setPublishedIn("Mantissa Plantarum vol. 2 p. 266");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5260,7 +5260,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor anthonyi");
 	// result.setAuthorship(" (Nelson & Goldman, 1931)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5294,7 +5294,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor couguar");
 	// result.setAuthorship(" (Kerr, 1792)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5401,7 +5401,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor kaibabensis");
 	// result.setAuthorship(" (Nelson & Goldman, 1931)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5438,7 +5438,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor oregonensis");
 	// result.setAuthorship(" (Rafinesque, 1832)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5474,7 +5474,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor vancouverensis");
 	// result.setAuthorship(" (Nelson & Goldman, 1932)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5510,7 +5510,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor azteca");
 	// result.setAuthorship(" (Merriam, 1901)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5546,7 +5546,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor coryi");
 	// result.setAuthorship(" (Bangs, 1899)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5650,7 +5650,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor improcera");
 	// result.setAuthorship(" (Phillips, 1912)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5686,7 +5686,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor missoulensis");
 	// result.setAuthorship(" (Goldman, 1943)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5722,7 +5722,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor stanleyana");
 	// result.setAuthorship(" (Goldman, 1938)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5758,7 +5758,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor californica");
 	// result.setAuthorship(" (May, 1896)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5794,7 +5794,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor hippolestes");
 	// result.setAuthorship(" (Merriam, 1897)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5830,7 +5830,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor mayensis");
 	// result.setAuthorship(" (Nelson & Goldman, 1929)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5866,7 +5866,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor schorgeri");
 	// result.setAuthorship(" (Nelson & Goldman, 1929)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5902,7 +5902,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor browni");
 	// result.setAuthorship(" (Merriam, 1903)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5939,7 +5939,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor cougar");
 	// result.setAuthorship(" (Kerr, 1792)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.SYNONYM);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -5973,7 +5973,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor puma");
 	// result.setAuthorship(" (Molina, 1782)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -6007,7 +6007,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor cabrerae");
 	// result.setAuthorship("Pocock, 1940");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -6041,7 +6041,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	result.setCanonicalName("Puma concolor costaricensis");
 	// result.setAuthorship(" (Merriam, 1901)");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -6084,7 +6084,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	// result.setAuthorship("");
 	// result.setPublishedIn("Mantissa Plantarum vol. 2 p. 266");
 	// result.setAccordingTo("The Catalogue of Life, 3rd January 2011");
-	// result.setNameType(NameType.WELLFORMED);
+	// result.setNameType(NameType.SCIENTIFIC);
 	// result.setTaxonomicStatus(TaxonomicStatus.ACCEPTED);
 	result.setRank(Rank.SUBSPECIES);
 	// result.setNumDescendants(0);
@@ -6130,7 +6130,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	ParsedName pn = new ParsedName();
 	expected.add(pn);
 	pn.setScientificName("Abies alba Mill. sec. Markus D.");
-	pn.setType(NameType.SCINAME);
+	pn.setType(NameType.SCIENTIFIC);
 	pn.setGenusOrAbove("Abies");
 	pn.setSpecificEpithet("alba");
 	pn.setAuthorsParsed(true);
@@ -6143,7 +6143,7 @@ NameUsageSearchResult{key=125812601, datasetKey=16c3f9cb-4b19-4553-ac8e-ebb90003
 	pn = new ParsedName();
 	expected.add(pn);
 	pn.setScientificName("Abies pinsapo var. marocana (Trab.) Ceballos & Bolaño 1928");
-	pn.setType(NameType.SCINAME);
+	pn.setType(NameType.SCIENTIFIC);
 	pn.setGenusOrAbove("Abies");
 	pn.setSpecificEpithet("pinsapo");
 	pn.setInfraSpecificEpithet("marocana");
