@@ -48,7 +48,7 @@ import org.w3c.dom.NodeList;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	06 July 2016
+ * @version 	15 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface NameUsage <T extends NameUsage<?>>
@@ -204,7 +204,6 @@ public interface NameUsage <T extends NameUsage<?>>
      * @return {@code NameUsage} representing the higher taxon
      */
     public NameUsage<T> getHigherNameUsage();
-    //public <N extends NameUsage<?>> N getHigherNameUsage();
 
     /**
      * Returns {@code List} of higher name usages of the {@code NameUsage}.
@@ -212,7 +211,6 @@ public interface NameUsage <T extends NameUsage<?>>
      * @return {@code List} of {@code NameUsage} representing higher taxa.
      */
     public List<NameUsage<T>> getNameUsagePath();
-    //public <N extends NameUsage<?>> List<? extends N> getNameUsagePath();
     
     /**
      * Sets {@code higherNameUsage} as the higher taxon of this NameUsage.

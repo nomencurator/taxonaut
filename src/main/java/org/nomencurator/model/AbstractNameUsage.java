@@ -69,7 +69,7 @@ import org.w3c.dom.NodeList;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	09 July 2016
+ * @version 	15 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameUsage<T extends NameUsage<?>>
@@ -84,7 +84,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 
     /** {@code Locale} of this name */
     protected Locale locale;
-    //protected String locale;
 
     /** The name used by this usage */
     protected String nameLiteral;
@@ -95,7 +94,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
     protected String rankLiteral;
 
     /** {@code Appearance} where this usage was recorded */
-    //protected Appearance appearance;
+    protected Appearance appearance;
 
     /** The sens of this {@code NameUsage}.  It may designate the first usage of the name */
     protected NameUsage<?> sensu;
@@ -134,7 +133,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
      * representing a list of {@code NameUsage}s designated as type or types
      * of this {@code NameUsage} designated in a single {@code Appearance}.
      */
-    protected Map</*? extends */NameUsage<?>, TypeStatus> typeDesignators;
+    protected Map<NameUsage<?>, TypeStatus> typeDesignators;
 
     /**
      * {@code String} representing type status of this {@code NameUsage}.
@@ -300,17 +299,8 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	setType(nameUsage.isType());
 	setTypeStatus(nameUsage.getTypeStatus());
 
-	//NameUsage<? extends N, ? extends N>[] lowerNameUsagesToCopy = nameUsage.getLowerNameUsages();
 	if(nameUsage.getLowerNameUsagesCount() > 0) {
 	    setLowerNameUsages(nameUsage.getLowerNameUsages());
-	    /*
-	    List<NameUsage<T>> source = nameUsage.getLowerNameUsages();
-	    List<NameUsage<T>> lowers = Collections.synchronizedList(new ArrayList<NameUsage<T>>(source.size()));
-	    for (NameUsage<? extends NameUsage<?, ?>, ? extends NameUsage<?, ?>> usage : source) {
-		lowers.add((NameUsage<T>)usage);
-	    }
-	    setLowerNameUsages(lowers);
-	    */
 	}
 	
 	Appearance appearance = nameUsage.getAppearance();
@@ -415,29 +405,10 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 			sensu.setLiteral(pID);
 			curator.put(sensu);
 		    }
-		    /*
-		    if(linkFlag) {
-			LinkRecord rec = new LinkRecord(nameUsage.persistentID(), getString(element));
-			NameUsageAuthority.getInstance().addLinkRecord(rec);
-		    } else {
-			nameUsage.parseLine("authority{" + getString(element) + "}");
-		    }
-		    */
 		}
 		else if(tagName.equals("notes"))
 		    setNotes(getString(element));
 		else if(tagName.equals("locale")) {
-		    /*
-		    String localeID = getString(element);
-		    if(localeID == null || localeID.length() <= 2) {
-			locale = new Locale(" ", "");
-		    } else {
-			String lang = localeID.substring(0, localeID.indexOf("_"));
-			String coun = localeID.substring(localeID.indexOf("_") + 1) ;
-			locale = new Locale(lang, coun);
-		    }
-		    */
-		    // locale = getString(element);
 		    locale = Locales.get(getString(element));
 		}
 		else if(tagName.equals ("appearance")) {
@@ -460,15 +431,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 			    curator.put(appearance);
 			    appearance.addNameUsage(this);
 			}
-
-		    /*
-		    if(linkFlag) {
-			LinkRecord rec = new LinkRecord(nameUsage.persistentID(), getString(element);
-			NameUsageRecorder.getInstance().addLinkRecord(rec);
-		    } else {
-			nameUsage.parseLine("appearance{" + getString(element) + "}");
-                    }
-		    */
 		    }
 		}
 		else if(tagName.equals ("higher")) {
@@ -483,14 +445,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 			curator.put(higherNameUsage);
 			higherNameUsage.addLowerNameUsage(this);
 		    }
-		    /*
-		    if(linkFlag) {
-			LinkRecord rec = new LinkRecord(nameUsage.persistentID(), getString(element);
-			NameUsageHigher.getInstance().addLinkRecord(rec);
-		    } else {
-			nameUsage.parseLine("higher{" + getString(element) + "}");
-		    }
-		    */
 		}
 		else if(tagName.equals ("lowerTaxon")) {
 		    String pID = getString(element);
@@ -505,14 +459,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 			curator.put(n);
 			addLowerNameUsage(n);
 		    }
-		    /*
-		    if(linkFlag) {
-			LinkRecord rec = new LinkRecord(getString(element), nameUsage.persistentID());
-			NameUsageHigher.getInstance().addLinkRecord(rec);
-		    } else {
-			nameUsage.parseLine("lower{" + getString(element) + "}");
-		    }
-		    */
 		}
 		else if(tagName.equals ("isType")) {
 		    isType = Boolean.valueOf(getString(element)).booleanValue();
@@ -564,15 +510,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 			curator.put(a);
 			addAnnotation(a);
 		    }
-
-		    /*
-		    if(linkFlag) {
-			LinkRecord rec = new LinkRecord(getString(element), nameUsage.persistentID());
-			AnnotationFrom.getInstance().addLinkRecord(rec);
-		    } else {
-			nameUsage.parseLine("annotation{" + getString(element) + "}");
-		    }
-		    */
 		}
 		else{}
             }
@@ -605,8 +542,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 
     public NameUsage<T> clone()
     {
-	//AbstractNameUsage<T> n = createNameUsage();
-	//NameUsage<T> n = createNameUsage();
 	AbstractNameUsage<T> n = create();
 	copyTo(n);
 	return n;
@@ -643,18 +578,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	}
 	dest.setType(isType());
 	dest.setTypeStatus(getTypeStatus());
-
-	/*
-	NameUsage<T>[] lowerNameUsagesArray = getLowerNameUsages();
-	if(lowerNameUsagesArray != null) {
-	    lowerNameUsagesArray = ArrayUtility.copy(lowerNameUsagesArray);
-	    for(NameUsage<T> lowerNameUsage : lowerNameUsagesArray) {
-		lowerNameUsage = lowerNameUsage.clone();
-		lowerNameUsage.setHigherNameUsage(n);
-	    }
-	    dest.setLowerNameUsages(lowerNameUsagesArray);
-	}
-	*/
 
 	if(getLowerNameUsagesCount() > 0) {
 	    dest.setLowerNameUsages(Collections.synchronizedList(new ArrayList<NameUsage<T>>(getLowerNameUsages())));
@@ -967,7 +890,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	this.locale = locale;
     }
     
-    /*
+    /**
      * Returns {@code Publication} encoding this {@code NameUsage}
      *
      * @return {@code Publication} encoding this {@code NameUsage}
@@ -990,7 +913,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	return null;
     }
     
-    /*
+    /**
      * Sets {@code publication} as {@code Apperance} encoding this {@code NameUsage}
      *
      * @param publication {@code Publication} encoding this {@code NameUsage}
@@ -1017,7 +940,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	appearance.setPublication(publication);
     }
     
-    /*
+    /**
      * Returns {@code Appearance} encoding this {@code NameUsage}
      *
      * @return {@code Appearance} encoding this {@code NameUsage}
@@ -1036,7 +959,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	return null;
     }
     
-    /*
+    /**
      * Sets {@code appearance} as {@code Apperance} encoding this {@code NameUsage}
      *
      * @param appearance {@code Appearance} encoding this {@code NameUsage}
@@ -1078,7 +1001,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	return higherNameUsage;
     }
 
-    //public List<NameUsage<?>> getNameUsagePath() 
     public List<NameUsage<T>> getNameUsagePath() 
     {
 	NameUsage<T> n = getNameUsage();
@@ -1167,8 +1089,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
      * @param index {@code int} representing postion of this
      * {@code NameUsgae}
      */
-    //public void setHigherNameUsage(NameUsage<? extends N, ? extends N> higherNameUsage, int index)
-    //public boolean setHigherNameUsage(NameUsage<? extends N, ? extends T> higherNameUsage, int index)
     public boolean setHigherNameUsage(NameUsage<T> higherNameUsage, int index)
     {
 	NameUsage<T> n = getNameUsage();
@@ -1268,7 +1188,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	    return n.getLowerNameUsagesCount();
 
 	if(lowerNameUsages != null)
-	    //return lowerNameUsages.length;
 	    return lowerNameUsages.size();
 
 	return 0;
@@ -1288,14 +1207,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	    n.toArray();
 	    return;
 	}
-
-	/*
-	if(lowerNameUsagesArray != null ||
-	   lowerNameUsages == null)
-	    return;
-
-	setLowerNameUsagesCapacity(getLowerNameUsagesCount());
-	*/
     }
 
     /**
@@ -1317,24 +1228,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	    return false;
 
 	return (findLowerNameUsage(getNameUsage(nameUsage)) != -1);
-	//return (find<NameUsage>(nameUsage, lowerNameUsages) != -1);
-
-	/*
-	if(lowerNameUsagesArray == null)
-	    return false;
-
-	boolean contains = false;
-	int i = 0;
-	for(i = 0; !contains && i < lowerNameUsagesArray.length; i++) {
-	    contains = 
-		(lowerNameUsagesArray[i] == nameUsage ||
-		 lowerNameUsagesArray[i].getEntity() == nameUsage ||
-		 lowerNameUsagesArray[i] == nameUsage.getEntity() ||
-		 lowerNameUsagesArray[i].getEntity() == nameUsage.getEntity());
-	}
-
-	return contains;
-	*/
     }
 
     /**
@@ -1359,18 +1252,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	boolean contains = contains(nameUsage);
 	if(!recursive || contains)
 	    return contains;
-	/*
-	for(int i = 0; i < lowerNameUsages.length && !contains; i++) {
-	    if(lowerNameUsages[i].contains(nameUsage, recursive))
-		return true;
-	}
-	*/
-
-	n = getNameUsage(nameUsage);
-
-	//for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 	for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
-	    //	    if(getNameUsage(lowerNameUsage).contains(nameUsage, recursive))
 	    if(getNameUsage(lowerNameUsage).contains(n, recursive))
 		return true;
 	}
@@ -1392,17 +1274,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	    return n.getLowerNameUsages();
 
 	return lowerNameUsages;
-	/*
-	if(lowerNameUsages == null)
-	    return null;
-
-	NameUsage<T>[] toReturn = null;
-	synchronized (lowerNameUsages) {
-	    toReturn = ArrayUtility.copy(lowerNameUsages);
-	}
-
-	return toReturn;
-	*/
     }
 
     /**
@@ -1521,7 +1392,7 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
      *
      * @param nameUsage {@code NameUsage} to be removed fromthe list of lower taxa
      * @return true if {@code nameUsage} is a lower taxon of the object,
-     * or false if else.  It also returns null if <tt>nameUsage</tt> is null.
+     * or false if else.  It also returns null if {@code nameUsage} is null.
      */
     public synchronized boolean removeLowerNameUsage(NameUsage<T> nameUsage)
     {
@@ -1558,14 +1429,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 
 	if(lowerNameUsages == null)
 	    return;
-
-	/*
-	for(int i = 0; i < lowerNameUsages.length; i++) {
-	    NameUsage l = lowerNameUsages[i];
-	    lowerNameUsages[i] = null;
-	    l.setHigherNameUsage(null);
-	}
-	*/
 
 	for(NameUsage<?> lowerNameUsage : lowerNameUsages) {
 	    lowerNameUsage.setHigherNameUsage(null);
@@ -1782,124 +1645,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	setTypeStatus(typeStatus);
     }
 
-    /**
-     * Adds {@code designator} as one of {@code NameUsage}s
-     * designating this {@code NameUsage} as its type.
-     *
-     * @param designator {@code NameUsage} designating this {@code NameUsage}
-     * as its type
-     */
-    /*
-    public void addTypeDesignator(NameUsage<?> designator, TypeStatus typeStatus)
-    {
-	NameUsage<T> n = getNameUsage();
-	if(n != this) {
-	    n.addTypeDesignator(designator, typeStatus);
-	    return;
-	}
-
-	if(designator == null)
-	    return;
-    */
-	/*
-	if(higherNameUsage == null &&
-	   typeDesignators == null &&
-	   typeStatus == TypeStatus.NOMINOTYPE) {
-	    setHigherNameUsage(designator);
-	    this.typeStatus = typeStatus;
-	    return;
-	}
-
-	if(higherNameUsage == designator)
-	    return;
-	*/
-
-	//if(ArrayUtility.contains(designator, typeDesignators))
-	/*
-	if(typeDesignators != null && typeDesignators.contains(designator))
-	    return;
-	*/
-    /*
-	if(typeDesignators == null) {
-    */
-	    /*
-	    //typeDesignators = new NameUsage[2];
-	    typeDesignators = ArrayUtility.create(designator.getClass(),2);
-	    typeDesignators[0] = higherNameUsage;
-	    higherNameUsage = null;
-	    typeDesignators[1] = designator;
-	    */
-    /*
-	    typeDesignators = Collections.synchronizedMap(new HashMap<NameUsage<?>, TypeStatus>());
-	}
-	synchronized(typeDesignators) {
-	    typeDesignators.put(designator, typeStatus);
-    */
-	    /*
-	    NameUsage<?>[] tmp = ArrayUtility.create(typeDesignators[0].getClass(),typeDesignators.length + 1);
-	    System.arraycopy(typeDesignators, 0, tmp, 0, typeDesignators.length);
-	    tmp[typeDesignators.length] = designator;
-	    ArrayUtility.clear(typeDesignators);
-	    typeDesignators = tmp;
-	    */
-	    /*
-	    getNameUsage(designator).setTypeUsage(getNameUsage(this));
-	}
-    }
-	    */
-    /**
-     * Removes {@code designator} from the list of {@code NameUsage}s
-     * designating this {@code NameUsage} as its type.
-     *
-     * @param designator {@code NameUsage} to be remvoed from designator list
-     * of this {@code NameUsage}
-     */
-    /*
-    public void removeTypeDesignator(NameUsage<?> designator)
-    {
-	NameUsage<T> n = getNameUsage();
-	if(n != this) {
-	    n.removeTypeDesignator(designator);
-	    return;
-	}
-
-	if(typeDesignators != null) {
-	    typeDesignators.remove(designator);
-	}
-	getNameUage(designator).setTypeUsage(null);
-
-    */
-	/*
-
-	if(typeDesignators == null) {
-	    if(higherNameUsage == designator) {
-		higherNameUsage.setTypeUsage(null, null);
-		higherNameUsage = null;
-	    }
-	    return;
-	}
-
-	int d = findTypeDesignator(designator);
-	if(d == -1)
-	    return;
-
-	designator.setTypeUsage(null, null);
-
-	NameUsage[] tmp = null;
-	if(typeDesignators.length == 2) {
-	    higherNameUsage = getNameUsage(typeDesignators[(d == 0)? 1 : 0]);
-	}
-	else {
-	    tmp = ArrayUtility.remove(designator, typeDesignators);
-	}
-	synchronized (this) {
-	    ArrayUtility.clear(typeDesignators);
-	    typeDesignators = tmp;
-	}
-	*/
-    /*
-    }
-    */
     /**
      * Returns {@code Enumeration} of {@code Annotatoin}s
      * or null if none
@@ -2348,16 +2093,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	    buf.append(">").append(typeUsage.getPersistentID()).append("</type>\n");
 	}
 
-	/*
-	if(typeDesignators != null) {
-	    synchronized(typeDesignators) {
-		for(int i = 0; i < typeDesignators.length; i++) {		
-		    buf.append("<typeDesignator>").append(typeDesignators[i].getName()).append("</typeDesignator>");
-		}
-	    }
-	}
-	*/
-
 	buf.append("</NameUsage>\n");
 	
         return buf.toString();
@@ -2463,19 +2198,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	    return ((SQLSerializable)n).toSQL(buffer, objectID);
 
 	buffer = super.toSQL(buffer, objectID);
-	/*
-	String[] sql = new String[8];
-	int i = 0;
-	sql[i++] = getPersistentID();
-	sql[i++] = rankLiteral;
-	sql[i++] = nameLiteral;
-	sql[i++] = (authority == null)?   "null" : authority.getPersistentID();
-	sql[i++] = (appearance == null)?    "null" : appearance.getPersistentID();
-	sql[i++] = (higherNameUsage == null)?      "null" : higherNameUsage.getPersistentID();
-	sql[i++] = new Boolean(isType).toString();
-
-	return sql;
-	*/
 	return buffer;
     }
 
@@ -2562,21 +2284,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
     }
 
     /**
-     * Sets a {@code object} as the entity of the name
-     *
-     * @param object representing the entity
-     */
-    /*
-    public void setEntity(Object object)
-    {
-	if(object == null ||
-	   (object != null && !(object instanceof NameUsage)))
-	    throw new IllegalArgumentException(object.getClass().getName() + " can't be an entity of " + getClass().getName());
-	super.setEntity(object);
-    }
-    */
-
-    /**
      * Returns root {@code NameUsage} of the name hierarchy
      * where this {@code NameUsage} belongs to.
      *
@@ -2616,32 +2323,8 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 	if(entity == null || !isAssignableFrom(entity)) {
 	    return this;
 	}
-	/*
-	if(entity instanceof NameUsage) {
-	    //return ((NameUsage)entity).getNameUsage();
-	    return getNameUsage(entity);
-	}
-	return null;
-	*/
 	return getNameUsage(entity).getNameUsage();
     }
-
-    /**
-     * Gets entity of this {@code Name}.
-     * Returns itself if it doesn't have entity separately,
-     * or entity if the entity non-null.
-     * If the entity is an instance of {@code Name},
-     * the method returns the result of recursive apply of 
-     * this method
-     *
-     * @return Object enitity representied by the name.  It is never null.
-     */
-    /*
-    public Object getEntity()
-    {
-	return getNameUsage();
-    }
-    */
 
     /**
      * Returns {@code Hashtable} containing
@@ -3338,23 +3021,6 @@ public abstract class AbstractNameUsage<T extends NameUsage<?>>
 
 	return -1;
     }
-
-    /*
-    protected int findTypeDesignator(NameUsage designator)
-    {
-	if(designator == null || typeDesignators == null)
-	    return -1;
-	
-	designator = (NameUsage)designator.getEntity();
-
-	for(int i = 0; i < typeDesignators.length; i++) {
-	    if(typeDesignators[i].getEntity() == designator)
-		return i;
-	}
-
-	return -1;
-    }
-    */
 
     protected abstract AbstractNameUsage<T> createNameUsage();
 
