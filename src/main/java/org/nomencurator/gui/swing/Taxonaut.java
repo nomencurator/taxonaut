@@ -131,7 +131,7 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	03 July 2016
+ * @version 	15 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
@@ -680,6 +680,20 @@ public class Taxonaut<T extends NameUsage<?>>
     {
     }
 
+    protected static <N extends NameUsage<?>> Collection<NameUsage<N>> convertNameUsages(Collection<? extends N> usages)
+    {
+	Collection<NameUsage<N>> nameUsages = null;
+	if (usages != null) {
+	    nameUsages = new ArrayList<NameUsage<N>>(usages.size());
+	    for (N usage : usages) {
+		@SuppressWarnings("unchecked")
+		    NameUsage<N> nameUsage = (NameUsage<N>) usage;
+		nameUsages.add(nameUsage);
+	    }
+	}
+	return nameUsages;
+    }
+
     @SuppressWarnings({"rawtypes","unchecked"})
     public void query(QueryEvent/*<T>*/ event)
     {
@@ -737,8 +751,10 @@ public class Taxonaut<T extends NameUsage<?>>
 	}
 	else if(source == nameListPane) {
 	    QueryParameter queryParameter = event.getQueryParameter();
+	    ComparisonQueryParameter<NameUsage<?>> comparisonQueryParameter = null;
 ;	    if(queryParameter instanceof ComparisonQueryParameter) {
 		clearNameUsage();
+		comparisonQueryParameter = (ComparisonQueryParameter<NameUsage<?>>)queryParameter;
 		if(hierarchiesPane != null) {
 		    int tabs = hierarchiesPane.getTabCount();
 		    while(tabs > 0) {
@@ -747,8 +763,8 @@ public class Taxonaut<T extends NameUsage<?>>
 		}
 
 		Collection<NameUsage<?>> nameUsages = 
-		    new NubExchanger().integrateHierarchies(((ComparisonQueryParameter)queryParameter).getNameUsages());
-		List<NameUsage<?>> rootNodes = new ArrayList<NameUsage<?>>();
+		    /*convertNameUsages(*/new NubExchanger().integrateHierarchies(comparisonQueryParameter.getNameUsages())/*)*/;
+		List<NameUsage<?>> rootNodes = new ArrayList<>();
 		Set<String> nameLiterals = new HashSet<String>();
 		for(NameUsage<?> nameUsage : nameUsages) { 
 		    rootNodes.addAll(getSelectedRoots(nameUsage));
@@ -756,7 +772,7 @@ public class Taxonaut<T extends NameUsage<?>>
 		}
 		// FIXME to be more general
 		Collection<NameUsage<?>> integrated =
-		    new NubExchanger().integrateHierarchies(rootNodes);
+		    /*convertNameUsages(*/new NubExchanger().integrateHierarchies(rootNodes)/*)*/;
 		UnitedNameTreeModel unitedTreeModel = new UnitedNameTreeModel(integrated.size() + 1);
 
 		int i = 0;
@@ -948,28 +964,25 @@ public class Taxonaut<T extends NameUsage<?>>
 
     @SuppressWarnings({"rawtypes", "unchecked"})
 	protected Collection<NameUsage<?>> getSelectedRoots(NameUsage<?> nameUsage)
-	//protected Collection<T> getSelectedRoots(T nameUsage)
     {
 	if(nameUsage == null || nameListPane == null)
 	    return null;
 
-	/*T*/NameUsage<?> n = nameUsage.getNameUsage();
+	NameUsage<?> n = nameUsage.getNameUsage();
 	if(n != null && n != nameUsage)
 	    nameUsage = n;
 
-	NameUsageQueryParameter/*<T>*/ queryParameter = 
+	NameUsageQueryParameter<?> queryParameter =
 	    nameListPane.getQueryParameter(nameUsage);
 
 	//FIXME for generalisation to support other data sources
-	Collection<NamedObject<NubNameUsage>> results =
-	    new NubExchanger().getObjects(queryParameter);
+	Collection</*NamedObject<*/NubNameUsage/*>*/> results =
+	    new NubExchanger().getObjects((NameUsageQueryParameter<NubNameUsage>)queryParameter);
 
-	List<NameUsage<?>> toReturn = new ArrayList<NameUsage<?>>();
-	//List<T> toReturn = new ArrayList<NameUsage<?>>();
-	for(NamedObject<NubNameUsage> result : results) {
+	List<NameUsage<?>> toReturn = new ArrayList<>();
+	for(/*NamedObject<*/NubNameUsage/*>*/ result : results) {
 	    if(result instanceof NameUsage)
 		toReturn.add((NameUsage<?>)result);
-	    //toReturn.add((T)result);
 	}
 
 	return toReturn;

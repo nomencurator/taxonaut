@@ -34,7 +34,7 @@ import org.nomencurator.model.Rank;
  * {@code NameUsageExchanger} defines an intereface to exchange
  * {@code NameUsages}s of specified type with a data source
  *
- * @version 	02 July 2016
+ * @version 	18 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface NameUsageExchanger<T extends NameUsage<?>>
@@ -58,7 +58,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * and {@code rank}, or null if it doesn't exist in
      * the data source.
      */
-    public Collection<NameUsage<?>> getNameUsages(String query, Rank rank);
+    public Collection<NameUsage<T>> getNameUsages(String query, Rank rank);
 
     /**
      * Returnes an array of {@code NameUsage} having
@@ -73,7 +73,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * and {@code rank}, or null if it doesn't exist in
      * the data source.
      */
-    public Collection<NameUsage<?>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
+    public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
 
     /**
      * Returns higher {@code NameUsage} above given
@@ -91,7 +91,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @return NameUsage highest  {@code nameUsage} at the specified
      * {@code height}.
      */
-    public Collection<NameUsage<?>> getHigher(NameUsage<?> nameUsage, Rank rank, int height);
+    public Collection<NameUsage<T>> getHigher(NameUsage<T> nameUsage, Rank rank, int height);
 
 
     /**
@@ -102,7 +102,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      *
      * @return NameUsage representing highest taxon of the hierarchy.
      */
-    public Collection<NameUsage<?>> getHigher(NameUsage<?> nameUsage);
+    public Collection<NameUsage<T>> getHigher(NameUsage<T> nameUsage);
 
     /**
      * Returns the highest {@code NameUsage}s in each hierarchy
@@ -112,7 +112,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      *
      * @return NameUsage representing highest name usage containing the {@code nameUsage}
      */
-    public Collection<NameUsage<?>> getRoots(NameUsage<?> nameUsage);
+    public Collection<NameUsage<T>> getRoots(NameUsage<T> nameUsage);
 
     /**
      * Returns the highest {@code NameUsage}s in each hierarchy
@@ -122,7 +122,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      *
      * @return array of NameUsage representing highest taxa of the hierarchies
      */
-    public Collection<NameUsage<?>> getRoots(String query);
+    public Collection<NameUsage<T>> getRoots(String query);
 
     /**
      * Returns a list of {@code NameUsage}s
@@ -137,7 +137,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @param rank limit of recursive search for lower {@code NameUsage}s.
      * @param depth limit of recursive search for lower {@code NameUsage}s.
      */
-    public <N extends NameUsage<?>> List<N> getLowerNameUsages(N nameUsage, Rank rank, int depth);
+    public List<NameUsage<T>> getLowerNameUsages(NameUsage<T> nameUsage, Rank rank, int depth);
 
     /**
      * Returns the full hierarchy containing
@@ -148,13 +148,15 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @return NameUsage representing highest taxon of returned hierarchy,
      * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?>> getHierarchies(NameUsage<?> nameUsage);
+    public Collection<NameUsage<T>> getHierarchies(NameUsage<T> nameUsage);
 
 
 
     /**
-     * Reduces redundancy in partial hierarchies given by {@code nameUsages}.
+     * Remove redundancy in partial hierarchies given by {@code nameUsages}.
      * 
+     * @param nameUsages {@code Collection} containings {@code NameUsage}s to be redueced.
+     * @return {@code Collection}
      */
     public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages);
 
@@ -168,7 +170,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * or null if {@code NameUsage} of {@code name} doesn't exit
      * in the data source.
      */
-    public Collection<NameUsage<?>> getHierarchies(String name);
+    public Collection<NameUsage<T>> getHierarchies(String name);
 
     /**
      * Returns a part of the hierarchy containing {@code nameUsage}.
@@ -183,7 +185,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @return NameUsage representing highest taxon of returned hierarchy,
      * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?>> getPartialHierarchies(NameUsage<?> nameUsage);
+    public Collection<NameUsage<T>> getPartialHierarchies(NameUsage<T> nameUsage);
 
     /**
      * Returns a part of the hierarchy containing {@code nameUsage}
@@ -200,7 +202,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @return NameUsage representing highest taxon of returned hierarchy,
      * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?>> getPartialHierarchies(NameUsageQueryParameter<?> parameter);
+    public Collection<NameUsage<T>> getPartialHierarchies(NameUsageQueryParameter<T> parameter);
 
 
     /**
@@ -220,7 +222,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @return NameUsage representing highest taxon of returned hierarchy,
      * or null if {@code nameUsage} doesn't exit in the data source.
      */
-    public Collection<NameUsage<?>> getPartialHierarchies(NameUsage<?> nameUsage, Rank heigher, int height, Rank lower, int depth);
+    public Collection<NameUsage<T>> getPartialHierarchies(NameUsage<T> nameUsage, Rank heigher, int height, Rank lower, int depth);
 
     /**
      * Returns partial hierarchies containing {@code NameUsage}
@@ -235,7 +237,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * or null if {@code NameUsage} of {@code name} doesn't exit
      * in the data source.
      */
-    public Collection<NameUsage<?>> getPartialHierarchies(String query);
+    public Collection<NameUsage<T>> getPartialHierarchies(String query);
 
     /**
      * Returns a collection of {@code NameUsage} relevant to
@@ -249,7 +251,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * Null parameter returns null also.
      * 
      */
-    public Collection<NameUsage<?>> getRelevantNameUsages(NameUsage<?> nameUsage);
+    public Collection<NameUsage<T>> getRelevantNameUsages(NameUsage<T> nameUsage);
 
     /**
      * Returns a collection of {@code NameUsage} relevant to
@@ -262,7 +264,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * to name usages of the name, or null if the method is not suppored by the data source.
      * Null parameter returns null also.
      */
-    public Collection<NameUsage<?>> getRelevantNameUsages(String query);
+    public Collection<NameUsage<T>> getRelevantNameUsages(String query);
 
     /**
      * Returns a collections of {@code NameUsage} which have
@@ -273,7 +275,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @return {@code Collection} of {@code NameUsage} having names shared
      * with descendent name usages of the {@code nameUsage}.
      */
-    public Collection<NameUsage<?>> getDescendentNames(NameUsage<?> nameUsage);
+    public Collection<NameUsage<T>> getDescendentNames(NameUsage<T> nameUsage);
 
     /**
      * Returns a collections of {@code NameUsage} which have
@@ -284,7 +286,7 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @return {@code Collection} of {@code NameUsage} having names shared
      * with descendent name usages of name usages having the name.
      */
-    public Collection<NameUsage<?>> getDescendentNames(String query);
+    public Collection<NameUsage<T>> getDescendentNames(String query);
 
     /**
      * Returns a collections of {@code NameUsage} which is treated

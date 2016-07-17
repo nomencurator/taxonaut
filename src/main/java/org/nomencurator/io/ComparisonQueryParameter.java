@@ -37,36 +37,10 @@ import lombok.Setter;
 /**
  * {@code ComparisonQueryParameter} provides query parameter container.
  *
- * @version 	09 July 2016
+ * @version 	15 July 2016
  * @author 	Nozomi `James' Ytow
  */
-public class ComparisonQueryParameter
-    extends  GenericComparisonQueryParameter<NameUsage<?>>
-{
-    public ComparisonQueryParameter() {
-	super();
-    }
-
-    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?>> nameUsages) {
-	super(height, depth, nameUsages);
-    }
-
-    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?>> nameUsages, boolean pivot) {
-	super(height, depth, nameUsages, pivot);
-    }
-
-    public ComparisonQueryParameter(int height, int depth,  Collection<? extends NameUsage<?>> nameUsages, boolean pivot, boolean append) {
-	super(height, depth, nameUsages, pivot, append);
-    }
-}
-
-/**
- * {@code ComparisonQueryParameter} provides query parameter container.
- *
- * @version 	10 Sep. 2015
- * @author 	Nozomi `James' Ytow
- */
-/*public*/ class GenericComparisonQueryParameter <T extends NameUsage<?>>
+public class ComparisonQueryParameter <T extends NameUsage<?>>
     extends NameUsageQueryParameter<T>
     implements Collection<T>
 {
@@ -85,19 +59,19 @@ public class ComparisonQueryParameter
     /** Determines to append to or to create a {@code NameTreeModel} */
     protected boolean append;
 
-    /*public*/ protected GenericComparisonQueryParameter() {
+    public ComparisonQueryParameter() {
 	this(0, 0, null, false);
     }
 
-    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages) {
+    public ComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages) {
 	this(height, depth, nameUsages, false);
     }
 
-    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot) {
+    public ComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot) {
 	this(height, depth, nameUsages, false, false);
     }
 
-    /*public*/ protected GenericComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot, boolean append) {
+    public ComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot, boolean append) {
 	super();
 	setHeight(height);
 	setDepth(depth);
@@ -151,8 +125,8 @@ public class ComparisonQueryParameter
 	if(getClass() != object.getClass()) return false;
 
 	@SuppressWarnings("unchecked")
-	GenericComparisonQueryParameter<T> that =
-	    (GenericComparisonQueryParameter<T>) object;
+	ComparisonQueryParameter<T> that =
+	    (ComparisonQueryParameter<T>) object;
 
 	return super.equals(object)
 	    && Objects.equals(this.nameUsages, that.nameUsages)

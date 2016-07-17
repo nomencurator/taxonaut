@@ -64,7 +64,7 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
  * {@code NameTable} provides a JTable to display a list of NameUsages
  * using {@code NameTreeTableModel}
  *
- * @version 	03 July 2016
+ * @version 	15 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTable
@@ -328,21 +328,7 @@ public class NameTable
 
     public String getNames(String name, Rank rank, String authority, String year, MatchingMode queryType)
     {
-	Collection<NameUsage<?>> names = null;
-
-	if(rank != null) {
-	    names = queryManager.getNameUsages(name, rank, queryType, false, false, false, null);
-	}
-	else {
-	    Collection<? extends NamedObject<?>> namedObjects = queryManager.getObjects(name, queryType);
-	    names = new ArrayList<NameUsage<?>>(namedObjects.size());
-	    for (NamedObject<?> namedObject : namedObjects) {
-		if (namedObject instanceof NameUsage)
-		    names.add((NameUsage<?>)namedObject);
-	    }
-	}
-
-	return getNames(names, name, rank, authority, year, queryType);
+	return getNames(queryManager.getNameUsages(name, rank, queryType, false, false, false, null), name, rank, authority, year, queryType);
     }
 
     public String getNames(Collection<? extends NameUsage<?>> names, String name, Rank rank, String authority, String year, MatchingMode queryType)

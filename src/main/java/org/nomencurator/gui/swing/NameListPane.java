@@ -72,8 +72,6 @@ import org.nomencurator.io.NameUsageExchanger;
 import org.nomencurator.io.NameUsageQueryParameter;
 import org.nomencurator.io.ObjectExchanger;
 import org.nomencurator.io.QueryEvent;
-//import org.nomencurator.io.QueryResultEvent;
-//import org.nomencurator.io.QueryResultListener;
 import org.nomencurator.io.QueryManager;
 import org.nomencurator.io.QueryMode;
 import org.nomencurator.io.MultiplexNameUsageQuery;
@@ -97,7 +95,7 @@ import lombok.Setter;
  * {@code NameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	03 July 2016
+ * @version 	18 July 2016
  * @author 	Nozomi `James' Ytow
  */
 class NameListPane<T extends NameUsage<?>>
@@ -426,7 +424,7 @@ class NameListPane<T extends NameUsage<?>>
 	}
     }
 
-    protected ComparisonQueryParameter/*<T>*/ createComparisonQueryParameter() {
+    protected ComparisonQueryParameter<NameUsage<?>> createComparisonQueryParameter() {
 	String value = (String)heightComboBox.getSelectedItem();
 	int height = NameUsageExchanger.FULL_HEIGHT;
 	if(!heightDepthValues[0].equals(value))
@@ -436,7 +434,7 @@ class NameListPane<T extends NameUsage<?>>
 	if(!heightDepthValues[0].equals(value))
 	    depth = Integer.valueOf(value).intValue();
 
-	ComparisonQueryParameter/*<T>*/ parameter = new ComparisonQueryParameter/*<T>*/();
+	ComparisonQueryParameter<NameUsage<?>> parameter = new ComparisonQueryParameter<>();
 	parameter.setHeight(height);
 	parameter.setDepth(depth);
 	parameter.setQueryMode(QueryMode.HIERARCHIES);
@@ -444,11 +442,11 @@ class NameListPane<T extends NameUsage<?>>
 	parameter.setHigher(higherRank.getSelectedItem());
 	parameter.setLower(lowerRank.getSelectedItem());
 
-	NameTableModel/*<T>*/ model = (NameTableModel/*<T>*/)nameTable.getModel();
+	NameTableModel model = (NameTableModel)nameTable.getModel();
 	int[] selections = getSelectedModelRows();
 	for(int i = 0; i < selections.length; i++) {
-	    parameter.add(model.getNamedObject(selections[i]));
-	    //parameter.add(model.getNamedObject(nameTable.convertRowIndexToModel(selections[i])));
+	    //parameter.add(model.getNamedObject(selections[i]));
+	    parameter.add(model.getNamedObject(nameTable.convertRowIndexToModel(selections[i])));
 	}
 
 	return parameter;

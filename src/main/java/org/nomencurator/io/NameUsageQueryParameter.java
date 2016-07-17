@@ -35,7 +35,7 @@ import lombok.Setter;
 /**
  * {@code NameUsageQueryParameter} provides query parameter container.
  *
- * @version 	02 July 2016
+ * @version 	15 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameUsageQueryParameter <T extends NameUsage<?>>
@@ -196,8 +196,9 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
 	super.setFilter(filter);
     }
 
-    public NameUsage<?> getNameUsageFilter()
+    @SuppressWarnings("unchecked")
+    public NameUsage<T> getNameUsageFilter()
     {
-	return (NameUsage<?>)getFilter();
+	return (NameUsage<T>)getFilter();
     }
 }

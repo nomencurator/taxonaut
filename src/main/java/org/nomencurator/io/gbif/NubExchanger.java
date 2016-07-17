@@ -49,8 +49,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-//import org.gbif.api.vocabulary.Rank;
-
 import org.nomencurator.io.AbstractNameUsageExchanger;
 import org.nomencurator.io.MatchingMode;
 import org.nomencurator.io.MatchingMode.*;
@@ -91,7 +89,7 @@ import lombok.Getter;
 /**
  * {@code NubExchanger} provides a GBIF CheklistBank NameUsage exchagner with cache.
  *
- * @version	03 July 2016
+ * @version	18 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubExchanger
@@ -131,17 +129,12 @@ public class NubExchanger
 	this.datasetSource = datasetSource;
     };
 
-    //public Collection<NamedObject<NubNameUsage, NubNameUsage>> getObjects(String query, MatchingMode matchingMode)
     public Collection<NubNameUsage> getObjects(String query, MatchingMode matchingMode)
     {
 	String[] localKeys = splitQuery(query);
 	if(localKeys == null)
 	    return null;
 
-	/*
-	Collection<NamedObject<NubNameUsage, NubNameUsage>> results =
-	    new ArrayList<NamedObject<NubNameUsage, NubNameUsage>>();
-	*/
 	Collection<NubNameUsage> results = new ArrayList<NubNameUsage>();
 
 	for(String localKey : localKeys) {
@@ -292,7 +285,7 @@ public class NubExchanger
     }
 
 
-    @Override protected Collection<NameUsage<?>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    @Override protected Collection<NameUsage<NubNameUsage>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	String[] queries = splitQuery(query);
 	Set<String> literals = new HashSet<String>();
@@ -308,12 +301,12 @@ public class NubExchanger
 	return getExactNameUsages(new HashSet<String>(), literals, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected Collection<NameUsage<?>> getExactNameUsages(Set<String> knowns, Set<String> literals, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<NubNameUsage>> getExactNameUsages(Set<String> knowns, Set<String> literals, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	if (literals == null)
 	    return null;
 
-	List<NameUsage<?>> nameUsagesOfRank = new ArrayList<NameUsage<?>>();
+	List<NameUsage<NubNameUsage>> nameUsagesOfRank = new ArrayList<>();
 
 	if (literals.isEmpty())
 	    return nameUsagesOfRank;
@@ -350,7 +343,7 @@ public class NubExchanger
 		}
 		if (includeBasionyms) {
 		    Collection<NubNameUsage> basionyms =  getNewLiterals(dataSource.listCombinations(nubKey, locale), nubKeys, knowns, newLiterals);
-		    for (NameUsage<?> basionym : basionyms) {
+		    for (NubNameUsage basionym : basionyms) {
 			Rank basionymRank = basionym.getRank();
 			if (rank == null || basionymRank == null || rank.equals(basionymRank)) {
 			    nameUsagesOfRank.add(basionym);
@@ -364,7 +357,7 @@ public class NubExchanger
 		}
 		if (includeSynonyms) {
 		    Collection<NubNameUsage> synonyms =  getSynonyms(nub, locale, nubKeys, knowns, newLiterals);
-		    for (NameUsage<?> synonym:  synonyms) {
+		    for (NubNameUsage synonym:  synonyms) {
 			Rank synonymRank = synonym.getRank();
 			if (rank == null || synonymRank == null || rank.equals(synonymRank)) {
 			    nameUsagesOfRank.add(synonym);
@@ -384,10 +377,10 @@ public class NubExchanger
 	}
 
 	if (!newLiterals.isEmpty()) {
-	    Collection<NameUsage<?>> synonyms =
+	    Collection<NameUsage<NubNameUsage>> synonyms =
 		getExactNameUsages(knowns, newLiterals, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
 	    if (synonyms != null && !synonyms.isEmpty()) {
-		for (NameUsage<?> synonym : synonyms) {
+		for (NameUsage<NubNameUsage> synonym : synonyms) {
 		    Integer nubKey = Integer.valueOf(synonym.getLocalKey());
 		    if (!nubKeys.contains(nubKey)) {
 			nubKeys.add(nubKey);
@@ -401,15 +394,15 @@ public class NubExchanger
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    protected Collection<NameUsage<?>> getContainerNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	protected Collection<NameUsage<NubNameUsage>> getContainerNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
 	    return null;
 
-	List<NameUsage<?>> nameUsages = new ArrayList<NameUsage<?>>();
+	List<NameUsage<NubNameUsage>> nameUsages = new ArrayList<>();
 	for(String literal : literals) {
-	    Collection<NameUsage<?>> seeds = getExactNameUsages(literal, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
+	    Collection<NameUsage<NubNameUsage>> seeds = getExactNameUsages(literal, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
 	    if(seeds != null) {
 		for(NameUsage nub :seeds) {
 		    Integer parentKey = ((NubNameUsage)nub).getParentKey();
@@ -431,12 +424,12 @@ public class NubExchanger
     }
 
 
-    protected Collection<NameUsage<?>> getFuzzyNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NubNameUsage> getFuzzyNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return getFuzzyNameUsages(query, rank, false, true, null, null);
     }
 
-    protected Collection<NameUsage<?>> getFuzzyNameUsages(String query, Rank rank, boolean strict, boolean verbose, Rank rankScope, String nameScope)
+    protected Collection<NubNameUsage> getFuzzyNameUsages(String query, Rank rank, boolean strict, boolean verbose, Rank rankScope, String nameScope)
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
@@ -449,7 +442,7 @@ public class NubExchanger
 	    scope.setScientificName(nameScope);
 	    scope.setRank(RankMap.get(rankScope));
 	}
-	List<NameUsage<?>> nameUsages = new ArrayList<NameUsage<?>>();
+	List<NubNameUsage> nameUsages = new ArrayList<NubNameUsage>();
 	for(String literal : literals) {
 	    NubNameUsageMatchQuery nubQuery = new NubNameUsageMatchQuery(literal, rank == null? null: RankMap.get(rank), scope, strict, verbose);
 	    NameUsageMatch matchResult = dataSource.match(literal, RankMap.get(rank), scope, strict, verbose);
@@ -519,18 +512,18 @@ public class NubExchanger
 	return nameUsage;
     }
 
-    protected Collection<NameUsage<?>> getFullTextNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NubNameUsage> getFullTextNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
 	    return null;
 
-	List<NameUsage<?>> nameUsages = null;
+	List<NubNameUsage> nameUsages = null;
 	for (String literal : literals) {
 	    List<NameUsageSearchResult> results = dataSource.fullTextSearch(literal, RankMap.get(rank), 
 									    null, null, null, null, null, null, null, null, null, null, null);
 	    if(results != null) {
-		nameUsages = new ArrayList<NameUsage<?>>(results.size());
+		nameUsages = new ArrayList<NubNameUsage>(results.size());
 		for (NameUsageSearchResult result : results) {
 		    NubNameUsage nameUsage = getObject(result.getKey());
 		    if(nameUsage == null) {
@@ -547,17 +540,17 @@ public class NubExchanger
 	return nameUsages;
     }
 
-    protected Collection<NameUsage<?>> getSuggestedNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NubNameUsage> getSuggestedNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
 	    return null;
 
-	List<NameUsage<?>> nameUsages = null;
+	List<NubNameUsage> nameUsages = null;
 	for (String literal : literals) {
 	    List<NameUsageSuggestResult> results = dataSource.suggest(literal, RankMap.get(rank), (UUID[])null);
 	    if(results != null) {
-		nameUsages = new ArrayList<NameUsage<?>>(results.size());
+		nameUsages = new ArrayList<NubNameUsage>(results.size());
 		for (NameUsageSuggestResult result : results) {
 		    NubNameUsage nameUsage = getObject(result.getKey());
 		    if(nameUsage == null) {
@@ -575,7 +568,7 @@ public class NubExchanger
 
     // FIXME to use e.g. <E extends NameUsage<?>> instead of NameUsage<?>
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void resolveLowerNameUsages(NameUsage<?> nameUsage)
+	protected void resolveLowerNameUsages(NameUsage<NubNameUsage> nameUsage)
     {
 	String key = nameUsage.getLocalKey();
 	if(key == null || key.length() == 0) {
@@ -602,20 +595,20 @@ public class NubExchanger
 	}
     }
 
-    protected void resolveHigherNameUsages(NameUsage<?> nameUsage)
+    protected void resolveHigherNameUsages(NameUsage<NubNameUsage> nameUsage)
     {
 	// unnecessary because higher path is embedded
     }
 
     // FIXME to use e.g. <E extends NameUsage<?>> instead of NameUsage<?>
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Collection<NameUsage<?>> getHigher(NameUsage<?> nameUsage, Rank rank, int height)
+	public Collection<NameUsage<NubNameUsage>> getHigher(NameUsage<NubNameUsage> nameUsage, Rank rank, int height)
     {
 	if(nameUsage == null) {
 	    return null;
 	}
 
-	NameUsage usage = nameUsage.getNameUsage();
+	NameUsage<NubNameUsage> usage = nameUsage.getNameUsage();
 	if(usage != nameUsage) {
 	    return getHigher(usage, rank, height);
 	}
@@ -631,7 +624,7 @@ public class NubExchanger
 	Rank currentRank = nameUsage.getRank();
 
 	for (int i = highers.size(); (i > 0 && i > height  && isLowerOrUnspecified(currentRank, rank)); ) {
-	    NameUsage<?> higher = (NameUsage<?>)getObject(highers.get(--i));
+	    NubNameUsage higher = getObject(highers.get(--i));
 	    if(higher != null ) {
 		currentRank = higher.getRank();
 		if (isEqualLowerOrUnspecified(currentRank, rank)) {
@@ -643,8 +636,8 @@ public class NubExchanger
 
 	highers.clear();
 
-	List<NameUsage<?>> results =  new ArrayList<NameUsage<?>>(1);
-	results.add((NameUsage<?>)usage);
+	List<NameUsage<NubNameUsage>> results =  new ArrayList<>(1);
+	results.add(usage);
 
 	return results;
     }
@@ -790,7 +783,7 @@ public class NubExchanger
 	return parsedName;
     }
 
-    protected Collection<NameUsage<?>> getNameUsagesPostProcess(Collection<NameUsage<?>> nameUsages, int queryType)
+    protected Collection<NubNameUsage> getNameUsagesPostProcess(Collection<NubNameUsage> nameUsages, int queryType)
     {
 	return nameUsages;
     }
@@ -846,7 +839,8 @@ public class NubExchanger
     }
 	
 
-    public Collection<NameUsage<?>> getRelevantNameUsages(NameUsage<?> nameUsage) {
+    public Collection<NameUsage<NubNameUsage>> getRelevantNameUsages(NameUsage<NubNameUsage> nameUsage)
+    {
 	if(nameUsage == null || !(nameUsage instanceof NubNameUsage))
 	    return null;
 
@@ -866,11 +860,11 @@ public class NubExchanger
 	List<org.gbif.api.model.checklistbank.NameUsage> results = dataSource.listRelated(key.intValue(), (Locale)null);
 	if(results == null) 
 	    return  null;
-	List<NameUsage<?>> nameUsages = null;
+	List<NameUsage<NubNameUsage>> nameUsages = null;
 	if(results.size() == 0) {
 	    nameUsages = Collections.emptyList();
 	} else {
-	    nameUsages = new ArrayList<NameUsage<?>>(results.size());
+	    nameUsages = new ArrayList<NameUsage<NubNameUsage>>(results.size());
 	    for(org.gbif.api.model.checklistbank.NameUsage result: results) {
 		NubNameUsage nub = getObject(result);
 		if(nub != null)
@@ -881,9 +875,8 @@ public class NubExchanger
 	return nameUsages;
     }
 
-    //public Collection<NameUsage> integrateHierarchies(Collection<? extends NameUsage> nameUsages)
     @Override
-    public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages)
+	public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages)
     {
 	Collection<NameUsage<?>> hierarchies = super.integrateHierarchies(nameUsages);
 	List<NameUsage<?>> integrated = new ArrayList<NameUsage<?>>();

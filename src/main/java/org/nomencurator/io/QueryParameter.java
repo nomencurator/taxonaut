@@ -39,7 +39,6 @@ public class QueryParameter <T extends NamedObject<?>>
     /**/
     @Getter
 	protected NamedObject<? extends T> filter;
-    //protected E filter;
 
     @Setter
     protected String persistentID;

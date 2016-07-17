@@ -114,7 +114,7 @@ import org.nomencurator.gui.swing.tree.NameTreeCellRenderer;
 /**
  * A {@code JTree} for a {@code NameUsageNode}
  *
- * @version 	09 July 2016
+ * @version 	18 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTree
@@ -466,8 +466,8 @@ class GenericNameTree<T extends NameUsage<?>, N extends NameUsageNode<?>>
 			List<NameUsage<T>> lowerNameUsages = null;
 			if (source instanceof NameUsageExchanger) {
 			    @SuppressWarnings("unchecked")
-			    NameUsageExchanger<NameUsage<T>> exchanger =
-				(NameUsageExchanger<NameUsage<T>>)source;
+				NameUsageExchanger<T> exchanger =
+				(NameUsageExchanger<T>)source;
 			    lowerNameUsages = exchanger.getLowerNameUsages(usage, null, 1);
 			}
 			NameTreeNode lowerNode = null;

@@ -76,7 +76,7 @@ import lombok.Setter;
 /**
  * {@code UBio} provides a mapping between Nomencurator data and a uBio SOAP server
  *
- * @version 	08 July 2016
+ * @version 	15 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UBio
@@ -127,18 +127,18 @@ public class UBio
 	return results;
     }
 
-    protected Collection<NameUsage<?>> getExactNameUsages(String literal, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<UBioNameUsageNode>> getExactNameUsages(String literal, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return getNameUsages(literal, rank, MatchingMode.EXACT, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     
-    public Collection<NameUsage<?>>getNameUsages(String literal, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    public Collection<NameUsage<UBioNameUsageNode>>getNameUsages(String literal, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	return getNameUsages(new UBioQueryParameter(literal, rank, matchingMode));
     }
 
-    public Collection<NameUsage<?>>getNameUsages(UBioQueryParameter parameter)
+    public Collection<NameUsage<UBioNameUsageNode>>getNameUsages(UBioQueryParameter parameter)
     {
 	if(parameter == null)
 	    return null;
@@ -304,14 +304,10 @@ public class UBio
 	if(uv.isEmpty())
 	    return null;
 
-	UBioNameUsageNode[] results = 
-	    uv.toArray(new UBioNameUsageNode[uv.size()]);
+	Collection<NameUsage<UBioNameUsageNode>> toReturn = new ArrayList<>(uv.size());
+	for (UBioNameUsageNode result : uv)
+	    toReturn.add((NameUsage<UBioNameUsageNode>)result);
 	uv.clear();
-
-	Collection<NameUsage<?>> toReturn = new ArrayList<NameUsage<?>>(results.length);
-	for (UBioNameUsageNode result : results)
-	    toReturn.add(result);
-	results = null;
 
 	return toReturn;
     }
@@ -604,14 +600,14 @@ public class UBio
 	return new StringBuffer(UBioNameUsageNode.NAMEBANK_PREFIX).append(namebankID).toString();
     }
 
-    public Collection<NameUsage<?>>getRoots(String name)
+    public Collection<NameUsage<UBioNameUsageNode>>getRoots(String name)
     {
 	return getRoots(getNameUsages(getObjects(name)));
     }
 
-    public Collection<NameUsage<?>>getRoots(UBioNameUsageNode[] nameUsages)
+    public Collection<NameUsage<UBioNameUsageNode>>getRoots(UBioNameUsageNode[] nameUsages)
     {
-	List<NameUsage<?>> roots = Collections.synchronizedList(new ArrayList<NameUsage<?>>());
+	List<NameUsage<UBioNameUsageNode>> roots = new ArrayList<>();
 	for(UBioNameUsageNode nameUsage: nameUsages) {
 	    roots.add(getRoot(nameUsage));
 	}
@@ -934,7 +930,7 @@ public class UBio
 	return publication;
     }
 
-    protected void resolveHigherNameUsages(NameUsage<?> nameUsage)
+    protected void resolveHigherNameUsages(NameUsage<UBioNameUsageNode> nameUsage)
     {
 	//fixme
     }
@@ -945,7 +941,7 @@ public class UBio
      *
      * @param nameUsage of interest
      */
-    protected void resolveLowerNameUsages(NameUsage<?> nameUsage)
+    protected void resolveLowerNameUsages(NameUsage<UBioNameUsageNode> nameUsage)
     {
 	// fixme
     }
@@ -955,7 +951,7 @@ public class UBio
      *
      */
     @Override
-    public Collection<NameUsage<?>>getRelevantNameUsages(NameUsage<?> nameUsage) {
+    public Collection<NameUsage<UBioNameUsageNode>>getRelevantNameUsages(NameUsage<UBioNameUsageNode> nameUsage) {
 	return null;
     }
 
@@ -967,10 +963,10 @@ public class UBio
     {
     }
 
-    public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages)
+    /*
+    public Collection<NameUsage<UBioNameUsageNode>> integrateHierarchies(Collection<? extends NameUsage<UBioNameUsageNode>> nameUsages)
     {
 	return super.integrateHierarchies(nameUsages);
     }
-
-    
+    */
 }
