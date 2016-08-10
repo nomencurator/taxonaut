@@ -70,7 +70,7 @@ import org.nomencurator.model.gbif.NubNameUsage;
 /**
  * Unit test for NubExchangerTest
  *
- * @version 	14 July 2016
+ * @version 	18 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubExchangerTest
@@ -197,7 +197,7 @@ public class NubExchangerTest
 	NubExchanger exchanger = new NubExchanger();
 
 	SpeciesAPIClient sut = new SpeciesAPIClient();
-	List<org.gbif.api.model.checklistbank.NameUsage> results = sut.listByCanonicalName(null, "Puma concolor", null);
+	List<org.gbif.api.model.checklistbank.NameUsage> results = sut.listByCanonicalName("Puma concolor", null, null);
 
 	ArrayList<NameUsage> expected = new ArrayList<>(results.size());
 
@@ -221,7 +221,7 @@ public class NubExchangerTest
     @Test
     public void test_getNameUsage_String_wo_Rank_EXACT_via_Param() {
 	SpeciesAPIClient sut = new SpeciesAPIClient();
-	List<org.gbif.api.model.checklistbank.NameUsage> results = sut.listByCanonicalName(null, "Puma concolor", null);
+	List<org.gbif.api.model.checklistbank.NameUsage> results = sut.listByCanonicalName("Puma concolor", null, null);
 
 	ArrayList<NameUsage> expected = new ArrayList<>(results.size());
 
@@ -377,7 +377,7 @@ public class NubExchangerTest
 	    exchanger.getNameUsages("Lembus", null, MatchingMode.EXACT, false, false, false, null);
 
 	for(NameUsage<NubNameUsage> result : actualResults) {
-	    Collection<NameUsage<NubNameUsage>> highers = exchanger.getHigher(result, -1);
+	    Collection<NameUsage<NubNameUsage>> highers = exchanger.getHigher(result, null, -1);
 	}
 
 	assertTrue(true);

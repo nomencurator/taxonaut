@@ -97,7 +97,7 @@ import org.nomencurator.api.gbif.model.checklistbank.ParsedName;
 /**
  * Unit test for SpeciesAPIClientTest
  *
- * @version 	14 July 2016
+ * @version 	18 July 2016
  * @author 	Nozomi `James' Ytow
  */
 public class SpeciesAPIClientTest
@@ -3092,7 +3092,9 @@ NameUsage{key=138180561, kingdom=null, phylum=null, clazz=null, order=null, fami
 	// result.setSynonym(false);
 
 	SpeciesAPIClient sut = new SpeciesAPIClient();
-	List<NameUsage> actual = sut.listRelated(5231190, null, null);
+	Locale locale = null;
+	UUID uuid = null;
+	List<NameUsage> actual = sut.listRelated(5231190, locale, uuid);
 
 	printCollections("listRelated", actual, expected);
 
