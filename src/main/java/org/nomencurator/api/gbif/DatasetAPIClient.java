@@ -49,7 +49,9 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
-import org.gbif.api.vocabulary.IdentifierType;
+import org.gbif.api.jackson.LicenseSerde;
+
+import org.gbif.ws.mixin.DatasetMixin;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
@@ -67,6 +69,8 @@ import org.gbif.api.service.registry.DatasetService;
 
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.License;
+import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.api.vocabulary.MetadataType;
 
 import lombok.Getter;
@@ -75,7 +79,7 @@ import lombok.Getter;
  * <CODE>DatasetAPIClient</CODE> provides a set of functions to use GBIF DatasetAPI.
  * Only GET methods are funtional.
  * @author Nozomi "James" Ytow
- * @vesion 18 June 2016
+ * @vesion 19 Aug. 2016
  */
 public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 
@@ -91,6 +95,7 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
     {
 	super();
 	setDatasetURLEpithet("dataset");
+	mapper.getDeserializationConfig().addMixInAnnotations(Dataset.class, DatasetMixin.class);
     }
 
     /*
