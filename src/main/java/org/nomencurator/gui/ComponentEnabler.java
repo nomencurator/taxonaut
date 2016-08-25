@@ -1,5 +1,5 @@
 /*
- * ComponentEnabler.java:  a utility to adjust size of Components
+ * ComponentEnabler.java:  a utility to enable or disable Components
  *
  * Copyright (c) 2015 Nozomi `James' Ytow
  * All rights reserved.
@@ -24,10 +24,10 @@ package org.nomencurator.gui;
 import java.awt.Component;
 
 /**
- * <tt>ComponentEnabler</tt> provides static methods to adjust
- * size of <tt>Component</tt>s
+ * <tt>ComponentEnabler</tt> provides static methods to enable or disbale
+ * <tt>Component</tt>s
  *
- * @version 	12 Jan. 2015
+ * @version 	24 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class ComponentEnabler {
@@ -35,7 +35,7 @@ public class ComponentEnabler {
     protected ComponentEnabler() {};
 
     /**
-     * Enables or dispables given <tt>components</tt> according to balue of <tt>enable</tt>.
+     * Enables or dispables given <tt>components</tt> according to <tt>enable</tt>.
      *
      * @param enable true to enable compoennts or false to disable.
      * @param components variable list of <tt>Component</tt>s  to enable or disable
