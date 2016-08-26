@@ -4,7 +4,7 @@
   <groupId>org.nomencurator</groupId>
   <artifactId>taxonaut</artifactId>
   <packaging>jar</packaging>
-  <version>3.0</version>
+  <version>3.1</version>
   <name>taxonaut</name>
   <url>http://nomencurator.org</url>
 
@@ -333,7 +333,7 @@
 	<artifactId>maven-assembly-plugin</artifactId>
 	<version>2.5.2</version>
 	<configuration>
-          <finalName>Taxonaut-3.0</finalName>
+          <finalName>Taxonaut-${version}</finalName>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>

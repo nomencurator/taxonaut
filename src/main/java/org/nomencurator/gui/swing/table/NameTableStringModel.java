@@ -72,7 +72,7 @@ public class NameTableStringModel
     public int getColumnCount()
     {
 	return model == null ?
-	    super..getColumnCount() : 	
+	    super.getColumnCount() :
 	    model.getColumnCount();
     }
 
