@@ -34,7 +34,7 @@ import java.util.SortedSet;
 /**
  * <tt>CollectionUtlity</tt> provieds set operations on <tt>Collection</tt>s
  *
- * @version 	16 July 2015
+ * @version 	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class CollectionUtility<T>
@@ -238,4 +238,18 @@ public class CollectionUtility<T>
 
 	return sub;
     }
+
+    public static <E> Collection<E> unique(Collection<? extends E> src, Collection<E> dest)
+    {
+	Set<E> set = new HashSet<>();
+	for (E element : src) {
+	    if (!set.contains(element)) {
+		set.add(element);
+		dest.add(element);
+	    }
+	}
+	set.clear();
+	return dest;
+    }
+
 }

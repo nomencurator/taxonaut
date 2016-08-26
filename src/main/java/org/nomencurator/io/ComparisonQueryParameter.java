@@ -37,7 +37,7 @@ import lombok.Setter;
 /**
  * {@code ComparisonQueryParameter} provides query parameter container.
  *
- * @version 	15 July 2016
+ * @version 	11 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class ComparisonQueryParameter <T extends NameUsage<?>>
@@ -59,6 +59,11 @@ public class ComparisonQueryParameter <T extends NameUsage<?>>
     /** Determines to append to or to create a {@code NameTreeModel} */
     protected boolean append;
 
+    @Getter
+    @Setter
+    /** Determines to make rough set query to or to create a {@code NameTreeModel} */
+    protected boolean roughSet;
+
     public ComparisonQueryParameter() {
 	this(0, 0, null, false);
     }
@@ -72,6 +77,10 @@ public class ComparisonQueryParameter <T extends NameUsage<?>>
     }
 
     public ComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot, boolean append) {
+	this(height, depth, nameUsages, false, false, false);
+    }
+
+    public ComparisonQueryParameter(int height, int depth,  Collection<? extends T> nameUsages, boolean pivot, boolean append, boolean roughSet) {
 	super();
 	setHeight(height);
 	setDepth(depth);
@@ -83,6 +92,7 @@ public class ComparisonQueryParameter <T extends NameUsage<?>>
 	}
 	setPivot(pivot);
 	setAppend(append);
+	setRoughSet(roughSet);
     }
 
     @Override

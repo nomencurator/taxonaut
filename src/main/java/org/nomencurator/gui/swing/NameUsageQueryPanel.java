@@ -97,7 +97,7 @@ import org.nomencurator.gui.vocabulary.QueryPanelElement;
  * {@code NameUsageQueryPanel} provides components to specify a filter to search data sources.
  * It dispatches a {@code QueryEvent} representing a query filter.
  *
- * @version 	03 July 2016
+ * @version 	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameUsageQueryPanel<T extends NameUsage<?>>
@@ -430,8 +430,6 @@ public class NameUsageQueryPanel<T extends NameUsage<?>>
 	if (vernacularCheckBox == event.getSource()) {
 	    localeChooser.setEnabled(vernacularCheckBox.isSelected());
 	}
-
-
     }
 
     protected void enableButtons(boolean enable)

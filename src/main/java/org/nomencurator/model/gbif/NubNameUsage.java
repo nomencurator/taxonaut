@@ -43,7 +43,6 @@ import java.util.Vector;
 
 import org.gbif.api.vocabulary.Habitat;
 import org.gbif.api.vocabulary.NameType;
-// import org.gbif.api.vocabulary.NameUsageIssue;
 import org.gbif.api.vocabulary.NomenclaturalStatus;
 import org.gbif.api.vocabulary.Origin;
 import org.gbif.api.vocabulary.Rank;
@@ -89,7 +88,7 @@ import lombok.Getter;
 /**
  * {@code NubNameUsage} is an implementation of GBIF CheklistBank NameUsage, or nub.
  *
- * @version 	03 July 2016
+ * @version 	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubNameUsage
@@ -125,9 +124,13 @@ public class NubNameUsage
     @Getter
     protected NameUsageMatch nameUsageMatch;
 
-    /** Species API NameUsageSearchResult object to be wrapped */
+    /** Dataset containing the NameUsage to be wrapped */
     @Getter
     protected Dataset dataset;
+
+    /** Sub dataset containing the NameUsage to be wrapped */
+    @Getter
+    protected Dataset constituentDataset;
 
     // protected Collection<VernacularName> vernacularNames;
     protected Annotation vernacularNames;
@@ -295,6 +298,32 @@ public class NubNameUsage
 	}
 	
 	this.dataset = dataset;
+
+	return true;
+    }
+
+    public boolean setConstituentDataset(Dataset dataset)
+    {
+	NameUsage<? extends NubNameUsage> n = getNameUsage();
+	if(n != this) {
+	    if(n instanceof NubNameUsage) {
+		return ((NubNameUsage)n).setConstituentDataset(dataset);
+	    }
+	}
+
+	if(dataset != null) {
+	    if(scientificNameUsage != null
+	       && ! Objects.equals(scientificNameUsage.getConstituentKey(), dataset.getKey())) {
+	       return false;
+	    }
+
+	    if(nameUsageSearchResult != null
+	       && ! Objects.equals(nameUsageSearchResult.getConstituentKey(), dataset.getKey())) {
+	       return false;
+	    }
+	}
+
+	this.constituentDataset = dataset;
 
 	return true;
     }

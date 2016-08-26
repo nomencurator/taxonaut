@@ -89,7 +89,7 @@ import lombok.Getter;
 /**
  * {@code NubExchanger} provides a GBIF CheklistBank NameUsage exchagner with cache.
  *
- * @version	18 July 2016
+ * @version	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubExchanger
@@ -173,7 +173,7 @@ public class NubExchanger
 	}
 	if(nameUsage == null) {
 	    nameUsage = getObject(dataSource.get(key));
-	    /*
+	    /* */
 	    scientificNameUsage = dataSource.get(key);
 	    if(scientificNameUsage != null) {
 		nameUsage = new NubNameUsage(scientificNameUsage);
@@ -181,6 +181,10 @@ public class NubExchanger
 		    UUID datasetKey = scientificNameUsage.getDatasetKey();
 		    if(datasetKey != null) {
 			nameUsage.setDataset(getDataset(datasetKey));
+		    }
+		    datasetKey = scientificNameUsage.getConstituentKey();
+		    if(datasetKey != null) {
+			nameUsage.setConstituentDataset(getDataset(datasetKey));
 		    }
 		    synchronized(nubNameUsages) {
 			NubNameUsage reconfirm = nubNameUsages.get(usageKey);
@@ -193,7 +197,7 @@ public class NubExchanger
 		    }
 		}
 	    }
-	    */
+	    /* */
 	}
 
 	/*
@@ -512,6 +516,24 @@ public class NubExchanger
 	return nameUsage;
     }
 
+    protected NubNameUsage createNubNameUsage(NameUsageSearchResult result)
+    {
+	NubNameUsage nameUsage = getObject(result.getKey());
+	if (nameUsage == null) {
+	    nameUsage = new NubNameUsage(result);
+	    nubNameUsages.put(result.getKey(), nameUsage);
+	    UUID datasetKey = result.getDatasetKey();
+	    if(datasetKey != null) {
+		nameUsage.setDataset(getDataset(datasetKey));
+	    }
+	    datasetKey = result.getConstituentKey();
+	    if(datasetKey != null) {
+		nameUsage.setConstituentDataset(getDataset(datasetKey));
+	    }
+	}
+	return nameUsage;
+    }
+
     protected Collection<NubNameUsage> getFullTextNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	String[] literals = splitQuery(query);
@@ -527,8 +549,9 @@ public class NubExchanger
 		for (NameUsageSearchResult result : results) {
 		    NubNameUsage nameUsage = getObject(result.getKey());
 		    if(nameUsage == null) {
-			nameUsage = new NubNameUsage(result);
-			nubNameUsages.put(result.getKey(), nameUsage);
+			nameUsage = createNubNameUsage(result);
+			//nameUsage = new NubNameUsage(result);
+			//nubNameUsages.put(result.getKey(), nameUsage);
 		    }
 		    //else
 		    nameUsage.setNameUsageSearchResult(result);
@@ -539,6 +562,17 @@ public class NubExchanger
 	}
 	return nameUsages;
     }
+
+    protected NubNameUsage createNubNameUsage(NameUsageSuggestResult result)
+    {
+	NubNameUsage nameUsage = getObject(result.getKey());
+	if (nameUsage == null) {
+	    nameUsage = new NubNameUsage(result);
+	    nubNameUsages.put(result.getKey(), nameUsage);
+	}
+	return nameUsage;
+    }
+
 
     protected Collection<NubNameUsage> getSuggestedNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
@@ -554,8 +588,8 @@ public class NubExchanger
 		for (NameUsageSuggestResult result : results) {
 		    NubNameUsage nameUsage = getObject(result.getKey());
 		    if(nameUsage == null) {
-			nameUsage = new NubNameUsage(result);
-			nubNameUsages.put(result.getKey(), nameUsage);
+			nameUsage = createNubNameUsage(result);
+			//nubNameUsages.put(result.getKey(), nameUsage);
 		    }
 		    nameUsage.setNameUsageSuggestResult(result);
 		    nameUsages.add(nameUsage);
@@ -655,9 +689,7 @@ public class NubExchanger
 		nameUsage = new NubNameUsage(scientificNameUsage);
 		if(nameUsage != null) {
 		    UUID datasetUUID = scientificNameUsage.getDatasetKey();
-		    if(datasetUUID != null) {
-			nameUsage.setDataset(getDataset(datasetUUID));
-		    }
+		    nameUsage.setDataset(getDataset(datasetUUID));
 		    synchronized(nubNameUsages) {
 			NubNameUsage reconfirm = nubNameUsages.get(key);
 			if(reconfirm == null) {

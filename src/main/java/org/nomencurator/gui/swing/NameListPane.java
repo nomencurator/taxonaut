@@ -95,7 +95,7 @@ import lombok.Setter;
  * {@code NameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	18 July 2016
+ * @version 	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 class NameListPane<T extends NameUsage<?>>
@@ -116,6 +116,9 @@ class NameListPane<T extends NameUsage<?>>
 
     protected JCheckBox synonym;
     protected JLabel synonymLabel;
+
+    protected JCheckBox roughSet;
+    protected JLabel roughSetLabel;
 
     protected JButton compareButton;
     protected JButton appendButton;
@@ -217,6 +220,11 @@ class NameListPane<T extends NameUsage<?>>
 	synonym = new JCheckBox();
 	synonym.setEnabled(false);
 	    
+	roughSetLabel = new JLabel("rough set");
+	roughSetLabel.setEnabled(false);
+	roughSet = new JCheckBox();
+	roughSet.setEnabled(false);
+
 	//depthComboBox.setPreferredSize(null);
 	compareButton = new JButton();
 	compareButton.addActionListener(this);
@@ -233,16 +241,20 @@ class NameListPane<T extends NameUsage<?>>
 	panel.add(depthComboBox);
 	panel.add(lowerRank);
 	panel.add(depthHeightSeparator);
+	panel.add(new JSeparator(SwingConstants.VERTICAL));
+	panel.add(roughSet);
+	panel.add(roughSetLabel);
 	/*
 	panel.add(synonym);
 	panel.add(synonymLabel);
+	panel.add(new JSeparator(SwingConstants.VERTICAL));
 	*/
-	//panel.add(new JSeparator(SwingConstants.VERTICAL));
 	/*
 	panel.add(pivot);
 	panel.add(pivotLabel);
 	panel.add(new JSeparator(SwingConstants.VERTICAL));
 	*/
+	panel.add(new JSeparator(SwingConstants.VERTICAL));
 	panel.add(appendButton);
 	panel.add(compareButton);
 
@@ -543,5 +555,4 @@ class NameListPane<T extends NameUsage<?>>
 	return getNameList().getNameTableModel();
 
     }
-
 }

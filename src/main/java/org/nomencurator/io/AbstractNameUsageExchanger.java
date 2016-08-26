@@ -36,11 +36,13 @@ import org.nomencurator.model.NamedObject;
 import org.nomencurator.model.NameUsage;
 import org.nomencurator.model.Rank;
 
+import org.nomencurator.util.CollectionUtility;
+
 /**
  * {@code AbstractNameUsageExchanger} provides an abstract implementation of
  * {@code NameUsageExchanger}.
  *
- * @version 	18 July. 2016
+ * @version 	27 Aug.. 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
@@ -392,8 +394,12 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     public Collection<NameUsage<T>> getPartialHierarchies(NameUsageQueryParameter<T> parameter)
     {
 	NameUsage<T> nameUsage = parameter.getNameUsageFilter();
-	getLowerNameUsages(nameUsage, parameter.getLower(), parameter.getDepth());
-	return getHigher(nameUsage, parameter.getHigher(), parameter.getHeight());
+	Rank higher = parameter.getHigher();
+	int height = parameter.getHeight();
+	Rank lower = parameter.getLower();
+	int depth =parameter.getDepth();
+	getLowerNameUsages(nameUsage, lower, depth);
+	return CollectionUtility.unique(getHigher(nameUsage, higher, height), new ArrayList<NameUsage<T>>());
     }
 
     public Collection<NameUsage<T>> getPartialHierarchies(NameUsage<T> nameUsage, Rank higher, int height, Rank lower, int depth)

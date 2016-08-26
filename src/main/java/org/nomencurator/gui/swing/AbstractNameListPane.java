@@ -64,6 +64,9 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.nomencurator.io.MatchingMode;
 import org.nomencurator.io.NameUsageExchanger;
 import org.nomencurator.io.NameUsageQueryParameter;
@@ -89,7 +92,7 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
  * {@code AbstractNameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	03 July 2016
+ * @version 	26 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameListPane<T extends NameUsage<?>>
@@ -102,7 +105,8 @@ public abstract class AbstractNameListPane<T extends NameUsage<?>>
 {
     private static final long serialVersionUID = -2133224927427201961L;
 
-    protected NameTable/*<T>*/  nameTable;
+    @Getter
+    protected NameTable  nameTable;
     protected JScrollPane listPane;
     protected JPanel buttonsPanel;
 

@@ -44,6 +44,8 @@ import java.util.Vector;
 
 import javax.swing.JTable;
 
+import javax.swing.event.EventListenerList;
+
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
@@ -76,10 +78,13 @@ import org.nomencurator.gui.swing.tree.NamedNode;
 import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
 import org.nomencurator.gui.swing.tree.UnitedNameTreeNode;
 
+import org.nomencurator.io.ProgressEvent;
+import org.nomencurator.io.ProgressListener;
+
 /**
  * {@code NameTreeTableMode} provieds a {@code TableModel} to compare {@code NameTree}s.
  *
- * @version 	03 Julye 2016
+ * @version 	23 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeTableModel
@@ -1440,10 +1445,18 @@ public class NameTreeTableModel
     {
     }
 
-    public void addNameTreeTableModelListener(NameTreeTableModelListener listener)
+    protected UniqueEventListenerList getListeners()
     {
 	if(listeners == null)
 	    listeners = new UniqueEventListenerList();
+
+	return listeners;
+    }
+
+    public void addNameTreeTableModelListener(NameTreeTableModelListener listener)
+    {
+	UniqueEventListenerList listenrs = getListeners();
+
 	synchronized(listeners) {
 	    listeners.add(NameTreeTableModelListener.class, listener);
 	}
@@ -1487,4 +1500,24 @@ public class NameTreeTableModel
 	}
     }
 
+    public void addProgressListener(ProgressListener listener)
+    {
+	UniqueEventListenerList listenrs = getListeners();
+
+	listeners.add(ProgressListener.class, listener);
+    }
+
+    public void removeProgressListener(ProgressListener listener)
+    {
+	if (listeners != null)
+	    listeners.remove(ProgressListener.class, listener);
+    }
+
+    public void fireProgressMade(ProgressEvent event)
+    {
+	ProgressListener[] progressListeners = listeners.getListeners(ProgressListener.class);
+	for (ProgressListener listener : progressListeners) {
+            listener.progressMade(event);
+        }
+    }
 }

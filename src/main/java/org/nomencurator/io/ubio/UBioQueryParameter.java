@@ -37,7 +37,7 @@ import lombok.Setter;
 /**
  * {@code UBioQueryParameter} provides query parameter container for UBio.
  *
- * @version 	03 July 2016
+ * @version 	11 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UBioQueryParameter
@@ -84,7 +84,7 @@ public class UBioQueryParameter
     }
 
     public UBioQueryParameter(UBioNameUsageNode filter, int height, int depth, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode) {
-	super(filter, synchronous, matchingMode, queryMode, false, false, false, null);
+	super(filter, synchronous, matchingMode, queryMode, false, false, false, null, false);
 	setExcludeScientificNames(false);
 	setExcludeVernacularNames(false);
     }
@@ -98,7 +98,7 @@ public class UBioQueryParameter
     }
 
     public UBioQueryParameter(String literal, Rank rank, int height, int depth, String persistentID, String localKey, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean excludeScientificNames, boolean excludeVernacularNames) {
-	super(literal, rank, height, depth, persistentID, localKey, synchronous, matchingMode, queryMode, false, false, !excludeVernacularNames, null);
+	super(literal, rank, height, depth, persistentID, localKey, synchronous, matchingMode, queryMode, false, false, !excludeVernacularNames, null, false);
 	setExcludeScientificNames(excludeScientificNames);
 	setExcludeVernacularNames(excludeVernacularNames);
     }

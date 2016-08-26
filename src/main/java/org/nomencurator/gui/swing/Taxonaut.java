@@ -27,6 +27,18 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -39,6 +51,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -48,6 +61,7 @@ import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuBar;
@@ -55,9 +69,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 
 import javax.swing.border.TitledBorder;
 
@@ -68,8 +86,15 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import javax.swing.tree.TreePath;
 
+import org.apache.poi.ss.usermodel.Workbook;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 //import org.nomencurator.io.DataExchanger;
 import org.nomencurator.io.ComparisonQueryParameter;
@@ -78,6 +103,7 @@ import org.nomencurator.io.NameUsageQueryManager;
 import org.nomencurator.io.NameUsageQueryParameter;
 import org.nomencurator.io.ObjectExchanger;
 import org.nomencurator.io.QueryManager;
+import org.nomencurator.io.QueryMode;
 import org.nomencurator.io.QueryEvent;
 import org.nomencurator.io.QueryListener;
 import org.nomencurator.io.QueryParameter;
@@ -87,6 +113,7 @@ import org.nomencurator.io.MultiplexNameUsageQuery;
 
 import org.nomencurator.io.gbif.NubExchanger;
 
+import org.nomencurator.io.poi.ss.POIAdaptor;
 
 import org.nomencurator.model.Agent;
 import org.nomencurator.model.Annotation;
@@ -112,14 +139,19 @@ import org.nomencurator.model.UBioNameUsageNode;
 import org.nomencurator.resources.ResourceKey;
 
 import org.nomencurator.gui.swing.table.NameTableModel;
+import org.nomencurator.gui.swing.table.NameTableStringModel;
 
 import org.nomencurator.gui.swing.table.NameTreeTableMode;
 import org.nomencurator.gui.swing.table.NameTreeTableModel;
+import org.nomencurator.gui.swing.table.NameTreeTableStringModel;
 
 import org.nomencurator.gui.swing.tree.NameTreeModel;
 import org.nomencurator.gui.swing.tree.NameTreeNode;
 import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
 
+import org.nomencurator.model.Rank;
+
+import org.nomencurator.util.CollectionUtility;
 import org.nomencurator.util.XMLResourceBundleControl;
 
 import lombok.Getter;
@@ -131,13 +163,15 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	15 July 2016
+ * @version 	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
     extends JApplet
-    implements ChangeListener,
+    implements ActionListener,
+	       ChangeListener,
 	       ListSelectionListener,
+	       PropertyChangeListener,
 	       QueryListener<T>,
 	       QueryResultListener<T>,
 	       TreeSelectionListener
@@ -195,6 +229,7 @@ public class Taxonaut<T extends NameUsage<?>>
 
     protected HierarchiesPane<T> hierarchiesPane;
 
+    protected UnitedNameTreeModel unitedTreeModel;
 
     protected AlignerTree alignerTree;
 
@@ -210,6 +245,11 @@ public class Taxonaut<T extends NameUsage<?>>
     protected JPanel linkTypePanel;
 
     protected LanguageMenu languageMenu;
+
+    protected ExcelFileChooser excelFileChooser;
+
+    @Getter @Setter
+    protected NameUsageExchanger<T> nameUsageExchanger;
 
     protected QueryManager<T, NameUsageExchanger<T>> queryManager;
     //protected ObjectExchanger queryManager;
@@ -280,6 +320,28 @@ public class Taxonaut<T extends NameUsage<?>>
     }
 
     /**
+     * Constructs a {@code Taxonaut} using {@code locale}
+     *
+     * @param locale {@code Locale} to display the GUI
+     */
+    public Taxonaut(NameUsageExchanger<T> exchanger)
+    {
+	this(Locale.getDefault(), exchanger);
+    }
+
+
+    /**
+     * Constructs a {@code Taxonaut} using {@code locale}
+     *
+     * @param locale {@code Locale} to display the GUI
+     */
+    public Taxonaut(Locale locale, NameUsageExchanger<T> exchanger)
+    {
+	this(locale);
+	setNameUsageExchanger(exchanger);
+    }
+
+    /**
      * Creates GUI components of given locale to display.
      *
      * @param locale of components
@@ -290,13 +352,20 @@ public class Taxonaut<T extends NameUsage<?>>
 
 	menu = new MenuBar(locale);
 	setLanguageMenu(menu.getLanguageMenu());
+	menu.getExportItem().addActionListener(this);
+	excelFileChooser = new ExcelFileChooser();
+	menu.getOpenItem().setEnabled(false);
+	menu.getCloseItem().setEnabled(false);
+	menu.getHelpMenu().setEnabled(false);
 	components.add(menu);
 
 	statusLayout = new CardLayout(6, 0);
 	statusPanel = new JPanel(statusLayout);
 	statusLabel = new JLabel();
-	// 	statusLabel.setText("Status:");
 	statusPanel.add(statusLabel, STATUS_LABEL);
+	UIManager.put("ProgressBar.repaintInterval", UIManager.getInt("ProgressBar.repaintInterval")/2);
+	UIManager.put("ProgressBar.cycleTime", UIManager.getInt("ProgressBar.cycleTime")/2);
+
 	progress = new PlaceableProgressBar();
 	progress.setTextPlacement(SwingConstants.LEFT);
 	statusPanel.add(progress, PROGRESS_BAR);
@@ -328,7 +397,7 @@ public class Taxonaut<T extends NameUsage<?>>
 	nameList = nameListPane.getNameList();
 	nameListPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder()));
 	nameListPane.getNameList().getSelectionModel().addListSelectionListener(this);
-	components.add(nameListPane);
+	nameListPane.setAppendable(false);
 
 	/*
 	nameListPane.setDataExchanger(new UBio(uBioKey));
@@ -533,8 +602,6 @@ public class Taxonaut<T extends NameUsage<?>>
 
 	}
 	catch(MissingResourceException e) {
-	    System.out.println(e);
-	    e.printStackTrace(System.out);
 	}
 
 	// ((TitledBorder)nameUsageQueryPanel.getBorder()).setTitle(queryBorderText);
@@ -694,107 +761,174 @@ public class Taxonaut<T extends NameUsage<?>>
 	return nameUsages;
     }
 
-    @SuppressWarnings({"rawtypes","unchecked"})
-    public void query(QueryEvent/*<T>*/ event)
-    {
-	if(event == null || queryManager == null)
-	    return;
+    class NameUsageQuery extends SwingWorker<Collection<T>,  T> {
+	@Getter QueryParameter<T> queryParameter = null;
+	NameUsageExchanger<T> nameUsageExchanger = null;
+	public NameUsageQuery(NameUsageExchanger<T> nameUsageExchanger, 
+			      QueryParameter<T> parameter) {
+	    super();
+	    this.nameUsageExchanger = nameUsageExchanger;
+	    queryParameter =parameter;
+	}
 
-	Object source = event.getSource();
+	@Override public 	Collection<T> doInBackground() {
+	    return nameUsageExchanger.getObjects(queryParameter);
+	}
 
-	if(source == nameUsageQueryPanel) {
-	    QueryParameter/*<T>*/ parameter = event.getQueryParameter();
-	    NameUsageQueryParameter/*<T>*/ queryParameter = null;
-	    if (parameter instanceof NameUsageQueryParameter)
-		queryParameter = (NameUsageQueryParameter/*<T>*/)parameter;
-	    String queryLiteral = queryParameter == null? null : queryParameter.getLiteral();
-
-	    NubExchanger exchanger = new NubExchanger();
-	    ((NameTableModel)nameListPane.getNameList().getModel()).clear();
-	    Collection<NamedObject<NubNameUsage>> results = 
-		exchanger.getObjects(event.getQueryParameter());
+        @Override protected void done() 
+	{
+	    String queryLiteral = null;
+	    QueryParameter<T> parameter = nameUsageQuery.getQueryParameter();
+	    if (parameter instanceof NameUsageQueryParameter) {
+		NameUsageQueryParameter<T> queryParameter = (NameUsageQueryParameter<T>)parameter;
+		queryLiteral = queryParameter.getLiteral();
+	    }
 	    
-	    Collection<NameUsage<?>> nameUsages = new ArrayList<>(results.size());
-	    for(NamedObject<NubNameUsage> result : results) {
-		nameUsages.add((NameUsage<?>)result);
+	    try {
+		Collection<T> results = nameUsageQuery.get();
+		Collection<NameUsage<?>> nameUsages = new ArrayList<>(results.size());
+		for(T result : results) {
+		    nameUsages.add((NameUsage<?>)result);
+		}
+		statusLabel.setText(queryMessages.getMessage(nameUsages.size(), new Object[]{queryLiteral}));
+		((NameTableModel)nameListPane.getNameList().getModel()).set(nameUsages);
+	    }
+	    catch (InterruptedException e) {
+		statusLabel.setText("Interrupted: " + queryLiteral);
+	    }
+	    catch (ExecutionException e) {
+		statusLabel.setText(e.getMessage());
+	    }
+	    finally {
+		progress.setMinimum(progress.getMinimum());
+		progress.setIndeterminate(false);
+		statusLayout.show(statusPanel, STATUS_LABEL);
+		nameUsageQueryPanel.enableButtons(true);
+		setCursor(false);
 	    }
 
-	    statusLabel.setText(queryMessages.getMessage(nameUsages.size(), new Object[]{queryLiteral}));
-	    statusLayout.show(statusPanel, STATUS_LABEL);
-	    ((NameTableModel)nameListPane.getNameList().getModel()).set(nameUsages);
-	/*
-	synchronized(this) {
-	    if(executor == null)
-		executor = Executors.newSingleThreadExecutor();
+	}
+    }
+
+    NameUsageQuery nameUsageQuery = null;
+
+    class HierarchiesComparison extends SwingWorker<UnitedNameTreeModel,  Object> {
+	@Getter ComparisonQueryParameter<NameUsage<?>> comparisonQueryParameter = null;
+	NameUsageQueryParameter<T> nameUsageQueryParameter = null;
+	NameUsageExchanger<T> nameUsageExchanger = null;
+	Set<String> nameLiterals = null;
+	String message = null;
+	String retrievingMessage = "Retrieving hierarchy from ";
+	String analyzingMessage = "Analyzing  hierarchy in ";
+	String roughLiteralMessage = "Retrieving usages of ";
+	String usageMessage = "Retrieving hierarchy of ";
+	int maximum = -1;
+	int current = 0;
+	public HierarchiesComparison(NameUsageExchanger<T> nameUsageExchanger,
+				     ComparisonQueryParameter<NameUsage<?>> comparisonQueryParameter) {
+	    super();
+	    this.nameUsageExchanger = nameUsageExchanger;
+	    this.comparisonQueryParameter = comparisonQueryParameter;
+	    nameLiterals = new HashSet<String>();
 	}
 
-	synchronized(queryManager) {
-	    synchronized(queryThread) {
-		while(queryThread != null) {}
+	@SuppressWarnings("unchecked")
+	@Override public UnitedNameTreeModel doInBackground() {
+		Rank higher = comparisonQueryParameter.getHigher();
+		int height = comparisonQueryParameter.getHeight();
+		Rank lower = comparisonQueryParameter.getLower();
+		int depth = comparisonQueryParameter.getDepth();
+		boolean roughSet = comparisonQueryParameter.isRoughSet();
 
-		queryThread = (MultiplexNameUsageQuery)queryManager.getQuery(event.getQueryParameter());
-		queryThread.addQueryResultListener(this);
-		executor.submit(queryThread);
-	    }
-	}
-	*/
-	}
-	else if(source == localQueryPanel) {
-	    QueryParameter/*<T>*/ p = event.getQueryParameter();
-	    if(p instanceof NameUsageQueryParameter && alignerTree != null) {
-		NameUsageQueryParameter parameter = (NameUsageQueryParameter)p;
-		//statusLabel.setText(alignerTree.getNames(parameter.getLiteral(), parameter.getRank(), null, null, parameter.getMatchingMode()));
-		    String msg = alignerTree.getNames(parameter.getLiteral(), parameter.getRank(), null, null, parameter.getMatchingMode());
-		    statusLabel.setText(msg);
-		    statusLayout.show(statusPanel, STATUS_LABEL);
-	    }
-	}
-	else if(source == nameListPane) {
-	    QueryParameter queryParameter = event.getQueryParameter();
-	    ComparisonQueryParameter<NameUsage<?>> comparisonQueryParameter = null;
-;	    if(queryParameter instanceof ComparisonQueryParameter) {
-		clearNameUsage();
-		comparisonQueryParameter = (ComparisonQueryParameter<NameUsage<?>>)queryParameter;
-		if(hierarchiesPane != null) {
-		    int tabs = hierarchiesPane.getTabCount();
-		    while(tabs > 0) {
-			hierarchiesPane.remove(--tabs);
-		    }
+		nameUsageQueryParameter = new NameUsageQueryParameter<>();
+		nameUsageQueryParameter.setQueryMode(QueryMode.PARTIAL_HIERARCHIES);
+		nameUsageQueryParameter.setHigher(comparisonQueryParameter.getHigher());
+		nameUsageQueryParameter.setHeight(comparisonQueryParameter.getHeight());
+		nameUsageQueryParameter.setLower(comparisonQueryParameter.getLower());
+		nameUsageQueryParameter.setDepth(comparisonQueryParameter.getDepth());
+		nameUsageQueryParameter.setRoughSet(comparisonQueryParameter.isRoughSet());
+
+		if (!comparisonQueryParameter.isAppend()) {
+		    nameLiterals.clear();
 		}
 
 		Collection<NameUsage<?>> nameUsages = 
-		    /*convertNameUsages(*/new NubExchanger().integrateHierarchies(comparisonQueryParameter.getNameUsages())/*)*/;
+		    nameUsageExchanger.integrateHierarchies(comparisonQueryParameter.getNameUsages());
 		List<NameUsage<?>> rootNodes = new ArrayList<>();
-		Set<String> nameLiterals = new HashSet<String>();
-		for(NameUsage<?> nameUsage : nameUsages) { 
-		    rootNodes.addAll(getSelectedRoots(nameUsage));
+		Set<String> positiveLiterals = roughSet ? new HashSet<String>() : null;
+		message = retrievingMessage;
+		maximum = nameUsages.size();
+		for (NameUsage<?> nameUsage : nameUsages) {
+		    current++;
+		    publish(nameUsage);
+		    nameUsageQueryParameter.setFilter((NameUsage<T>)nameUsage);
+		    rootNodes.addAll(getRoots(nameUsageQueryParameter));
 		    nameLiterals.add(nameUsage.getLiteral());
+		    if (roughSet) {
+			positiveLiterals.addAll(nameUsage.getIncludants().keySet());
+		    }
 		}
-		// FIXME to be more general
-		Collection<NameUsage<?>> integrated =
-		    /*convertNameUsages(*/new NubExchanger().integrateHierarchies(rootNodes)/*)*/;
-		UnitedNameTreeModel unitedTreeModel = new UnitedNameTreeModel(integrated.size() + 1);
 
-		int i = 0;
-		progress.setMaximum(integrated.size());
-		progress.setMinimum(0);
-		statusLayout.show(statusPanel, PROGRESS_BAR);
+		current = 0;
+		maximum = -1;
+		if (roughSet) {
+		    Collection<NameUsage<T/*?*/>> crossUsages = new HashSet<>();
+		    message = roughLiteralMessage;
+		    maximum = positiveLiterals.size();
+		    for (String literal : positiveLiterals) {
+			current++;
+			publish(literal);
+			crossUsages.addAll(nameUsageExchanger.getNameUsages(literal, null));
+		    }
+		    positiveLiterals.clear();
+		    current = 0;
+		    maximum = crossUsages.size();
+		    message = usageMessage;
+		    for (NameUsage<T/*?*/> crossUsage : crossUsages) {
+			current++;
+			publish(crossUsage.getLiteral());
+			rootNodes.addAll(nameUsageExchanger.getPartialHierarchies(crossUsage, higher, height, lower, depth));
+		    }
+		    crossUsages.clear();
+		}
+		current = 0;
+		maximum = -1;
+
+		// FIXME to be more general
+		Collection<NameUsage<?>> integrated =nameUsageExchanger.integrateHierarchies(rootNodes);
+		if (unitedTreeModel == null || !comparisonQueryParameter.isAppend()) {
+		    unitedTreeModel = new UnitedNameTreeModel(integrated.size() + 1);
+		    nameListPane.setAppendable(true);
+		}
+
+		current = 0;
+		maximum = integrated.size();
+		message = analyzingMessage;
 		for(NameUsage<?> rootNode : integrated) { 
 		    NameTreeModel nameTreeModel =new NameTreeModel(rootNode);
 		    if(nameTreeModel != null) {
-			progress.setValue(++i);
-			progress.setString("Processing " + nameTreeModel.getViewName());
-			progress.setStringPainted(true);
-			progress.setIndeterminate(true);
+			current++;
+			publish(rootNode);
 			unitedTreeModel.add(nameTreeModel);
-			progress.setString("");
-			progress.setStringPainted(false);
-			progress.setIndeterminate(false);
 		    }
 		}
-		progress.setString("Comparison done");
-		List<NameTreeTable<T>> tables = compare(unitedTreeModel);
-		for (NameTreeTable nameTreeTable : tables) {
+
+		return unitedTreeModel;
+	}
+
+	@Override protected void process(List<Object> chunks) {
+	    StringBuffer buffer = new StringBuffer("(");
+	    buffer.append(current).append("/").append(maximum).append("): ").append(message);
+	    Object lastItem = chunks.get(chunks.size() - 1);
+	    buffer.append(lastItem instanceof NameUsage ? ((NameUsage<?>)lastItem).getViewName() : lastItem.toString());
+	    progress.setString(buffer.toString());
+	}
+
+        @Override protected void done() 
+	{
+	    try {
+		List<NameTreeTable<T>> tables = compare(get());
+		for (NameTreeTable<T> nameTreeTable : tables) {
 		    NameTreeTableModel nameTreeTableModel = (NameTreeTableModel)nameTreeTable.getModel();
 		    List<Integer> rows = new ArrayList<Integer>();
 		    for (String literal : nameLiterals) {
@@ -809,31 +943,143 @@ public class Taxonaut<T extends NameUsage<?>>
 			}
 		    }
 		}
-		/*
-		if (hierarchiesPane != null) {
-		    int tabCount = hierarchiesPane.getTabCount();
-		    for (int tab = 0; tab < tabCount; tab++) {
-			Component contents = hierarchiesPane.getTabComponentAt(tab);
-			if (contents instanceof NameTreeTable) {
-			    NameTreeTable nameTreeTable = (NameTreeTable)contents;
-			    NameTreeTableModel nameTreeTableModel = (NameTreeTableModel)nameTreeTable.getModel();
-			    List<Integer> rows = new ArrayList<Integer>();
-			    for (String literal : nameLiterals) {
-				Collection<Integer> selections = nameTreeTableModel.getRows(literal);
-				if(selections != null && selections.size() > 0) {
-				    rows.addAll(selections);
-				}
-			    }
-			    if (rows.size() > 0) {
-				for (Integer row : rows) {
-				    nameTreeTable.addRowSelectionInterval(row, row);
-				}
-			    }
+	    }
+	    catch (InterruptedException e) {
+		statusLabel.setText("Interrupted");
+	    }
+	    catch (ExecutionException e) {
+		statusLabel.setText(e.getMessage());
+	    }
+	    finally {
+		progress.setMinimum(progress.getMinimum());
+		progress.setIndeterminate(false);
+		progress.setString("");
+		statusLabel.setText("Comparison and analysis done");
+		statusLayout.show(statusPanel, STATUS_LABEL);
+		nameListPane.enableButtons(true);
+		setCursor(false);
+	    }
+
+	}
+    }
+
+    HierarchiesComparison hierarchiesComparison = null;
+
+
+    public void propertyChange(PropertyChangeEvent event)
+    {
+	String propertyName = event.getPropertyName();
+	Object source = event.getSource();
+	if (source == nameUsageQuery) {
+	    if ("state".equals(propertyName)) {
+		Object value = event.getNewValue();
+		if (value.equals(SwingWorker.StateValue.STARTED)) {
+		}
+		else if (value.equals(SwingWorker.StateValue.DONE)) {
+		    progress.setMinimum(progress.getMinimum());
+		    progress.setIndeterminate(false);
+
+		    String literal = null;
+		    QueryParameter<T> parameter = nameUsageQuery.getQueryParameter();
+		    if (parameter instanceof NameUsageQueryParameter) {
+			NameUsageQueryParameter<T> queryParameter = (NameUsageQueryParameter<T>)parameter;
+			literal = queryParameter.getLiteral();
+		    }
+
+		    try {
+			Collection<T> results = nameUsageQuery.get();
+			Collection<NameUsage<?>> nameUsages = new ArrayList<>(results.size());
+			for(T result : results) {
+			    nameUsages.add((NameUsage<?>)result);
 			}
+			statusLabel.setText(queryMessages.getMessage(nameUsages.size(), new Object[]{literal}));
+			((NameTableModel)nameListPane.getNameList().getModel()).set(nameUsages);
+		    }
+		    catch (InterruptedException e) {
+			statusLabel.setText("Interrupted: " + literal);
+		    }
+		    catch (ExecutionException e) {
+			statusLabel.setText(e.getMessage());
+		    }
+		    finally {
+			statusLayout.show(statusPanel, STATUS_LABEL);
 		    }
 		}
-		*/
-		progress.setString("");
+		else {
+		}
+	    }
+	}
+    }
+
+    protected void indeterminate(JProgressBar progress, String message)
+    {
+	indeterminate(progress, message, 0, 100);
+    }
+
+    protected void indeterminate(JProgressBar progress, String message, int minimum, int maximum)
+    {
+	progress.setString(message);
+	progress.setStringPainted(true);
+	progress.setMinimum(minimum);
+	progress.setMaximum(maximum);
+	progress.setIndeterminate(true);
+    }
+
+    @SuppressWarnings({"rawtypes","unchecked"})
+    public void query(QueryEvent/*<T>*/ event)
+    {
+	if(event == null || queryManager == null)
+	    return;
+
+	Object source = event.getSource();
+
+	if(source == nameUsageQueryPanel) {
+	    nameUsageQueryPanel.enableButtons(false);
+	    QueryParameter/*<T>*/ parameter = event.getQueryParameter();
+	    NameUsageQueryParameter/*<T>*/ queryParameter = null;
+	    if (parameter instanceof NameUsageQueryParameter)
+		queryParameter = (NameUsageQueryParameter/*<T>*/)parameter;
+	    String queryLiteral = queryParameter == null? null : queryParameter.getLiteral();
+
+	    ((NameTableModel)nameListPane.getNameList().getModel()).clear();
+	    indeterminate(progress, "Retrieving " + queryLiteral);
+	    statusLayout.show(statusPanel, PROGRESS_BAR);
+	    progress.setVisible(true);
+
+	    nameUsageQuery = 
+		new NameUsageQuery(nameUsageExchanger, event.getQueryParameter());
+	    //nameUsageQuery.addPropertyChangeListener(this);
+		setCursor(true);
+		nameUsageQuery.execute();
+	}
+	else if(source == localQueryPanel) {
+	    QueryParameter/*<T>*/ p = event.getQueryParameter();
+	    if(p instanceof NameUsageQueryParameter && alignerTree != null) {
+		NameUsageQueryParameter parameter = (NameUsageQueryParameter)p;
+		    String msg = alignerTree.getNames(parameter.getLiteral(), parameter.getRank(), null, null, parameter.getMatchingMode());
+		    statusLabel.setText(msg);
+		    statusLayout.show(statusPanel, STATUS_LABEL);
+	    }
+	}
+	else if(source == nameListPane) {
+	    QueryParameter queryParameter = event.getQueryParameter();
+	    ComparisonQueryParameter<NameUsage<?>> comparisonQueryParameter = null;
+;	    if(queryParameter instanceof ComparisonQueryParameter) {
+    		comparisonQueryParameter = (ComparisonQueryParameter<NameUsage<?>>)queryParameter;
+		nameListPane.enableButtons(false);
+		if(hierarchiesPane != null) {
+		    int tabs = hierarchiesPane.getTabCount();
+		    while(tabs > 0) {
+			hierarchiesPane.remove(--tabs);
+		    }
+		}
+		clearNameUsage();
+		indeterminate(progress, "");
+		statusLayout.show(statusPanel, PROGRESS_BAR);
+		progress.setVisible(true);
+		hierarchiesComparison = new HierarchiesComparison(nameUsageExchanger, comparisonQueryParameter);
+		setCursor(true);
+		hierarchiesComparison.execute();
 	    }
 	}
     }
@@ -927,15 +1173,45 @@ public class Taxonaut<T extends NameUsage<?>>
 
     protected List<MultiplexNameUsageQuery<T>> getHierarchies = null;
 
+    class NameTreeModelRetrieval extends SwingWorker<NameTreeModel, Object> {
+	NameUsage<?> nameUsage;
+	public NameTreeModelRetrieval(NameUsage<?> nameUsage) {
+	    super();
+	    this.nameUsage = nameUsage;
+	}
+
+	@Override public NameTreeModel doInBackground() {
+	    return getSelectedTreeModel(nameUsage);
+	}
+
+        @Override protected void done() {
+	    NameTreeModel nameTreeModel = getSelectedTreeModel(nameUsage);
+	    if(nameTreeModel == null) {
+		clearNameUsage();
+	    }
+	    else {
+		tree.setRootVisible(true);
+		tree.setModel(nameTreeModel);
+		tree.expandAll();
+	    }
+
+	    progress.setMinimum(progress.getMinimum());
+	    progress.setIndeterminate(false);
+	    progress.setString("");
+	    statusLabel.setText("Retrieved the hierarchy of " + nameUsage.getLiteral() + "  in " + nameUsage.getViewName());
+	    statusLayout.show(statusPanel, STATUS_LABEL);
+	    nameListPane.enableButtons(true);
+	}
+    }
+
     public void valueChanged(ListSelectionEvent event)
     {
 	if(event.getValueIsAdjusting())
 	    return;
-	
-	NameTable/*<T>*/ nameList = nameListPane.getNameList();
 
 	if(event.getSource() == nameList.getSelectionModel()) {
-	    NameTableModel/*<T>*/ nameListModel = nameList.getNameTableModel();
+	    NameTable nameList = nameListPane.getNameList();
+	    NameTableModel nameListModel = nameList.getNameTableModel();
 	    int count = nameList.getSelectedRowCount();
 	    if(count == 0) {
 		// how can I clear the tree?
@@ -946,16 +1222,12 @@ public class Taxonaut<T extends NameUsage<?>>
 		NameUsage<?> nameUsage = nameListModel.getNamedObject(index);
 		nameUsagePanel.setNamedObject(nameUsage);
 		detailText.setText(nameUsage.getDetail());
-		//detailText.setEditable(nameUsage.isEditable());
-		NameTreeModel nameTreeModel = getSelectedTreeModel(nameUsage);
-		if(nameTreeModel == null) {
-		    clearNameUsage();
-		}
-		else {
-		    tree.setRootVisible(true);
-		    tree.setModel(nameTreeModel);
-		    tree.expandAll();
-		}
+
+		indeterminate(progress, "Retrieving the hierarchy of " + nameUsage.getLiteral() + "  in " + nameUsage.getViewName());
+		statusLayout.show(statusPanel, PROGRESS_BAR);
+		progress.setVisible(true);
+
+		(new NameTreeModelRetrieval(nameUsage)).execute();
 	    }
 	    else {
 	    }
@@ -963,7 +1235,18 @@ public class Taxonaut<T extends NameUsage<?>>
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-	protected Collection<NameUsage<?>> getSelectedRoots(NameUsage<?> nameUsage)
+	protected Collection<NameUsage<?>> getRoots(NameUsageQueryParameter<T> queryParameter)
+    {
+	if(queryParameter == null)
+	    return null;
+
+	return nameUsageExchanger.integrateHierarchies(nameUsageExchanger.getObjects(queryParameter));
+    }
+
+
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+	protected Collection<NameUsage<?>> getRoots(NameUsage<?> nameUsage)
     {
 	if(nameUsage == null || nameListPane == null)
 	    return null;
@@ -1005,7 +1288,7 @@ public class Taxonaut<T extends NameUsage<?>>
 	//FIXME for generalisation to support other data sources
 	NubExchanger exchanger = new NubExchanger();
 	Collection<NamedObject<NubNameUsage>> results = 
-	    exchanger.getObjects(queryParameter);
+	    nameUsageExchanger.getObjects(queryParameter);
 	if(results == null || results.isEmpty()) {
 	    return null;
 	}
@@ -1115,31 +1398,6 @@ public class Taxonaut<T extends NameUsage<?>>
 	    for(JComponent component : components) {
 		component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 	    }
-
-	    /*
-	    menu.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    nameUsageQueryPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    resultSplitPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    querySplitPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    nameListPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    nameList.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    tree.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    treePane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    detailTabs.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-	    nameUsagePanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    appearancePanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    publicationPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    authorPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    */
-	    //annotationPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));;
-
-	    /*
-	      searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	      searchField.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	      topPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	      resultsPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    */
 	}
 
 	else {
@@ -1147,23 +1405,148 @@ public class Taxonaut<T extends NameUsage<?>>
 		component.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	    }
 	    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    /*
-	    menu.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    nameUsageQueryPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    resultSplitPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    querySplitPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    nameListPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    nameList.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    tree.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    treePane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    detailTabs.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+	}
+    }
 
-	    nameUsagePanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    appearancePanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    publicationPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    authorPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	    //annotationPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));;
-	    */
+    class ExportPOI extends SwingWorker<Workbook, Integer> {
+	Workbook wb;
+	File fileName;
+	String pathName;
+	Component component;
+	ExportPOI(Workbook wb, File fileName, Component component) {
+	    super();
+	    this.wb = wb;
+	    this.fileName = fileName;
+	    pathName = fileName.getAbsolutePath();
+	    this.component = component;
+	}
+
+	@Override public Workbook doInBackground() {
+	    int sheets = 0;
+	    setCursor(true);
+	    indeterminate(progress, "Exporting to " + pathName);
+	    statusLayout.show(statusPanel, PROGRESS_BAR);
+	    progress.setVisible(true);
+
+	    if (nameListPane != null) {
+		JTable table = nameListPane.getNameTable();
+		JTabbedPane tabs = resultTabs;
+		String tabTitle = null;
+		int tabCount =  tabs.getTabCount(); 
+		for (int i = 0; i < tabCount; i++) {
+		    if(nameListPane == tabs.getComponentAt(i)) {
+			tabTitle = tabs.getTitleAt(i);
+			break;
+		    }
+		}
+		publish(Integer.valueOf(++sheets));
+		POIAdaptor.createSheet(
+				       new NameTableStringModel((NameTableModel)table.getModel()),
+				       wb, tabTitle, true);
+	    }
+	    
+	    if (hierarchiesPane != null) {
+		int tabCount = hierarchiesPane.getTabCount(); 
+		for (int i = 0; i < tabCount; i++) {
+		    publish(Integer.valueOf(++sheets));
+		    POIAdaptor.createSheet(
+					   new NameTreeTableStringModel((NameTreeTableModel)hierarchiesPane.getTableAt(i).getModel()),
+					   wb, hierarchiesPane.getTitleAt(i), true
+					   );
+		}
+	    }
+	    return wb;
+	}
+
+	@Override protected void process(List<Integer> chunks) {
+	    progress.setString("Processing sheet " + chunks.get(chunks.size() - 1));
+	}
+
+        @Override protected void done() {
+	    BufferedOutputStream stream = null;
+	    String message = null;
+	    try {
+		stream = new BufferedOutputStream(new FileOutputStream(fileName));
+		get().write(stream);
+	    }
+	    catch (FileNotFoundException fileNotFoundException) {
+		message = fileNotFoundException.getMessage();
+		message = (message != null && message.length() > 0) ?
+		    message : pathName + " is not found or inaccessible.";
+		JOptionPane.showMessageDialog(component,
+					      message, 
+					      "File error",
+					      JOptionPane.ERROR_MESSAGE);
+	    }
+	    catch (InterruptedException interruptedException) {
+		message = interruptedException.getMessage();
+		message = (message != null && message.length() > 0) ?
+		    message : "Interrupted";
+	    }
+	    catch (ExecutionException executionException) {
+		message = executionException.getMessage();
+	    }
+	    catch (IOException writeException) {
+		message = writeException.getMessage();
+		message = (message != null && message.length() > 0) ?
+		    message : pathName + " is not writable.";
+	    }
+	    finally {
+		try {
+		    stream.close();
+		    message = "Exported to " + pathName;
+		}
+		catch (IOException closeException) {
+		    message = closeException.getMessage();
+		    message = (message != null && message.length() > 0) ?
+			message : pathName + " is not closed.";
+		}
+	    }
+	    progress.setMinimum(progress.getMinimum());
+	    progress.setIndeterminate(false);
+	    progress.setString("");
+	    statusLabel.setText(message);
+	    statusLayout.show(statusPanel, STATUS_LABEL);
+	    setCursor(false);
+	}
+    }
+
+    public void actionPerformed(ActionEvent e)
+    {
+	Object source = e.getSource();
+	if (menu != null && menu.getExportItem() == source) {
+	    if (excelFileChooser != null 
+		&& JFileChooser.APPROVE_OPTION == excelFileChooser.showSaveDialog(this)) {
+		File fileName = excelFileChooser.getSelectedFile();
+		String pathName = fileName.getAbsolutePath().trim();
+		FileFilter[] filters = excelFileChooser.getChoosableFileFilters();
+		FileFilter fit = null;
+		for (FileFilter filter : filters) {
+		    if (fit != null)
+			break;
+		    if (filter instanceof FileNameExtensionFilter) {
+			if (fit != null)
+			    break;
+			String[] extensions = ((FileNameExtensionFilter)filter).getExtensions();
+			for (String extension : extensions) {
+			    if (fit != null)
+				break;
+			    if (pathName.endsWith(extension)) {
+				fit = filter;
+			    }
+			}
+		    }
+		}
+		if (fit == null) {
+		    fit = excelFileChooser.getFileFilter();
+		    fileName = new File(pathName + "." + ((FileNameExtensionFilter)fit).getExtensions()[0]);
+		}
+
+		Workbook wb = (fit == excelFileChooser.getXlsFilter()) ?
+		    new HSSFWorkbook() : new XSSFWorkbook();
+
+		(new ExportPOI(wb, fileName, this)).execute();
+	    }
 	}
     }
 
@@ -1173,9 +1556,10 @@ public class Taxonaut<T extends NameUsage<?>>
         JDialog.setDefaultLookAndFeelDecorated(true);
 
 	JFrame frame = new JFrame("Taxonaut version 3.0");
-	Taxonaut<NameUsage<?>> taxoNote = new Taxonaut<NameUsage<?>>();
-	frame.getContentPane().add(taxoNote);
-
+	//Taxonaut<NameUsage<?>> taxonaut = new Taxonaut<NameUsage<?>>();
+	Taxonaut<NubNameUsage> taxonaut = new Taxonaut<>();
+	taxonaut.setNameUsageExchanger(new NubExchanger());
+	frame.getContentPane().add(taxonaut);
 
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setSize(frame.getPreferredSize());

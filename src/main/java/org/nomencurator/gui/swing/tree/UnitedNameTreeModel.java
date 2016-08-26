@@ -62,6 +62,8 @@ import org.nomencurator.io.ObjectExchanger;
 import org.nomencurator.io.QueryResultEvent;
 import org.nomencurator.io.QueryResultListener;
 import org.nomencurator.io.QueryResultListenerAdaptor;
+import org.nomencurator.io.ProgressEvent;
+import org.nomencurator.io.ProgressListener;
 
 import org.nomencurator.model.NameUsage;
 import org.nomencurator.model.NameUsageNode;
@@ -75,8 +77,7 @@ import org.nomencurator.util.CollectionUtility;
 import org.nomencurator.util.StackTracer;
 
 /**
- * <CODE>UnitedTreeModel</CODE> provides an integrated tree 
- * to navigate <code>NameTreeModel</code>s.
+ * <CODE>UnitedTreeModel</CODE> provides an integrated tree  to navigate <code>NameTreeModel</code>s.
  * <P>
  * <strong><a name="integeration">Implementation Note:</a></strong>
  * This class provides a method to integrate named concepts captured as
@@ -330,7 +331,7 @@ import org.nomencurator.util.StackTracer;
  * </OL>
  * <P>
  *
- * @version 	05 July 2016
+ * @version 	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UnitedNameTreeModel
@@ -3293,10 +3294,16 @@ public class UnitedNameTreeModel
        return v;
     }
 
-    public void addUnitedNameTreeModelListener(UnitedNameTreeModelListener listener)
+    protected EventListenerList getListeners()
     {
 	if(listeners == null)
 	    listeners = new EventListenerList();
+	return listeners;
+    }
+
+    public void addUnitedNameTreeModelListener(UnitedNameTreeModelListener listener)
+    {
+	EventListenerList listeners = getListeners();
 	synchronized(listeners) {
 	    listeners.add(UnitedNameTreeModelListener.class, listener);
 	}
@@ -3346,6 +3353,8 @@ public class UnitedNameTreeModel
 	}
     }
 
+
+
     protected NamedNode<?>[] toArray(Enumeration<NamedNode<?>> e)
     {
 	if(e == null)
@@ -3360,4 +3369,25 @@ public class UnitedNameTreeModel
 	v.clear();
 	return nodes;
     }
+
+    public void addProgressListener(ProgressListener listener)
+    {
+	EventListenerList listenrs = getListeners();
+	listeners.add(ProgressListener.class, listener);
+    }
+
+    public void removeProgressListener(ProgressListener listener)
+    {
+	if (listeners != null)
+	    listeners.remove(ProgressListener.class, listener);
+    }
+
+    public void fireProgressMade(ProgressEvent event)
+    {
+	ProgressListener[] progressListeners = listeners.getListeners(ProgressListener.class);
+	for (ProgressListener listener : progressListeners) {
+            listener.progressMade(event);
+        }
+    }
+
 }

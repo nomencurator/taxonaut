@@ -120,7 +120,7 @@ import lombok.Setter;
 /**
  * A set of tabs containging tables to compare hierarchies
  *
- * @version 	02 June. 2016
+ * @version 	22 Aug.. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class HierarchiesPane<T extends NameUsage<?>>
@@ -410,6 +410,7 @@ public class HierarchiesPane<T extends NameUsage<?>>
 	//revalidate();
     }
 
+
     public void insertTab(String title, Icon icon, Component component, String tip, int index)
     {
 	insertTab(title, icon, component, tip, index, true);
@@ -437,7 +438,12 @@ public class HierarchiesPane<T extends NameUsage<?>>
 	}
     }
 
-    protected void preprocessRemovalAt(int index)
+    public NameTreeTable<T> getTableAt(int index)
+    {
+	return tables.get(getScrollPaneAt(index));
+    }
+
+    protected JScrollPane getScrollPaneAt(int index)
     {
 	Component[] components = ((Container)getComponentAt(index)).getComponents();
 	NameTreeTable<T> table = null;
@@ -452,6 +458,17 @@ public class HierarchiesPane<T extends NameUsage<?>>
 		    pane = null;
 	    }
 	}
+	return pane;
+    }
+
+    protected void preprocessRemovalAt(int index)
+    {
+	JScrollPane pane = getScrollPaneAt(index);
+	if (pane == null)
+	    return;
+
+	NameTreeTable<T> table = tables.get(pane);
+
 	if(table != null) {
 	    tables.remove(pane);
 	    treeSynchronizer.remove(table.getAlignerTree());

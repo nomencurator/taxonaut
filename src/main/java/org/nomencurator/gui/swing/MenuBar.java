@@ -39,12 +39,14 @@ import javax.swing.JMenuItem;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import lombok.Getter;
+
 import org.nomencurator.resources.ResourceKey;
 
 /**
  * {@coee MenuBar} provides a menu bar to control the aplication software.
  *
- * @version 	27 June 2016
+ * @version 	21 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class MenuBar
@@ -53,16 +55,26 @@ public class MenuBar
 {
     private static final long serialVersionUID = -7166036140160098620L;
 
+    @Getter
     protected JMenu fileMenu;
+    @Getter
     protected JMenuItem openItem;
+    @Getter
     protected JMenuItem closeItem;
+    @Getter
+    protected JMenuItem exportItem;
+    @Getter
     protected JMenuItem exitItem;
 
+    @Getter
     protected SuffixedFileChooser fileChooser;
 
+    @Getter
     protected JMenu helpMenu;
+    @Getter
     protected JMenuItem versionMenu;
 
+    @Getter
     protected LanguageMenu languageMenu;
 
     public MenuBar()
@@ -94,6 +106,7 @@ public class MenuBar
 	fileMenu = new JMenu();
 	openItem = new JMenuItem();
 	closeItem = new JMenuItem();
+	exportItem = new JMenuItem();
 	exitItem = new JMenuItem();
 
 	fileChooser = new SuffixedFileChooser();
@@ -103,6 +116,7 @@ public class MenuBar
     {
 	fileMenu.add(openItem);
 	fileMenu.add(closeItem);
+	fileMenu.add(exportItem);
 	fileMenu.add(exitItem);
 	exitItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
@@ -152,12 +166,6 @@ public class MenuBar
 	helpMenu.add(versionMenu);
     }
 
-    public LanguageMenu getLanguageMenu()
-    {
-	return languageMenu;
-    }
-
-
     /**
      * Localizes components according to specified locale.
      *
@@ -170,6 +178,7 @@ public class MenuBar
 	String fileText = ResourceKey.FILE;
 	String openText = ResourceKey.OPEN;
 	String closeText = ResourceKey.CLOSE;
+	String exportText = ResourceKey.EXPORT;
 	String exitText = ResourceKey.EXIT;
 	String helpText = ResourceKey.HELP;
 	String versionText = ResourceKey.VERSION;
@@ -180,6 +189,7 @@ public class MenuBar
 	    fileText = resource.getString(fileText);
 	    openText = resource.getString(openText);
 	    closeText = resource.getString(closeText);
+	    exportText = resource.getString(exportText);
 	    exitText = resource.getString(exitText);
 	    helpText = resource.getString(helpText);
 	    versionText = resource.getString(versionText);
@@ -193,6 +203,7 @@ public class MenuBar
 	fileMenu.setMnemonic(KeyEvent.VK_F);
 	openItem.setText(openText);
 	closeItem.setText(closeText);
+	exportItem.setText(exportText);
 	exitItem.setText(exitText);
 	helpMenu.setText(helpText);
 	versionMenu.setText(versionText);

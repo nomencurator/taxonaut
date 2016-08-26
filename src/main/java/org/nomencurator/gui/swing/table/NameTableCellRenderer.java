@@ -42,7 +42,7 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
 /**
  * {@code NameTableCellRenderer} is a {@code TableCellRenderer} to render a {@code NameTree}
  *
- * @version 	03 July 2016
+ * @version 	20 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTableCellRenderer
@@ -123,6 +123,64 @@ public class NameTableCellRenderer
 
 	if(nameUsage != null) {
 	    isSynonym = nameUsage.isSynonym();
+	    /*
+	    switch (attribute) {
+	    case RANK:
+		value = nameUsage.getRank();
+		break;
+	    case NAME:
+		value = nameUsage.getLiteral();
+		break;
+	    case  AUTHORITY:
+		value = nameUsage.getAuthority();
+		if(value == null) {
+		    nameUsage = nameUsage.getSensu();
+		    if(nameUsage != null)
+			value = nameUsage.getViewName();
+		}
+		break;
+	    case YEAR:
+		value = nameUsage.getAuthorityYear();
+		break;
+	    case SENSU:
+		value = nameUsage.getViewName();
+		break;
+	    case DATASET:
+		if (nameUsage instanceof NubNameUsage) {
+		    value = ((NubNameUsage)nameUsage).getDatasetTitle();
+		}
+		break;
+	    case DESCENDANTS_COUNT:
+		value = nameUsage.getDescendantCount();
+		break;
+	    default:
+		// nothing to do
+		break;
+	    }
+	    if (value != null)
+		value = value.toString();
+	    */
+	    value = getValueAt(nameUsage, attribute);
+	}
+
+	Component component =  super.getTableCellRendererComponent(table, value, isSelected,
+								   hasFocus, row, column);
+	if (nameUsage != null) {
+	    if (isSynonym) {
+		 component.setForeground(disabledForeground);
+	    }
+	    else {
+		component.setForeground(enabledForeground);
+	    }
+	}
+	    
+	return component;
+    }
+
+    public static Object getValueAt(NameUsage<?> nameUsage, NameUsageAttribute attribute)
+    {
+	Object value = null;
+	if (nameUsage != null) {
 	    switch (attribute) {
 	    case RANK:
 		value = nameUsage.getRank();
@@ -159,19 +217,15 @@ public class NameTableCellRenderer
 	    if (value != null)
 		value = value.toString();
 	}
-
-	Component component =  super.getTableCellRendererComponent(table, value, isSelected,
-								   hasFocus, row, column);
-	if (nameUsage != null) {
-	    if (isSynonym) {
-		 component.setForeground(disabledForeground);
-	    }
-	    else {
-		component.setForeground(enabledForeground);
-	    }
-	}
-	    
-	return component;
+	return value;
     }
+
+    static private NameUsageAttribute[] attributes = NameUsageAttribute.values();
+
+    public static Object getValueAt(NameUsage<?> nameUsage, int attribute)
+    {
+	return getValueAt(nameUsage, attributes[attribute]);
+    }
+
 
 }

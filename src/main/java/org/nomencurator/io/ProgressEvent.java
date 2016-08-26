@@ -24,11 +24,12 @@ package org.nomencurator.io;
 import java.util.EventObject;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * {@code ProgressEvent} provides an event to inform the progress of a process.
  *
- * @version 	29 June 2016
+ * @version 	27 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class ProgressEvent
@@ -36,17 +37,17 @@ public class ProgressEvent
 {
     private static final long serialVersionUID = -2644906561014363108L;
 
-    @Getter
-    protected int minimum;
+    /** Minimum value of progress, typically zero */
+    @Getter @Setter protected int minimum;
 
-    @Getter
-    protected int maximum;
+    /** Maximum value of progress, or -1 if unlimited */
+    @Getter @Setter protected int maximum;
 
-    @Getter
-    protected int current;
+    /** Current value of progress */
+    @Getter @Setter protected int current;
 
-    @Getter
-    protected String message;
+    /** Optional message of the event */
+    @Getter @Setter protected String message;
 
     public ProgressEvent(Object source)
     {
@@ -56,10 +57,10 @@ public class ProgressEvent
     public ProgressEvent(Object source, int minimum, int maximum, int current, String message)
 {
 	super(source);
-	this.minimum = minimum;
-	this.maximum = maximum;
-	this.current = current;
-	this.message = message;
+	setMinimum(minimum);
+	setMaximum(maximum);
+	setCurrent(current);
+	setMessage(message);
     }
 
 }

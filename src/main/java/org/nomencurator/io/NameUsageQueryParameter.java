@@ -35,7 +35,7 @@ import lombok.Setter;
 /**
  * {@code NameUsageQueryParameter} provides query parameter container.
  *
- * @version 	15 July 2016
+ * @version 	11 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameUsageQueryParameter <T extends NameUsage<?>>
@@ -68,7 +68,6 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
     /** depth of lower {@code NameUsage}s to retrieve in {@code Rank}*/
     protected Rank lower;
 
-
     /** the option to include synonyms */
     @Getter @Setter protected boolean includeSynonyms;
 
@@ -81,6 +80,10 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
     /** the locale to filter names */
     @Getter @Setter protected Locale locale;
 
+    @Getter
+    @Setter
+    /** Determines to make rough set query to or to create a {@code NameTreeModel} */
+    protected boolean roughSet;
 
     public boolean equals(Object object)
     {
@@ -102,6 +105,7 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
 	    && Objects.equals(this.includeSynonyms, that.includeSynonyms)
 	    && Objects.equals(this.includeVernaculars, that.includeVernaculars)
 	    && Objects.equals(this.locale, that.locale)
+	    && Objects.equals(this.roughSet, that.roughSet)
 	    ;
     }
 
@@ -116,19 +120,20 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
 			    includeBasionyms,
 			    includeSynonyms,
 			    includeVernaculars,
-			    locale
+			    locale,
+			    roughSet
 			    );
     }
 
     public NameUsageQueryParameter() {
-	this(null, null, 0, 0, null, null, Boolean.FALSE, MatchingMode.EXACT, QueryMode.OBJECTS, false, false, false, null);
+	this(null, null, 0, 0, null, null, Boolean.FALSE, MatchingMode.EXACT, QueryMode.OBJECTS, false, false, false, null, false);
     }
 
-    public NameUsageQueryParameter(NameUsage<T> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale) {
-	this(filter, 0, 0, synchronous, matchingMode, queryMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
+    public NameUsageQueryParameter(NameUsage<T> filter, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale, boolean roughSet) {
+	this(filter, 0, 0, synchronous, matchingMode, queryMode, includeBasionyms, includeSynonyms, includeVernaculars, locale, roughSet);
     }
 
-    public NameUsageQueryParameter(NameUsage<T> filter, int height, int depth, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean inlcudeBasionyms, boolean inlcudeSynonyms, boolean includeVernaculars, Locale locale) {
+    public NameUsageQueryParameter(NameUsage<T> filter, int height, int depth, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean inlcudeBasionyms, boolean inlcudeSynonyms, boolean includeVernaculars, Locale locale, boolean roughtSet) {
 	super(filter, synchronous, matchingMode, queryMode);
 	if(filter != null) {
 	    setLiteral(filter.getLiteral());
@@ -140,6 +145,7 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
 	setIncludeSynonyms(includeSynonyms);
 	setIncludeVernaculars(includeVernaculars);
 	setLocale(locale);
+	setRoughSet(roughSet);
     }
 
     public NameUsageQueryParameter(String literal, Rank rank) {
@@ -147,10 +153,10 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
     }
 
     public NameUsageQueryParameter(String literal, Rank rank, MatchingMode matchingMode) {
-	this(literal, rank, 0, 0, null, null, Boolean.FALSE, matchingMode, QueryMode.NAMEUSAGES, false, false, false, null);
+	this(literal, rank, 0, 0, null, null, Boolean.FALSE, matchingMode, QueryMode.NAMEUSAGES, false, false, false, null, false);
     }
 
-    public NameUsageQueryParameter(String literal, Rank rank, int height, int depth, String persistentID, String localKey, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean inlcudeBasionyms, boolean inlcudeSynonyms, boolean includeVernaculars, Locale locale) {
+    public NameUsageQueryParameter(String literal, Rank rank, int height, int depth, String persistentID, String localKey, Boolean synchronous, MatchingMode matchingMode, QueryMode queryMode, boolean inlcudeBasionyms, boolean inlcudeSynonyms, boolean includeVernaculars, Locale locale, boolean roughSet) {
 	super(persistentID, localKey, synchronous, matchingMode, queryMode);
 	setLiteral(literal);
 	setRank(rank);
@@ -160,6 +166,7 @@ public class NameUsageQueryParameter <T extends NameUsage<?>>
 	setIncludeSynonyms(includeSynonyms);
 	setIncludeVernaculars(includeVernaculars);
 	setLocale(locale);
+	setRoughSet(roughSet);
     }
 
     public String getLiteral()
