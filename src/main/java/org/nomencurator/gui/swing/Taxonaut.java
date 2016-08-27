@@ -163,7 +163,7 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 Aug. 2016
+ * @version 	28 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
@@ -1555,7 +1555,7 @@ public class Taxonaut<T extends NameUsage<?>>
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
 
-	JFrame frame = new JFrame("Taxonaut version 3.0");
+	JFrame frame = new JFrame("Taxonaut version " + version);
 	//Taxonaut<NameUsage<?>> taxonaut = new Taxonaut<NameUsage<?>>();
 	Taxonaut<NubNameUsage> taxonaut = new Taxonaut<>();
 	taxonaut.setNameUsageExchanger(new NubExchanger());
