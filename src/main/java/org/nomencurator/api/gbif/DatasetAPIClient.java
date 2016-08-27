@@ -51,10 +51,11 @@ import javax.annotation.Nullable;
 
 import org.gbif.api.jackson.LicenseSerde;
 
-import org.gbif.ws.mixin.DatasetMixin;
+import org.gbif.ws.mixin.LicenseMixin;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
+
 import org.gbif.api.model.registry.Comment;
 import org.gbif.api.model.registry.Contact;
 import org.gbif.api.model.registry.Dataset;
@@ -65,7 +66,12 @@ import org.gbif.api.model.registry.Metadata;
 import org.gbif.api.model.registry.Network;
 import org.gbif.api.model.registry.Tag;
 
+import org.gbif.api.model.registry.eml.geospatial.BoundingBox;
+import org.gbif.api.model.registry.eml.geospatial.GeospatialCoverage;
+
 import org.gbif.api.service.registry.DatasetService;
+
+
 
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.DatasetType;
@@ -73,13 +79,16 @@ import org.gbif.api.vocabulary.License;
 import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.api.vocabulary.MetadataType;
 
+import org.nomencurator.api.gbif.jackson.BoundingBoxMixIn;
+
 import lombok.Getter;
 
 /**
- * <CODE>DatasetAPIClient</CODE> provides a set of functions to use GBIF DatasetAPI.
+ * <CODE>DatasetAPIClient</CODE> provides a set of functions to use GBIF Dataset API.
  * Only GET methods are funtional.
+ *
  * @author Nozomi "James" Ytow
- * @vesion 19 Aug. 2016
+ * @vesion 28 Aug. 2016
  */
 public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 
@@ -95,7 +104,8 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
     {
 	super();
 	setDatasetURLEpithet("dataset");
-	mapper.getDeserializationConfig().addMixInAnnotations(Dataset.class, DatasetMixin.class);
+	mapper.getDeserializationConfig().addMixInAnnotations(Dataset.class, LicenseMixin.class);
+	mapper.getDeserializationConfig().addMixInAnnotations(GeospatialCoverage.class, BoundingBoxMixIn.class);
     }
 
     /*
@@ -159,8 +169,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<Dataset>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 
 	return response;
@@ -218,8 +232,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<PagingResponse<Dataset>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -265,8 +283,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<PagingResponse<Dataset>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -322,8 +344,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<PagingResponse<Dataset>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -372,8 +398,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<PagingResponse<Dataset>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -458,8 +488,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<List<MachineTag>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -488,8 +522,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<List<Tag>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -509,8 +547,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<List<Comment>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -529,8 +571,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<List<Identifier>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -549,8 +595,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<List<Endpoint>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
@@ -569,8 +619,12 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 					new TypeReference<List<Contact>>() {});
 	}
 	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
 	}
 	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
 	}
 	return response;
     }
