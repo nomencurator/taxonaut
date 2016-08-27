@@ -259,7 +259,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.0";
+    private static String version = "3.1";
 
     @Getter
     private static String softwareName = "Taxonaut";
