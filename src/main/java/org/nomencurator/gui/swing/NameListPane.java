@@ -95,7 +95,7 @@ import lombok.Setter;
  * {@code NameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	27 Aug. 2016
+ * @version 	28 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 class NameListPane<T extends NameUsage<?>>
@@ -236,14 +236,17 @@ class NameListPane<T extends NameUsage<?>>
 	panel.add(heightLabel);
 	panel.add(heightComboBox);
 	panel.add(higherRank);
-	panel.add(new JSeparator(SwingConstants.VERTICAL));
+	//panel.add(new JSeparator(SwingConstants.VERTICAL));
 	panel.add(depthLabel);
 	panel.add(depthComboBox);
 	panel.add(lowerRank);
 	panel.add(depthHeightSeparator);
+
+	/*
 	panel.add(new JSeparator(SwingConstants.VERTICAL));
 	panel.add(roughSet);
 	panel.add(roughSetLabel);
+	*/
 	/*
 	panel.add(synonym);
 	panel.add(synonymLabel);
@@ -254,7 +257,7 @@ class NameListPane<T extends NameUsage<?>>
 	panel.add(pivotLabel);
 	panel.add(new JSeparator(SwingConstants.VERTICAL));
 	*/
-	panel.add(new JSeparator(SwingConstants.VERTICAL));
+	//panel.add(new JSeparator(SwingConstants.VERTICAL));
 	panel.add(appendButton);
 	panel.add(compareButton);
 
