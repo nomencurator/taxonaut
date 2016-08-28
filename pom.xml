@@ -4,11 +4,11 @@
   <groupId>org.nomencurator</groupId>
   <artifactId>taxonaut</artifactId>
   <packaging>jar</packaging>
-  <version>3.1.1</version>
+  <version>3.1.2</version>
   <name>taxonaut</name>
   <url>http://nomencurator.org</url>
 
-<!-- last updated on 28 Aug. 2016-->
+<!-- last updated on 29 Aug. 2016-->
 
   <properties>
     <maven.test.skip>true</maven.test.skip>

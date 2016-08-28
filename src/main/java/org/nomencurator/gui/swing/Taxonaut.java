@@ -259,7 +259,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.1.1";
+    private static String version = "3.1.2";
 
     @Getter
     private static String softwareName = "Taxonaut";
@@ -1555,7 +1555,7 @@ public class Taxonaut<T extends NameUsage<?>>
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
 
-	JFrame frame = new JFrame("Taxonaut version " + version);
+	JFrame frame = new JFrame("Taxonaut");
 	//Taxonaut<NameUsage<?>> taxonaut = new Taxonaut<NameUsage<?>>();
 	Taxonaut<NubNameUsage> taxonaut = new Taxonaut<>();
 	taxonaut.setNameUsageExchanger(new NubExchanger());

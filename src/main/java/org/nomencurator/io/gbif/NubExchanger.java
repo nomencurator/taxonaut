@@ -89,7 +89,7 @@ import lombok.Getter;
 /**
  * {@code NubExchanger} provides a GBIF CheklistBank NameUsage exchagner with cache.
  *
- * @version	27 Aug. 2016
+ * @version	29 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubExchanger
@@ -745,7 +745,13 @@ public class NubExchanger
     protected Collection<String> getParsedCanonicalNames(String name, Locale locale)
     {
 	List<ParsedName> parsed = dataSource.parse(name);
-	if (parsed == null || parsed.size() == 0 || (parsed.size() == 1 && parsed.get(0).getCanonicalName().length() == 0)) {
+	if (parsed == null
+	    || parsed.size() == 0
+	    || (parsed.size() == 1
+		&& (parsed.get(0).getCanonicalName() == null
+		    || parsed.get(0).getCanonicalName().length() == 0)
+		)
+	    ) {
 	    if (parsed != null) 
 		parsed = new ArrayList<ParsedName>();
 	    
@@ -779,7 +785,8 @@ public class NubExchanger
 		}
 		if (!canonicalNames.isEmpty()) {
 		    for (String canonicalName : canonicalNames) {
-			parsed.addAll(dataSource.parse(canonicalName));
+			if (canonicalName != null)
+			    parsed.addAll(dataSource.parse(canonicalName));
 		    }
 		}
 	    }
