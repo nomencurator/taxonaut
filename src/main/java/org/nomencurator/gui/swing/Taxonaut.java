@@ -163,7 +163,7 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	28 Aug. 2016
+ * @version 	30 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
@@ -259,7 +259,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.1.2";
+    private static String version = "3.1.3";
 
     @Getter
     private static String softwareName = "Taxonaut";
@@ -390,6 +390,8 @@ public class Taxonaut<T extends NameUsage<?>>
 	queryTabs = createTabbedPane();
 	queryTabs.add(nameUsageQueryPanel);
 	queryTabs.add(localQueryPanel);
+	queryTabs.setEnabledAt(queryTabs.indexOfComponent(localQueryPanel), false);
+	localQueryPanel.setEnabled(false);
 	components.add(queryTabs);
 
 	nameListPane = new NameListPane<T>();
@@ -928,20 +930,26 @@ public class Taxonaut<T extends NameUsage<?>>
 	{
 	    try {
 		List<NameTreeTable<T>> tables = compare(get());
-		for (NameTreeTable<T> nameTreeTable : tables) {
-		    NameTreeTableModel nameTreeTableModel = (NameTreeTableModel)nameTreeTable.getModel();
-		    List<Integer> rows = new ArrayList<Integer>();
-		    for (String literal : nameLiterals) {
-			Collection<Integer> selections = nameTreeTableModel.getRows(literal);
-			if(selections != null && selections.size() > 0) {
-			    rows.addAll(selections);
+		// AlignerTree is shared by NameTreeTables
+		alignerTree = tables.get(0).getAlignerTree();
+		if (tables != null && tables.size() > 0) {
+		    for (NameTreeTable<T> nameTreeTable : tables) {
+			NameTreeTableModel nameTreeTableModel = (NameTreeTableModel)nameTreeTable.getModel();
+			List<Integer> rows = new ArrayList<Integer>();
+			for (String literal : nameLiterals) {
+			    Collection<Integer> selections = nameTreeTableModel.getRows(literal);
+			    if(selections != null && selections.size() > 0) {
+				rows.addAll(selections);
+			    }
+			}
+			if (rows.size() > 0) {
+			    for (Integer row : rows) {
+				nameTreeTable.addRowSelectionInterval(row, row);
+			    }
 			}
 		    }
-		    if (rows.size() > 0) {
-			for (Integer row : rows) {
-			    nameTreeTable.addRowSelectionInterval(row, row);
-			}
-		    }
+		    localQueryPanel.setEnabled(true);
+		    queryTabs.setEnabledAt(queryTabs.indexOfComponent(localQueryPanel), true);
 		}
 	    }
 	    catch (InterruptedException e) {

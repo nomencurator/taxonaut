@@ -60,7 +60,7 @@ import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
 /**
  * {@code TableCellRenderer} to render a {@code NameTree}
  *
- * @version 	29 June 2016
+ * @version 	30 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class TreeHeaderRenderer
@@ -276,6 +276,14 @@ public class TreeHeaderRenderer
     {
 	if(tree instanceof Alignable)
 	    return ((Alignable)tree).getAligner();
+
+	return null;
+    }
+
+    public AlignerTree getAlignerTree()
+    {
+	if(tree instanceof AlignerTree)
+	    return (AlignerTree)tree;
 
 	return null;
     }
