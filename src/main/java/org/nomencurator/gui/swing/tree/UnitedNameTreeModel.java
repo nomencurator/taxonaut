@@ -331,7 +331,7 @@ import org.nomencurator.util.StackTracer;
  * </OL>
  * <P>
  *
- * @version 	27 Aug. 2016
+ * @version 	30 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UnitedNameTreeModel
@@ -3218,7 +3218,6 @@ public class UnitedNameTreeModel
        if(literal == null) {
            return null;
        }
-       literal = literal.toLowerCase();
        if(!literal.startsWith("*") && !literal.startsWith("%") &&
           !literal.endsWith("*") && !literal.endsWith("%")) {
 	   Map<String, Set<UnitedNameTreeNode>> map = names.get(literal);

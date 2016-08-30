@@ -113,7 +113,7 @@ import lombok.Setter;
 /**
  * {@code JTable} of {@code NameUsageNode}s
  *
- * @version 	03 July 2016
+ * @version 	30 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeTable<T extends NameUsage<?>>
@@ -185,16 +185,20 @@ public class NameTreeTable<T extends NameUsage<?>>
 	}
 	//setHeaderRenderer(getHeaderColumn());
 
-	/*
-	AlignerTree aligner = getAlignerTree();
-	if(aligner == null)
-	    return;
-	aligner.addTreeSelectionListener(this);
-	e = getAlignableTrees();
-	while(e.hasMoreElements()) {
-	    aligner.addTree((NameTree)e.nextElement());
+	AlignerTree alignerTree = getAlignerTree();
+	if(alignerTree != null) {
+	    List<NameTree> trees= getAlignableTrees();
+	    Aligner aligner = alignerTree.getAligner();
+	    for (NameTree tree : trees) {
+		alignerTree.addTree(tree);
+		tree.setAligner(aligner);
+	    }
+	    // or...
+	    //setAlignerTree(alignerTree);
+	    alignerTree.addTreeSelectionListener(this);
 	}
-	
+
+	/*
 	setAligner(aligner);
 	TableModel rowMapper = getModel();
 	if(rowMapper != null &&
@@ -208,16 +212,8 @@ public class NameTreeTable<T extends NameUsage<?>>
 	setSelectAndScroll(true);
 	*/
 	
-	TableColumn a = getColumnModel().getColumn(0);
-	AlignerTree atree = (AlignerTree)((TreeHeaderRenderer)a.getHeaderRenderer()).getTree();
-	List<NameTree> trees = getAlignableTrees();
-	for(NameTree tree : trees)  {
-	    atree.addTree(tree);
-	    tree.setAligner(atree);
-	}
 	/*
 	Aligner aligner = ((AlignerTree)((TreeHeaderRenderer)a.getHeaderRenderer()).getTree()).getAligner();
-	setAligner(aligner);
 	*/
 
 	TableModel rowMapper = getModel();
@@ -226,10 +222,10 @@ public class NameTreeTable<T extends NameUsage<?>>
 	    SynchronizedListSelectionModel selector = 
 		(SynchronizedListSelectionModel)getSelectionModel();
 	    selector.setRowMapper((RowMapper)rowMapper);
-	    selector.setTree(atree);
+	    selector.setTree(alignerTree);
 	    selector.setTable(this);
 	    SynchronizedTreeSelectionModel treeSelector =
-		(SynchronizedTreeSelectionModel)atree.getSelectionModel();
+		(SynchronizedTreeSelectionModel)alignerTree.getSelectionModel();
 	    treeSelector.addTreeSelectionListener(selector);
 	    treeSelector.setTable(this);
 	    selector.setTreeSelectionModel(treeSelector);
@@ -252,14 +248,23 @@ public class NameTreeTable<T extends NameUsage<?>>
 
     public void setModel(TableModel dataModel)
     {
+	AlignerTree alignerTree = getAlignerTree();
+	if (alignerTree != null)
+	    alignerTree.removeTreeSelectionListener(this);
+
 	if(this.dataModel != null &&
 	   this.dataModel instanceof NameTreeTableModel)
 	    ((NameTreeTableModel)dataModel).removeNameTreeTableModelListener(this);
 
+	super.setModel(dataModel);
+
 	if(dataModel instanceof NameTreeTableModel) {
 	    ((NameTreeTableModel)dataModel).addNameTreeTableModelListener(this);
 	}
-	super.setModel(dataModel);
+
+	alignerTree = getAlignerTree();
+	if (alignerTree != null)
+	    alignerTree.addTreeSelectionListener(this);
     }
 
 
@@ -549,9 +554,29 @@ public class NameTreeTable<T extends NameUsage<?>>
 	return lineStyle;
     }
 
-    public void setAligner(AlignerTree aligner)
+    public void setAligner(AlignerTree alignerTree)
     {
-	setAligner(aligner.getAligner());
+	setAlignerTree(alignerTree);
+    }
+
+    public void setAlignerTree(AlignerTree alignerTree)
+    {
+	if(this.aligner == aligner)
+	    return;
+
+	synchronized(this.aligner) {
+	    if (this.aligner != null)
+		this.aligner.removeTreeSelectionListener(this);
+
+	    setAligner(alignerTree.getAligner());
+
+	    getAlignableTrees().forEach(tree -> alignerTree.addTree(tree));
+
+	    this.aligner = alignerTree;
+	    if (this.aligner != null) {
+		this.aligner.addTreeSelectionListener(this);
+	    }
+	}
     }
 
     public void setAligner(Aligner aligner)
@@ -559,6 +584,8 @@ public class NameTreeTable<T extends NameUsage<?>>
 	if(this.aligner == aligner)
 	    return;
 
+	getAlignableTrees().forEach(tree -> tree.setAligner(aligner));
+	/*
 	Enumeration<TableColumn> columns = getColumnModel().getColumns();
 	while(columns.hasMoreElements()) {
 	    TreeHeaderRenderer renderer = 
@@ -574,6 +601,7 @@ public class NameTreeTable<T extends NameUsage<?>>
 	    this.aligner = (AlignerTree)aligner;
 	else
 	    this.aligner = null; // new AlignerTree(); 
+	*/
     }
 
     //public AlignerTree getAligner()
@@ -623,8 +651,9 @@ public class NameTreeTable<T extends NameUsage<?>>
 		continue;
 
 	    JTree tree = ((TreeHeaderRenderer)r).getTree();
-	    if(tree != null && (tree instanceof AlignerTree))
+	    if(tree != null && (tree instanceof AlignerTree)) {
 		return (AlignerTree)tree;
+	    }
 	}
 
 	return null;
@@ -869,7 +898,7 @@ public class NameTreeTable<T extends NameUsage<?>>
 
 	List<NamedNode<?>> nodes = model.getNodesForLiteral(ascribedName, rank, authors, year);
 	String result = 
-	    atree.getNames(ascribedName, rank, authors, year, queryType, Collections.enumeration(nodes));
+	    atree.getNames(ascribedName, rank, authors, year, queryType, nodes);
 	nodes.clear();
 
 	/*
@@ -995,7 +1024,7 @@ public class NameTreeTable<T extends NameUsage<?>>
 	    AlignerTree atree = 
 		(AlignerTree)((TreeHeaderRenderer)table.getColumnModel().getColumn(0).getHeaderRenderer()).getTree();
 	    String result = 
-		atree.getNames(name, rank, null, null, MatchingMode.EXACT, Collections.enumeration(nodes));
+		atree.getNames(name, rank, null, null, MatchingMode.EXACT, nodes);
 	    nodes.clear();
 	    
 	    /*

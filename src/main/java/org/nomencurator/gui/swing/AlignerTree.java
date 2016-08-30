@@ -125,7 +125,7 @@ import lombok.Setter;
 /**
  * {@code AlingerTree} provides node alignment of nodes
  *
- * @version 	08 July 2016
+ * @version 	30 Aug. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class AlignerTree
@@ -780,23 +780,15 @@ abstract class GenericAlignerTree<T extends NameUsage<?>>
 	// String rankName = (rank == null)? null : rank.getName();
 	// FIXME 20141121 to remove Collections.enumeration() call
 	return getNames(ascribedName, rank, authors, year, queryType,
-			Collections.enumeration(((UnitedNameTreeModel)getModel()).getNodesForLiteral(ascribedName.toLowerCase(), rank)));
+			((UnitedNameTreeModel)getModel()).getNodesForLiteral(ascribedName, rank));
     }
 
     public String getNames(String ascribedName, Rank rank, String authors, String year, MatchingMode queryType,
-			   Enumeration<NamedNode<?>> e)
+			   List<NamedNode<?>> nodes)
     {
 	Object[] arguments = new Object[] {rank, ascribedName};
 
-	if(e == null)
-	    return messages.getMessage(0, arguments);
-
-	List<NamedNode<?>> nodes = new ArrayList<NamedNode<?>>();
-	while(e.hasMoreElements()) {
-	    nodes.add(e.nextElement());
-	}
-
-	if(nodes.isEmpty())
+	if (nodes == null || nodes.isEmpty())
 	    return messages.getMessage(0, arguments);
 
 	TreePath[] paths = new TreePath[nodes.size()];
@@ -938,5 +930,4 @@ abstract class GenericAlignerTree<T extends NameUsage<?>>
     {
 	super.addTreeExpansionListener(listener);
     }
-
 }
