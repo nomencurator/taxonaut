@@ -197,7 +197,7 @@ import org.nomencurator.util.StackTracer;
  * <DL COMPACT>
  * <DT>STEP 0
  * <DD>Preparation of a TreeModel in construction.<P>
- * Provide a <CODE>TreeModel</CODE> having a dummy root node with
+ * Provide a {@link TreeModel} having a dummy root node with
  * name of zero length litreal.
  * Prepare three maps, 
  * <OL>
@@ -331,16 +331,13 @@ import org.nomencurator.util.StackTracer;
  * </OL>
  * <P>
  *
- * @version 	30 Aug. 2016
+ * @version 	12 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UnitedNameTreeModel
     extends DefaultTreeModel
     implements TreeModelListener,
-	       NodeMapper //,
-	       //FIXME!
-	       //	       ObjectExchanger<NamedNode>
-	       // NameUsageExchanger<NameUsage>
+	       NodeMapper
 {
     private static final long serialVersionUID = -5470307104391635186L;
 
@@ -364,12 +361,11 @@ public class UnitedNameTreeModel
 
     public static String ROOT_NAME = "";
 
-
     /**
-     * {@code Map} of {@code Map}s of {@code Set} of unified {@code TreeNode}s,
+     * {@link Map} of {@link Map}s of {@link Set} of unified {@link TreeNode}s,
      * indexed by parental name literal without rank,
-     * indexed by unranked names appeard in {@code NameTreeModel}s
-     * added to this {@code TreeModel}.
+     * indexed by unranked names appeard in {@link NameTreeModel}s
+     * added to this {@link TreeModel}.
      * It provides a mapping from each name to its usages
      * distinguished by their parental name.
      */
@@ -386,12 +382,10 @@ public class UnitedNameTreeModel
     protected Map<String, Set<NamedNode<?>>> backwardMatches;
 
     /**
-     * <CODE>Map</CODE> from
-     * each <CODE>NameTreeNode</CODE> in <CODE>NameTree</CODE>
-     * to a <CODE>UnitedNameTreeNode</CODE> in this
-     * <CODE>UnitedNameTreeModel</CODE>.
+     * {@link Map} from each {@link NameTreeNode} in a {@link NameTree}
+     * to a {@link UnitedNameTreeNode| in this {@link UnitedNameTreeModel}.
      */
-    protected Map<TreeNode, TreeNode> rankedNodes;
+    protected Map<TreeNode, TreeNode> nodeToUnitedNode;
 
     protected Map<UnitedNameTreeNode, Set<NameTreeNode>> unitedNodeToNodeSet;
     protected Map<UnitedNameTreeNode, Map<TreeModel, NameTreeNode>> unifiedByTree;
@@ -477,7 +471,7 @@ public class UnitedNameTreeModel
 	names = new HashMap<String, Map<String, Set<UnitedNameTreeNode>>>();
 	forwardMatches = new HashMap<String, Set<NamedNode<?>>>();
 	backwardMatches = new HashMap<String, Set<NamedNode<?>>>();
-	rankedNodes = new HashMap<TreeNode, TreeNode>();
+	nodeToUnitedNode = new HashMap<TreeNode, TreeNode>();
 	unitedNodeToNodeSet = new HashMap<UnitedNameTreeNode, Set<NameTreeNode>>();
 	unifiedByTree = 
 	    new HashMap<UnitedNameTreeNode, Map<TreeModel, NameTreeNode>>();
@@ -492,7 +486,7 @@ public class UnitedNameTreeModel
 
 	clearCollectionMap(forwardMatches);
 	clearCollectionMap(backwardMatches);
-	rankedNodes.clear();
+	nodeToUnitedNode.clear();
 	clearCollectionMap(unitedNodeToNodeSet);
 	clearMetaMap(unifiedByTree);
 	clearCollectionMap(unitedChildrens);
@@ -545,19 +539,19 @@ public class UnitedNameTreeModel
     }
 
     /**
-     * Sets a mapping entry from {@code key} to {@code node}.
-     * It returns a {@code TreeNode} assigned to the {@code key} previously,
+     * Sets a mapping entry from {@link key} to {@link node}.
+     * It returns a {@link TreeNode} assigned to the {@link key} previously,
      * or null if nothing is assigned.
      *
-     * @param key {@code TreeNode} to be mapped to{@code node}.
-     * @param node {@code TreeNode} to be assigned to the {@code key}.
+     * @param key {@link TreeNode} to be mapped to{@link node}.
+     * @param node {@link TreeNode} to be assigned to the {@link key}.
      *
-     * @return {@code TreeNode} previously assigned to the {@code key}, or null
-     * if the is no mapping for the {@code key}.
+     * @return {@link TreeNode} previously assigned to the {@link key}, or null
+     * if the is no mapping for the {@link key}.
      */
     protected TreeNode setNodeFor(TreeNode key, TreeNode node)
     {
-	return rankedNodes.put(key, node);
+	return nodeToUnitedNode.put(key, node);
     }
 
 
@@ -577,7 +571,7 @@ public class UnitedNameTreeModel
      */
     public TreeNode getNodeFor(TreeNode node)
     {
-	return rankedNodes.get(node);
+	return nodeToUnitedNode.get(node);
     }
 
     /**
@@ -631,7 +625,7 @@ public class UnitedNameTreeModel
     {
 	TreeNode previous = null;
 	if(node != null && node instanceof UnitedNameTreeNode) {
-	    previous = rankedNodes.put(key, node);
+	    previous = nodeToUnitedNode.put(key, node);
 	    UnitedNameTreeNode unified = (UnitedNameTreeNode)node;
 	    TreeNode parent = key.getParent();
 	    if  (parent != null &&  parent instanceof NamedNode)
@@ -844,10 +838,10 @@ public class UnitedNameTreeModel
     }
 
     /**
-     * Copy given {@code tree} structure to this {@coce UnitedNameTreeModel}.
-     * It is expected to be called for the first {@code TreeModel}.
+     * Copy given {@link tree} structure to this {@coce UnitedNameTreeModel}.
+     * It is expected to be called for the first {@link TreeModel}.
      *
-     * @param tree the first {@code TreeModel} to be integrated
+     * @param tree the first {@link TreeModel} to be integrated
      */
     protected synchronized void copy(TreeModel tree, NameTreeNode focus)
     {
@@ -975,11 +969,11 @@ public class UnitedNameTreeModel
     }
 
     /**
-     * Reduces duplication of names just under the {@code parentNode},
-     * i.e. multiple child {@code NameTreeNode}s of the {@code parentNode}
+     * Reduces duplication of names just under the {@link parentNode},
+     * i.e. multiple child {@link NameTreeNode}s of the {@link parentNode}
      * sharing the same name literal if exist.  Redundant child nodes unchosen
-     * are removed from child node list of the {@code parentNode} and stored
-     * in {@code skippers} if given.  It returns mapping from each primary
+     * are removed from child node list of the {@link parentNode} and stored
+     * in {@link skippers} if given.  It returns mapping from each primary
      * child node to a list of subsidiary nodes of the same name literal.
      *
      * @param parentNode of which child nodes' redundancey to be reduced.
@@ -1204,7 +1198,7 @@ public class UnitedNameTreeModel
 	    // Since it is breadth-first traverse,  the node udner process
 	    // may be mapped to an UnifedNameTreeNode as
 	    // a child node in one of previous traversal steps.  Check it at first.
-	    UnitedNameTreeNode unitedNode =	(UnitedNameTreeNode)rankedNodes.get(node);
+	    UnitedNameTreeNode unitedNode =	(UnitedNameTreeNode)nodeToUnitedNode.get(node);
 
 	    // It is not yet mapped to UnitedNameTreeNode.
 	    // It may be a new name, or existing name but different higher name.
@@ -1805,7 +1799,7 @@ public class UnitedNameTreeModel
 	if(parentNode != null) { // the node is not the root
 	    parentName = parentNode.getLiteral();
 	    parentLiteral = parentNode.getLiteral();
-	    TreeNode rankedNode = rankedNodes.get(parentNode);
+	    TreeNode rankedNode = nodeToUnitedNode.get(parentNode);
 	    if(rankedNode instanceof UnitedNameTreeNode) {
 		unitedParent= (UnitedNameTreeNode)rankedNode;
 	    }
@@ -1847,7 +1841,7 @@ public class UnitedNameTreeModel
 		//we may have multiple views... 
 		unitedNode = new UnitedNameTreeNode(rankedName);
 		unitedNode.setLiteral(literal);
-		unitedParent = (UnitedNameTreeNode)rankedNodes.get(parentNode);
+		unitedParent = (UnitedNameTreeNode)nodeToUnitedNode.get(parentNode);
 		if(unitedParent != null) //is it right?
 		    insertNodeInto(unitedNode, unitedParent, unitedParent.getChildCount());
 	    }  // end of STEP 4
@@ -1994,7 +1988,7 @@ public class UnitedNameTreeModel
 	String literal = node.getLiteral();
 
 	UnitedNameTreeNode unitedNode = null;
-	TreeNode mappedNode = rankedNodes.get(node);
+	TreeNode mappedNode = nodeToUnitedNode.get(node);
 	if (mappedNode != null && mappedNode instanceof UnitedNameTreeNode) {
 	    unitedNode = (UnitedNameTreeNode)mappedNode;
 	}
@@ -2463,12 +2457,12 @@ public class UnitedNameTreeModel
 
 	Enumeration<?> children = null;
 
-	UnitedNameTreeNode unifiedParent = (UnitedNameTreeNode)rankedNodes.get(node);
+	UnitedNameTreeNode unifiedParent = (UnitedNameTreeNode)nodeToUnitedNode.get(node);
 	if(unifiedParent == null) {
 	    // the node is unmapped (yet)
 	    NameTreeNode parentNode = (NameTreeNode)node.getParent();
 	    if(parentNode != null) {
-		unifiedParent = (UnitedNameTreeNode)rankedNodes.get(parentNode);
+		unifiedParent = (UnitedNameTreeNode)nodeToUnitedNode.get(parentNode);
 	    }
 	    else {
 		unifiedParent = (UnitedNameTreeNode)getRoot();
@@ -2638,7 +2632,7 @@ public class UnitedNameTreeModel
 		    if(ancestors.size() == 1) {
 			ancestor = ancestors.iterator().next();
 			UnitedNameTreeNode mappedNode = 
-			    (UnitedNameTreeNode)rankedNodes.get(node);
+			    (UnitedNameTreeNode)nodeToUnitedNode.get(node);
 			if(mappedNode != null && ancestor != mappedNode) {
 			    if(mappedNode.getLiteral().equals(ancestor.getLiteral()) ||
 			       mappedNode.getLiteral().equals(ancestor.getLiteral())) {
@@ -2707,13 +2701,13 @@ public class UnitedNameTreeModel
     }
 
     /**
-     * Creates a {@code UnitedNameTreeNode} for given {@code node}
-     * and map the {@code node} in the {@code tree} to it.
+     * Creates a {@link UnitedNameTreeNode} for given {@link node}
+     * and map the {@link node} in the {@link tree} to it.
      * It is a convinience method.
      *
-     * @param tree covering given {@code node}
+     * @param tree covering given {@link node}
      * @param node NameTreeNode to be mapped
-     * @return UnitedNameTreeNode to whihc the {@code node} is mapped
+     * @return UnitedNameTreeNode to whihc the {@link node} is mapped
      */
     protected UnitedNameTreeNode mapNode(TreeModel tree,
 					  NameTreeNode node)
@@ -2724,11 +2718,11 @@ public class UnitedNameTreeModel
     }
 
     /**
-     * Maps the {@code node} in the {@code tree} to {@code UnitedNameTreeNode},
+     * Maps the {@link node} in the {@link tree} to {@link UnitedNameTreeNode},
      *
-     * @param tree covering given {@code node}
+     * @param tree covering given {@link node}
      * @param node NameTreeNode to be mapped
-     * @param unitedNode to whihc the {@code node} is mapped
+     * @param unitedNode to whihc the {@link node} is mapped
      */
     protected void mapNode(TreeModel tree,
 			   NameTreeNode node,
@@ -2770,7 +2764,7 @@ public class UnitedNameTreeModel
 	    }
 	    nodeSet.remove(node);
 	}
-	rankedNodes.remove(node);
+	nodeToUnitedNode.remove(node);
     }
 
 
@@ -2806,7 +2800,7 @@ public class UnitedNameTreeModel
 	    }
 	    node = (NameTreeNode)child;
 	    UnitedNameTreeNode unitedNode = 
-		(UnitedNameTreeNode)rankedNodes.get(node);
+		(UnitedNameTreeNode)nodeToUnitedNode.get(node);
 
 	    unmapNode(tree, node, unitedNode);
 	}

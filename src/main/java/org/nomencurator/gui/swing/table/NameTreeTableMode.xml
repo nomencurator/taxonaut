@@ -19,13 +19,21 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    @version: 14 Apr. 2016
+    @version: 12 Sep. 2016
   </comment>
+<!--
   <entry key="ASSIGNMENTS">Assignments</entry>
   <entry key="COMMONS">Commons</entry>
   <entry key="MISSINGS">Missings</entry>
   <entry key="DIFFERENCE">Difference</entry>
   <entry key="INCONSISTENCY">Inconsistency</entry>
+  <entry key="SYNONYMS">Synonyms</entry>
+-->
+  <entry key="ASSIGNMENTS">Search Result</entry>
+  <entry key="COMMONS">Common taxa</entry>
+  <entry key="MISSINGS">Missing taxa</entry>
+  <entry key="DIFFERENCE">Different taxa</entry>
+  <entry key="INCONSISTENCY">Inconsistent taxa</entry>
   <entry key="SYNONYMS">Synonyms</entry>
 </properties>
 

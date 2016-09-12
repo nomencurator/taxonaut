@@ -163,7 +163,7 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	30 Aug. 2016
+ * @version 	12 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
@@ -259,7 +259,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.1.3";
+    private static String version = "3.1.4";
 
     @Getter
     private static String softwareName = "Taxonaut";

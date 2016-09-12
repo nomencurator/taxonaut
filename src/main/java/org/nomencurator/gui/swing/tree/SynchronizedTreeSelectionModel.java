@@ -72,7 +72,7 @@ import lombok.Setter;
  * {@code SynchronizedTreeSelectionModel} synchronizes
  * selections of tree nodes in trees
  *
- * @version 	29 June 2016
+ * @version 	06 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class SynchronizedTreeSelectionModel
@@ -379,17 +379,17 @@ public class SynchronizedTreeSelectionModel
     {
 	if (paths == null || paths.length == 0)
 	    return null;
-	final Set<UnitedNameTreeNode> unifiedNodes = new  HashSet<UnitedNameTreeNode>();
+	final Set<UnitedNameTreeNode> unitedNodes = new  HashSet<UnitedNameTreeNode>();
 
 	for(int i = 0; i < paths.length; i++) {
 	    if(paths[i] == null) {
 		continue;
 	    }
-	    unifiedNodes.addAll(nodeMapper.getNodesFor
+	    unitedNodes.addAll(nodeMapper.getNodesFor
 				   (((NamedNode)paths[i].getLastPathComponent()).getLiteral()));
 	}
 
-	return unifiedNodes;
+	return unitedNodes;
     }
 
     /**
@@ -430,11 +430,11 @@ public class SynchronizedTreeSelectionModel
      * @param paths an array of {@code TreePath}
     * to be mapped
      */
-    protected Map<Object, TreePath[]> getPathMap(Collection<UnitedNameTreeNode> unifiedNodes, TreePath ... paths)
+    protected Map<Object, TreePath[]> getPathMap(Collection<UnitedNameTreeNode> unitedNodes, TreePath ... paths)
     {
 	final Map<Object, TreePath[]> pathMap = new HashMap<Object, TreePath[]>(trees.size() + 1);
 
-	if(unifiedNodes == null) {
+	if(unitedNodes == null) {
 	    return pathMap;
 	}
 
@@ -445,16 +445,16 @@ public class SynchronizedTreeSelectionModel
 	    }
 	}
 
-	TreeNode[] nodes = new TreeNode[unifiedNodes.size()];
-	paths = new TreePath[unifiedNodes.size()];
+	TreeNode[] nodes = new TreeNode[unitedNodes.size()];
+	paths = new TreePath[unitedNodes.size()];
 	int i = 0;
-	for (UnitedNameTreeNode node : unifiedNodes) {
+	for (UnitedNameTreeNode node : unitedNodes) {
 	    nodes[i] = node;
 	    paths[i] = new TreePath(node.getPath());
 	    i++;
 	}
 	pathMap.put(this, paths);
-	unifiedNodes.clear();
+	unitedNodes.clear();
 
 	for(JTree tree : trees) {
 
@@ -586,25 +586,25 @@ public class SynchronizedTreeSelectionModel
 	return buffer.toString();
     }
 
-    protected TreePath[] unifiedPaths(final TreePath[] paths)
+    protected TreePath[] unitedPaths(final TreePath[] paths)
     {
 	if (paths == null)
 	    return null;
-	return unifiedPaths(getUnfiedNodesForPaths(paths));
+	return unitedPaths(getUnfiedNodesForPaths(paths));
     }
 
-    protected TreePath[] unifiedPaths(final Collection<UnitedNameTreeNode> unifiedNodes)
+    protected TreePath[] unitedPaths(final Collection<UnitedNameTreeNode> unitedNodes)
     {
-	if (unifiedNodes == null || unifiedNodes.isEmpty())
+	if (unitedNodes == null || unitedNodes.isEmpty())
 	    return null;
 
-	final TreePath[] unifiedPaths = new TreePath[unifiedNodes.size()];
+	final TreePath[] unitedPaths = new TreePath[unitedNodes.size()];
 	int j = 0;
-	for (UnitedNameTreeNode unifiedNode : unifiedNodes) {
-	    unifiedPaths[j++] = new TreePath(unifiedNode.getPath());
+	for (UnitedNameTreeNode unitedNode : unitedNodes) {
+	    unitedPaths[j++] = new TreePath(unitedNode.getPath());
 	}
 
-	return unifiedPaths;
+	return unitedPaths;
     }
 
     /**
@@ -630,10 +630,10 @@ public class SynchronizedTreeSelectionModel
 	    return;
 	}
 
-	final Collection<UnitedNameTreeNode> unifiedNodes = getUnfiedNodesForPaths(paths);
-	super.setSelectionPaths(unifiedPaths(unifiedNodes));
+	final Collection<UnitedNameTreeNode> unitedNodes = getUnfiedNodesForPaths(paths);
+	super.setSelectionPaths(unitedPaths(unitedNodes));
 
-	Map<Object, TreePath[]> pathMap = getPathMap(unifiedNodes, paths);
+	Map<Object, TreePath[]> pathMap = getPathMap(unitedNodes, paths);
 
 	paths = pathMap.get(this);
 	Point p = null;
@@ -682,10 +682,10 @@ public class SynchronizedTreeSelectionModel
      */
     public void addSelectionPaths(TreePath[] paths)
     {
-	final Collection<UnitedNameTreeNode> unifiedNodes = getUnfiedNodesForPaths(paths);
-	super.addSelectionPaths(unifiedPaths(unifiedNodes));
+	final Collection<UnitedNameTreeNode> unitedNodes = getUnfiedNodesForPaths(paths);
+	super.addSelectionPaths(unitedPaths(unitedNodes));
 
-	Map<Object, TreePath[]> pathMap = getPathMap(unifiedNodes, paths);
+	Map<Object, TreePath[]> pathMap = getPathMap(unitedNodes, paths);
 
 	paths = pathMap.get(this);
 	Point p = null;
