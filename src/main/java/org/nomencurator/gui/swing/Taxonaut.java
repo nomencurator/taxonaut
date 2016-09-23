@@ -24,6 +24,7 @@ package org.nomencurator.gui.swing;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 
@@ -73,7 +74,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
@@ -163,7 +166,7 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	12 Sep. 2016
+ * @version 	23 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
@@ -259,7 +262,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.1.4";
+    private static String version = "3.1.5";
 
     @Getter
     private static String softwareName = "Taxonaut";
@@ -280,6 +283,7 @@ public class Taxonaut<T extends NameUsage<?>>
 	HIERARCHIES,
 	DETAIL,
 	PROCESSING
+	, QUERY_FIELD_TOOL_TIP_TEXT
     }
 
     protected static TextPropertyKey[] textPropertyKeys = TextPropertyKey.values();
@@ -317,6 +321,7 @@ public class Taxonaut<T extends NameUsage<?>>
 	layoutComponents();
 	setComponentsSize();
 	setQueryManager(new NameUsageQueryManager<T>());
+	nameUsageQueryPanel.requestFocusInWindow();
     }
 
     /**
@@ -353,6 +358,7 @@ public class Taxonaut<T extends NameUsage<?>>
 	menu = new MenuBar(locale);
 	setLanguageMenu(menu.getLanguageMenu());
 	menu.getExportItem().addActionListener(this);
+	menu.getLookAndFeelItem().addActionListener(this);
 	excelFileChooser = new ExcelFileChooser();
 	menu.getOpenItem().setEnabled(false);
 	menu.getCloseItem().setEnabled(false);
@@ -678,12 +684,14 @@ public class Taxonaut<T extends NameUsage<?>>
 
 	if (queryTabs != null) {
 	    if (nameUsageQueryPanel != null) {
+		nameUsageQueryPanel.setQueryFieldToolTipText(textProperties[TextPropertyKey.QUERY_FIELD_TOOL_TIP_TEXT.ordinal()]);
 		tabIndex = queryTabs.indexOfComponent(nameUsageQueryPanel);
 		if (tabIndex != -1) {
 		    queryTabs.setTitleAt(tabIndex, textProperties[TextPropertyKey.NAME_QUERY.ordinal()]);
 		}
 	    }
 	    if (localQueryPanel != null) {
+		localQueryPanel.setQueryFieldToolTipText(textProperties[TextPropertyKey.QUERY_FIELD_TOOL_TIP_TEXT.ordinal()]);
 		tabIndex = queryTabs.indexOfComponent(localQueryPanel);
 		if (tabIndex != -1) {
 		    queryTabs.setTitleAt(tabIndex, textProperties[TextPropertyKey.LOCAL_QUERY.ordinal()]);
@@ -965,6 +973,7 @@ public class Taxonaut<T extends NameUsage<?>>
 		statusLabel.setText("Comparison and analysis done");
 		statusLayout.show(statusPanel, STATUS_LABEL);
 		nameListPane.enableButtons(true);
+		detailTabs.setSelectedComponent(hierarchiesPane);
 		setCursor(false);
 	    }
 
@@ -1554,6 +1563,30 @@ public class Taxonaut<T extends NameUsage<?>>
 		    new HSSFWorkbook() : new XSSFWorkbook();
 
 		(new ExportPOI(wb, fileName, this)).execute();
+	    }
+	}
+	else if (menu != null && menu.getLookAndFeelItem() == source) {
+	    LookAndFeel laf = UIManager.getLookAndFeel();
+	    try {
+		UIManager.setLookAndFeel(e.getActionCommand());
+		Container parent = getParent();
+		Container container = parent;
+		while (parent != null) {
+		    parent = parent.getParent();
+		    if (parent != null)
+			container = parent;
+		}
+		if (container == null)
+		    container = this;
+		//SwingUtilities.updateComponentTreeUI(container);
+		SwingUtilities.updateComponentTreeUI(this);
+	    }
+	    catch (Exception exception) {
+		try {
+		    UIManager.setLookAndFeel(laf);
+		}
+		catch (Exception reExcepction) {
+		}
 	    }
 	}
     }

@@ -39,12 +39,12 @@ import org.nomencurator.model.Publication;
  * {@code ResourceKey} provides keys to access resources
  * for Nomencurator and TaxoNote
  *
- * @version 	27 June 2016
+ * @version 	22 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class ResourceKey
 {
-    /** TaxoNote text resource name */
+    /** Taxonaut text resource name */
     static final public String TAXONAUT = "org.nomencurator.resources.Taxonaut";
 
     /** Key to version of the Java Runtime Envrionment */

@@ -4,11 +4,11 @@
   <groupId>org.nomencurator</groupId>
   <artifactId>taxonaut</artifactId>
   <packaging>jar</packaging>
-  <version>3.1.4</version>
+  <version>3.1.5</version>
   <name>taxonaut</name>
   <url>http://nomencurator.org</url>
 
-<!-- last updated on 12 Sep. 2016-->
+<!-- last updated on 23 Sep. 2016-->
 
   <properties>
     <maven.test.skip>true</maven.test.skip>
@@ -333,7 +333,7 @@
 	<artifactId>maven-assembly-plugin</artifactId>
 	<version>2.5.2</version>
 	<configuration>
-          <finalName>Taxonaut-${version}</finalName>
+          <finalName>Taxonaut-${project.version}</finalName>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>

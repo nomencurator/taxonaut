@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
   <comment>
-    Taxonaut.xml: Default properties for Taxonaut
+    MenuBar.xml: Default properties for MenuBar
     
     Copyright (c) 2016 Nozomi `James' Ytow
     All rights reserved.
@@ -21,19 +21,18 @@
 
     @version: 23 Sep. 2016
   </comment>
-  <entry key="VERSION">3.1.5</entry>
-  <entry key="EMPTY"></entry>
-  <entry key="STETUS_TEXT">Status: </entry>
-  <entry key="NAME_QUERY">Name query</entry>
-  <entry key="LOCAL_QUERY">Local search</entry>
-  <entry key="NAME_USAGES">Name usages</entry>
-  <entry key="NAME_TREE">Name Tree</entry>
-  <entry key="HIERARCHIES">Hierarchies</entry>
-  <entry key="DETAIL">Detail</entry>
-  <entry key="PROCESSING">Processing...</entry>
-  <entry key="QUERY_FIELD_TOOL_TIP_TEXT">Enter a scientific or common name, or, names separated by "|"...</entry>
+  <entry key="FILE">ファイル</entry>
+  <entry key="NEW_FILE">新規作成</entry>
+  <entry key="OPEN">開く</entry>
+  <entry key="CLOSE">閉じる</entry>
+  <entry key="IMPORT">読み込み</entry>
+  <entry key="EXPORT">書き出し</entry>
+  <entry key="SAVE">保存</entry>
+  <entry key="SAVE_AS">名前をつけて保存</entry>
+  <entry key="PRINT">印刷</entry>
+  <entry key="EXIT">終了</entry>
+  <entry key="LANGUAGES">言語</entry>
+  <entry key="HELP">ヘルプ</entry>
+  <entry key="VERSION">バージョン</entry>
+  <entry key="VIEW">表示</entry>
 </properties>
-
-
-
-

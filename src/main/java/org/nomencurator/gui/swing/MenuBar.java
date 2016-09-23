@@ -32,21 +32,25 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import lombok.Getter;
 
-import org.nomencurator.resources.ResourceKey;
+// import org.nomencurator.resources.ResourceKey;
+import org.nomencurator.util.XMLResourceBundleControl;
 
 /**
  * {@coee MenuBar} provides a menu bar to control the aplication software.
  *
- * @version 	21 Aug. 2016
+ * @version 	23 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class MenuBar
@@ -77,6 +81,12 @@ public class MenuBar
     @Getter
     protected LanguageMenu languageMenu;
 
+    @Getter
+    protected JMenu viewMenu;
+
+    @Getter
+    protected LookAndFeelMenuItem lookAndFeelItem;
+
     public MenuBar()
     {
 	this(Locale.getDefault());
@@ -90,9 +100,15 @@ public class MenuBar
 	configureFileMenu();
 	add(fileMenu);
 
+	createViewMenu();
+	configureViewMenu();
+	add(viewMenu);
+
+	/*
 	createLanguageMenu();
 	configureLanguageMenu();
 	add(languageMenu);
+	*/
 
 	createHelpMenu();
 	configureHelpMenu();
@@ -114,6 +130,8 @@ public class MenuBar
 
     protected void configureFileMenu()
     {
+	fileMenu.setMnemonic(KeyEvent.VK_F);
+
 	fileMenu.add(openItem);
 	fileMenu.add(closeItem);
 	fileMenu.add(exportItem);
@@ -166,6 +184,50 @@ public class MenuBar
 	helpMenu.add(versionMenu);
     }
 
+
+    protected void createViewMenu()
+    {
+	viewMenu = new JMenu();
+	createLanguageMenu();
+	lookAndFeelItem = new LookAndFeelMenuItem();
+    }
+
+    protected void configureViewMenu()
+    {
+	configureLanguageMenu();
+	viewMenu.add(languageMenu);
+	viewMenu.add(lookAndFeelItem);
+    }
+
+    public enum TextPropertyKey {
+	FILE("File")
+	,OPEN("Open")
+	,CLOSE("Close")
+	// ,IMPORT("Import")
+	,EXPORT("Export")
+	// ,SAVE("Save")
+	// ,SAVE_AS("Save as ...")
+	// ,PRINT("Print")
+	,EXIT("Exit")
+	,HELP("Help")
+	,VERSION("Version")
+	,VIEW("View")
+	;
+
+	private String value;
+
+	private TextPropertyKey(String value) {
+	    this.value = value;
+	}
+
+	public String toString() {
+	    return value;
+	}
+    }
+
+    protected static TextPropertyKey[] textPropertyKeys = TextPropertyKey.values();
+
+
     /**
      * Localizes components according to specified locale.
      *
@@ -175,41 +237,33 @@ public class MenuBar
     {
 	super.setLocale(locale);
 
-	String fileText = ResourceKey.FILE;
-	String openText = ResourceKey.OPEN;
-	String closeText = ResourceKey.CLOSE;
-	String exportText = ResourceKey.EXPORT;
-	String exitText = ResourceKey.EXIT;
-	String helpText = ResourceKey.HELP;
-	String versionText = ResourceKey.VERSION;
+	String[] textProperties = new String[textPropertyKeys.length];
+	for (int i = 0; i < textProperties.length; i++) {
+	    textProperties[i] = textPropertyKeys[i].toString();
+	}
 
 	try {
 	    ResourceBundle resource =
-		ResourceBundle.getBundle(ResourceKey.TAXONAUT, locale);
-	    fileText = resource.getString(fileText);
-	    openText = resource.getString(openText);
-	    closeText = resource.getString(closeText);
-	    exportText = resource.getString(exportText);
-	    exitText = resource.getString(exitText);
-	    helpText = resource.getString(helpText);
-	    versionText = resource.getString(versionText);
-
+		ResourceBundle.getBundle(getClass().getName(), locale, new XMLResourceBundleControl());
+	    for (int i = 0; i < textProperties.length; i++) {
+		textProperties[i] = resource.getString(textPropertyKeys[i].name());
+	    }
 	}
 	catch(MissingResourceException e) {
-
 	}
 
-	fileMenu.setText(fileText);
-	fileMenu.setMnemonic(KeyEvent.VK_F);
-	openItem.setText(openText);
-	closeItem.setText(closeText);
-	exportItem.setText(exportText);
-	exitItem.setText(exitText);
-	helpMenu.setText(helpText);
-	versionMenu.setText(versionText);
+	fileMenu.setText(textProperties[TextPropertyKey.FILE.ordinal()]);
+	openItem.setText(textProperties[TextPropertyKey.OPEN.ordinal()]);
+	closeItem.setText(textProperties[TextPropertyKey.CLOSE.ordinal()]);
+	exportItem.setText(textProperties[TextPropertyKey.EXPORT.ordinal()]);
+	exitItem.setText(textProperties[TextPropertyKey.EXIT.ordinal()]);
+	helpMenu.setText(textProperties[TextPropertyKey.HELP.ordinal()]);
+	versionMenu.setText(textProperties[TextPropertyKey.VERSION.ordinal()]);
+	viewMenu.setText(textProperties[TextPropertyKey.VIEW.ordinal()]);
 
-	languageMenu.setLocale(locale);
 	fileChooser.setLocale(locale);
+	languageMenu.setLocale(locale);
+	lookAndFeelItem.setLocale(locale);
     }
 
     public void stateChanged(ChangeEvent event)

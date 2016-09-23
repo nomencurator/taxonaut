@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
   <comment>
-    Taxonaut.xml: Default properties for Taxonaut
+    LookAndFeelMenuItem.xml: Default properties for LookAndFeelMenuItem
     
     Copyright (c) 2016 Nozomi `James' Ytow
     All rights reserved.
@@ -21,17 +21,7 @@
 
     @version: 23 Sep. 2016
   </comment>
-  <entry key="VERSION">3.1.5</entry>
-  <entry key="EMPTY"></entry>
-  <entry key="STETUS_TEXT">Status: </entry>
-  <entry key="NAME_QUERY">Name query</entry>
-  <entry key="LOCAL_QUERY">Local search</entry>
-  <entry key="NAME_USAGES">Name usages</entry>
-  <entry key="NAME_TREE">Name Tree</entry>
-  <entry key="HIERARCHIES">Hierarchies</entry>
-  <entry key="DETAIL">Detail</entry>
-  <entry key="PROCESSING">Processing...</entry>
-  <entry key="QUERY_FIELD_TOOL_TIP_TEXT">Enter a scientific or common name, or, names separated by "|"...</entry>
+  <entry key="LOOK_AND_FEEL">Appearance</entry>
 </properties>
 
 

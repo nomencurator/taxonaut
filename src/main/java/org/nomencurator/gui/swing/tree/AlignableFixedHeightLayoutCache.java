@@ -2,7 +2,7 @@
  * AlignableFixedHeightLayoutCache.java: a javax.swing.tree.FixedHeightLayoutCache
  * with node alignment
  *
- * Copyright (c) 2003, 2005, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2005, 2015, 2016 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -36,7 +36,7 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
  * <CODE>AlignableFixedHeightLayoutCache</CODE> provides a 
  * <CODE>FixedHeightLayoutCache</CODE> with node alignment
  *
- * @version 	13 Sep. 2015
+ * @version 	18 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class AlignableFixedHeightLayoutCache
@@ -84,25 +84,6 @@ public class AlignableFixedHeightLayoutCache
     {
 	Rectangle r = 
 	    super.getBounds(path, placeIn);
-
-	/*
-	if(path != null) {
-	    Object o = path.getLastPathComponent();
-	    if(o instanceof NameTreeNode) {
-		NameTreeNode node = 
-		    (NameTreeNode)((TreeNode)o).getParent();
-		if(node != null) {
-		    String literal = node.getLiteral();
-		    if(literal == null ||
-		       literal.length() == 0) {
-			Rectangle p = 
-			    super.getBounds(path.getParentPath(), placeIn);
-			r.y -= p.height; 
-		    }
-		}
-	    }
-	}
-	*/
 
 	Rectangle aligned = null;
 

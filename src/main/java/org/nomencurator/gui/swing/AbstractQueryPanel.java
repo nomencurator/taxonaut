@@ -86,7 +86,7 @@ import org.nomencurator.gui.vocabulary.QueryPanelElement;
  * {@code AbstractQueryPanel} provides components to specify a filter to search data sources.
  * It dispatches a {@code QueryEvent} representing a query filter.
  *
- * @version 	29 Aug. 2016
+ * @version 	23 Sep. 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractQueryPanel<T extends NamedObject<?>>
@@ -250,6 +250,14 @@ public abstract class AbstractQueryPanel<T extends NamedObject<?>>
 	revalidate();
     }
 
+    public boolean requestFocusInWindow()
+    {
+	if(queryField != null)
+	    return queryField.requestFocusInWindow();
+	else
+	    return super.requestFocusInWindow();
+    }
+
     public void addQueryListener(QueryListener<T> listener)
     {
 	if(listener == null)
@@ -355,6 +363,12 @@ public abstract class AbstractQueryPanel<T extends NamedObject<?>>
 	if (queryField != null)
 	    queryField.setEnabled(enable);
 	enableButtons(enable);
+    }
+
+    public void setQueryFieldToolTipText(String text)
+    {
+	if (queryField != null)
+	    queryField.setToolTipText(text);
     }
 }
     
