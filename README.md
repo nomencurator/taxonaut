@@ -16,6 +16,6 @@ Executable jar file contains following third party software libraries: GBIF API 
 
 ##How to cite
 
-Plase cite the software as follows with style-dependent modifications of course:
+Plsae cite the software as follows with style-dependent modifications of course:
 
 Ytow N. 2016.  Taxonaut: an application software for comparative display of multiple taxonomies with a use case of GBIF Species API.  [Biodiversity Data Journal 4: e9787](http://bdj.pensoft.net/articles.php?id=9787) doi: [10.3897/BDJ.4.e9787](http://dx.doi.org/10.3897/BDJ.4.e9787).
