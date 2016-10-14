@@ -4,22 +4,22 @@
   <groupId>org.nomencurator</groupId>
   <artifactId>taxonaut</artifactId>
   <packaging>jar</packaging>
-  <version>3.1.5</version>
+  <version>3.1.6</version>
   <name>taxonaut</name>
   <url>http://nomencurator.org</url>
 
-<!-- last updated on 23 Sep. 2016-->
+<!-- last updated on 14 Oct. 2016-->
 
   <properties>
     <maven.test.skip>true</maven.test.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 <!-- check current version under http://repository.gbif.org/content/groups/gbif -->
-<!-- last checked on 20160819 -->
-    <checklistbank-ws-client.version>2.43</checklistbank-ws-client.version>
+<!-- last checked on 20161014 -->
+    <checklistbank-ws-client.version>2.44</checklistbank-ws-client.version>
     <dwc-api.version>1.16</dwc-api.version>
-    <gbif-api.version>0.42</gbif-api.version>
-    <gbif-common-ws.version>0.34</gbif-common-ws.version>
+    <gbif-api.version>0.47</gbif-api.version>
+    <gbif-common-ws.version>0.37</gbif-common-ws.version>
 <!--    <gbif-name-parser.version>2.17</gbif-name-parser.version> -->
 
     <bval-jsr303.version>0.5</bval-jsr303.version>

@@ -97,32 +97,31 @@ import org.gbif.checklistbank.ws.util.Constants;
 
 import com.google.common.collect.Lists;
 
+import org.nomencurator.api.gbif.jackson.NameUsageMixIn;
+
 import org.nomencurator.api.gbif.model.checklistbank.Distribution;
 import org.nomencurator.api.gbif.model.checklistbank.ParsedName;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import org.codehaus.jackson.map.DeserializationConfig;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 /**
  * <CODE>SpeciesAPI</CODE> implements a client interface to use GBIF SpeciesAPI.
  *
- * @version 	18 June 2016
+ * @version 	14 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
-public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsageMatchingService, NameUsageSearchService*/ {
+public class SpeciesAPIClient
+    extends GBIFAPIClient
+    implements SpeciesAPI /*NameUsageService, NameUsageMatchingService, NameUsageSearchService*/ {
 
-    static private String REST_AMPERSAND = "&";
-    //static public String CURRENT_VERSION = "v0.9";
-    static public String CURRENT_VERSION = "v1";
-
-    private String version;
-    private String baseURL;
     private String speciesURL;
     private String speciesURLEpithet;
     private String parserURL;
     private String parserURLEpithet;
-    private ObjectMapper mapper;
 
     /**
      * Returns <code>HttpURLConnection</code> targeting given URL
@@ -273,32 +272,14 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
     }
 
     /**
-     * Returns version of supported API
-     *
-     * @return version of supported API
-     */
-    public String getVersion() {
-    	return version;
-    }
-
-    /**
      * Set verson of supported API
      *
      * @param verson of supported API
      */
     protected void setVersion(String version) {
-    	this.version = version;
+	super.setVersion(version);
 	setSpeciesURL();
 	setParserURL();
-    }
-
-    /**
-     * Returns baseURL of GBIF API
-     *
-      @return baseURL of GBIF API
-     */
-    protected String getBaseURL() {
-	return baseURL;
     }
 
     /**
@@ -307,7 +288,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      * @param baseURL to be set
      */
     protected void setBaseURL(String baseURL) {
-	this.baseURL = baseURL;
+	super.setBaseURL(baseURL);
 	setSpeciesURL();
 	setParserURL();
     }
@@ -420,49 +401,13 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
     }
 
     /**
-     * Returns REST-ish parametrs with given key concatinated with ampersand.
-     *
-     * @param key used in REST
-     * @param parameters <CODE>Collection</CODE> of parameter values
-     *
-     * @return REST-ish representaion of parametrs
-     */
-    protected String getParameter(String key, Collection<String> parameters) {
-	StringBuffer parameter = new StringBuffer();
-	if(parameters != null  &&  parameters.size() > 0) {
-	    String connector = "";
-	    try {
-		key = URLEncoder.encode(key,"utf-8");
-	    }
-	    catch (UnsupportedEncodingException e) {
-	    }
-	    for (String value : parameters) {
-		if(value != null && value.length() > 0) {
-		try {
-		    value = URLEncoder.encode(value, "utf-8");
-		    if(value != null && value.length() > 0) {
-			parameter.append(connector).append(key).append("=").append(value);
-			if(connector.length() == 0) {
-			    connector = REST_AMPERSAND;
-			}
-		    }
-		}
-		catch (UnsupportedEncodingException e) {
-		}
-		}
-	    }
-	}
-	return parameter.toString();
-    }
-
-    /**
      * Constructs client object to use GBIF SpeciesAPI.
      */
     public SpeciesAPIClient () {
-	setVersion(CURRENT_VERSION);
-	setBaseURL("http://api.gbif.org");
+	super();
 	setSpeciesURLEpithet(Constants.SPECIES_PATH);
 	setParserURLEpithet("parser");
+	mapper.getDeserializationConfig().addMixInAnnotations(NameUsage.class, NameUsageMixIn.class);
     }
 
     public NameUsage get(int usageKey) {
@@ -476,12 +421,9 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
     }
 
 
-    public NameUsage get(int usageKey, @Nullable Locale ... locales) {
+    public NameUsage get(int usageKey, @Nullable Locale ... locales)
+    {
 	NameUsage nameUsage = null;
-	if (mapper == null) {
-	    mapper = new ObjectMapper();
-	}
-
 	StringBuffer resourceURL = new StringBuffer(getResourceURL(usageKey));
 	String languages = getLanguages(locales);
 	if(languages != null && languages.length() > 0) {
@@ -501,12 +443,8 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	}
 	return nameUsage;
     }
-    
+
     public ParsedName getParsedName(int usageKey) {
-	if (mapper == null) {
-	    mapper = new ObjectMapper();
-	}
-	
 	ParsedName parsedName = null;
 	try {
 	    parsedName = mapper.readValue(new URL(getResourceURL(usageKey, "name").toString()), ParsedName.class);
@@ -517,36 +455,32 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	}
 	return parsedName;
     }
-    
-    public NameUsageMetrics getMetrics(int usageKey) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-      NameUsageMetrics metrics = null;
-      try {
-	  metrics = mapper.readValue(new URL(getResourceURL(usageKey, "metrics").toString()), NameUsageMetrics.class);
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
-      return metrics;
+
+    public NameUsageMetrics getMetrics(int usageKey)
+    {
+	NameUsageMetrics metrics = null;
+	try {
+	    metrics = mapper.readValue(new URL(getResourceURL(usageKey, "metrics").toString()), NameUsageMetrics.class);
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return metrics;
     }
 
-    public VerbatimNameUsage getVerbatim(int usageKey) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-      VerbatimNameUsage vnc = null;
-      try {
-	  vnc = mapper.readValue(new URL(getResourceURL(usageKey, "verbatim").toString()), VerbatimNameUsage.class);
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
-      return vnc;
-  }
+    public VerbatimNameUsage getVerbatim(int usageKey)
+    {
+	VerbatimNameUsage vnc = null;
+	try {
+	    vnc = mapper.readValue(new URL(getResourceURL(usageKey, "verbatim").toString()), VerbatimNameUsage.class);
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return vnc;
+    }
 
     public List<NameUsage> list(@Nullable UUID datasetKey, @Nullable String sourceId, @Nullable Locale ... locales)
     {
@@ -571,18 +505,15 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	return nameUsages;
     }
 
-    public PagingResponse<NameUsage> list(Locale locale, @Nullable UUID datasetKey, @Nullable String sourceId, @Nullable Pageable page) 
+    public PagingResponse<NameUsage> list(Locale locale, @Nullable UUID datasetKey, @Nullable String sourceId, @Nullable Pageable page)
     {
 	return list(page, datasetKey, sourceId, locale);
     }
 
-	
+
     public PagingResponse<NameUsage> list(@Nullable Pageable page, @Nullable UUID datasetKey, @Nullable String sourceId,
-					  @Nullable Locale ... locales) {
-	if (mapper == null) {
-	    mapper = new ObjectMapper();
-	}
-	
+					  @Nullable Locale ... locales)
+    {
 	StringBuffer resourceURL =  new StringBuffer(speciesURL);
 	if ((locales != null && locales.length > 0) || datasetKey != null || sourceId != null || page != null)  {
 	    String connector = "";
@@ -623,7 +554,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	    if(page != null) {
 		resourceURL.append(connector).append(Pager.get(page));
 	    }
-	    
+
 	}
 	PagingResponse<NameUsage> response = null;
 	try {
@@ -638,8 +569,9 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	}
 	return response;
     }
-    
-    public List<NameUsage> listByCanonicalName(String canonicalName, @Nullable List<Locale> locales, @Nullable UUID ... datasetKey) {
+
+    public List<NameUsage> listByCanonicalName(String canonicalName, @Nullable List<Locale> locales, @Nullable UUID ... datasetKey)
+    {
 	PagingResponse<NameUsage> response = listByCanonicalName(null, canonicalName, locales, datasetKey);
 	if (response == null)
 	    return null;
@@ -662,42 +594,43 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	return nameUsages;
     }
 
-    public PagingResponse<NameUsage> listByCanonicalName(Locale locale, String canonicalName, @Nullable Pageable page, 
+    public PagingResponse<NameUsage> listByCanonicalName(Locale locale, String canonicalName, @Nullable Pageable page,
 						       @Nullable UUID ... datasetKey)
     {
 	return listByCanonicalName(page, canonicalName, getList(locale), datasetKey);
     }
 
 
-  public PagingResponse<NameUsage> listByCanonicalName(@Nullable Pageable page, String canonicalName, @Nullable List<Locale> locales, 
-						       @Nullable UUID ... datasetKey) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
-      StringBuffer resourceURL =  new StringBuffer(speciesURL);
-      if ((locales != null  && locales.size() > 0) || canonicalName != null || page != null || datasetKey != null)  {
-	  String connector = "";
-	  resourceURL.append("?");
-	  if(locales != null && locales.size() > 0) {
-	      String languages = getLanguages(locales.toArray(new Locale[locales.size()]));
-	      if(languages != null && languages.length() > 0) {
-		  resourceURL.append("language=").append(languages);
-		  connector = REST_AMPERSAND;
-	      }
-	  }
-	  if(canonicalName != null) {
-	      try {
-		  String name = URLEncoder.encode(canonicalName,"utf-8");
-		  if (name != null && name.length() > 0) {
-		      resourceURL.append(connector).append("name=").append(name);
-		      if (connector.length() == 0) {
-			  connector = REST_AMPERSAND;
-		      }
-		  }
-	      }
-	      catch (UnsupportedEncodingException e) {
-	      }
+  public PagingResponse<NameUsage> listByCanonicalName(
+						       @Nullable Pageable page,
+						       String canonicalName,
+						       @Nullable List<Locale> locales,
+						       @Nullable UUID ... datasetKey
+						       )
+    {
+	StringBuffer resourceURL =  new StringBuffer(speciesURL);
+	if ((locales != null  && locales.size() > 0) || canonicalName != null || page != null || datasetKey != null)  {
+	    String connector = "";
+	    resourceURL.append("?");
+	    if(locales != null && locales.size() > 0) {
+		String languages = getLanguages(locales.toArray(new Locale[locales.size()]));
+		if(languages != null && languages.length() > 0) {
+		    resourceURL.append("language=").append(languages);
+		    connector = REST_AMPERSAND;
+		}
+	    }
+	    if(canonicalName != null) {
+		try {
+		    String name = URLEncoder.encode(canonicalName,"utf-8");
+		    if (name != null && name.length() > 0) {
+			resourceURL.append(connector).append("name=").append(name);
+			if (connector.length() == 0) {
+			    connector = REST_AMPERSAND;
+			}
+		    }
+		}
+		catch (UnsupportedEncodingException e) {
+		}
 	  }
 	  if(page != null) {
 	      resourceURL.append(connector).append(Pager.get(page));
@@ -767,11 +700,8 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
     }
 
 
-    public PagingResponse<NameUsage> listChildren(@Nullable Pageable page, int parentKey, @Nullable Locale ... locales) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
+    public PagingResponse<NameUsage> listChildren(@Nullable Pageable page, int parentKey, @Nullable Locale ... locales)
+    {
       StringBuffer resourceURL = getResourceURL(parentKey, "children");
       if ((locales != null && locales.length > 0) ||  page != null)  {
 	  String connector = "";
@@ -807,31 +737,28 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	return listParents(usageKey, getArray(locale));
     }
 
-    public List<NameUsage> listParents(int usageKey, Locale ... locales) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
+    public List<NameUsage> listParents(int usageKey, Locale ... locales)
+    {
+	StringBuffer resourceURL = getResourceURL(usageKey, "parents");
+	if(locales != null && locales.length > 0) {
+	    String languages = getLanguages(locales);
+	    if (languages != null && languages.length() > 0) {
+		resourceURL.append("?").append(languages);
+	    }
+	}
 
-      StringBuffer resourceURL = getResourceURL(usageKey, "parents");
-      if(locales != null && locales.length > 0) {
-	  String languages = getLanguages(locales);
-	  if (languages != null && languages.length() > 0) {
-	      resourceURL.append("?").append(languages);
-	  }
-      }
-
-      List<NameUsage> list = null;
-      try {
-	  HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
-	  list = mapper.readValue(connection.getInputStream(),
-				      new TypeReference<List<NameUsage>>() {});
-	  connection.disconnect();
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
-      return list;
+	List<NameUsage> list = null;
+	try {
+	    HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
+	    list = mapper.readValue(connection.getInputStream(),
+				    new TypeReference<List<NameUsage>>() {});
+	    connection.disconnect();
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return list;
     }
 
     protected List<Locale> getLocaleList(Locale locale)
@@ -874,12 +801,12 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	}
 	return result;
     }
-    
+
     public PagingResponse<NameUsage> listRelated(int nubKey, @Nullable Locale locale, @Nullable Pageable page, @Nullable UUID... datasetKey)
     {
 	return listRelated(nubKey, getLanguage(locale), getLocaleList(locale), page, datasetKey);
     }
-    
+
     public PagingResponse<NameUsage> listRelated(int nubKey, @Nullable List<Locale> locales, @Nullable Pageable page, @Nullable UUID... datasetKey)
     {
 	return listRelated(nubKey, getLanguages(locales), locales, page, datasetKey);
@@ -887,48 +814,44 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
     protected PagingResponse<NameUsage> listRelated(int nubKey, @Nullable String languages, @Nullable List<Locale> locales, @Nullable Pageable page, @Nullable UUID... datasetKey)
     {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
+	StringBuffer resourceURL = getResourceURL(nubKey, "related");
+	if ((languages != null && languages.length() > 0) ||  datasetKey != null)  {
+	    String connector = "";
+	    resourceURL.append("?");
+	    if (languages != null && languages.length() >0) {
+		resourceURL.append(languages);
+		connector = REST_AMPERSAND;
+	    }
+	    if(datasetKey != null) {
+		for (UUID key : datasetKey) {
+		    try {
+			String uuid = URLEncoder.encode(key.toString(),"utf-8");
+			if (uuid != null && uuid.length() > 0) {
+			    resourceURL.append(connector).append("datasetKey=").append(uuid);
+			    if (connector.length() == 0) {
+				connector = REST_AMPERSAND;
+			    }
+			}
+		    }
+		    catch (UnsupportedEncodingException e) {
+		    }
+		}
+	    }
+	}
 
-      StringBuffer resourceURL = getResourceURL(nubKey, "related");
-      if ((languages != null && languages.length() > 0) ||  datasetKey != null)  {
-	  String connector = "";
-	  resourceURL.append("?");
-	  if (languages != null && languages.length() >0) {
-	      resourceURL.append(languages);
-	      connector = REST_AMPERSAND;
-	  }
-	  if(datasetKey != null) {
-	      for (UUID key : datasetKey) {
-		  try {
-		      String uuid = URLEncoder.encode(key.toString(),"utf-8");
-		      if (uuid != null && uuid.length() > 0) {
-			  resourceURL.append(connector).append("datasetKey=").append(uuid);
-			  if (connector.length() == 0) {
-			      connector = REST_AMPERSAND;
-			  }
-		      }
-		  }
-		  catch (UnsupportedEncodingException e) {
-		  }
-	      }
-	  }
-      }
-
-      PagingResponse<NameUsage> response = null;
-      try {
-	  HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
-	  response = mapper.readValue(connection.getInputStream(),
-				      new TypeReference<List<NameUsage>>() {});
-	  connection.disconnect();
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
-      return response;
-  }
+	PagingResponse<NameUsage> response = null;
+	try {
+	    HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
+	    response = mapper.readValue(connection.getInputStream(),
+					new TypeReference<List<NameUsage>>() {});
+	    connection.disconnect();
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return response;
+    }
 
     @Override
     public List<NameUsage> listRoot(UUID datasetKey, @Nullable Locale ... locales) {
@@ -957,41 +880,38 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	return listRoot(page, datasetKey, locale);
     }
 
-    public PagingResponse<NameUsage> listRoot(@Nullable Pageable page, UUID datasetKey, @Nullable Locale ... locales) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
+    public PagingResponse<NameUsage> listRoot(@Nullable Pageable page, UUID datasetKey, @Nullable Locale ... locales)
+    {
+	StringBuffer resourceURL = new StringBuffer(speciesURL);
+	resourceURL.append("/root/").append(datasetKey);
+	if ((locales != null && locales.length > 0) ||  page != null)  {
+	    String connector = "";
+	    resourceURL.append("?");
+	    if (locales != null && locales.length > 0) {
+		String languages = getLanguages(locales);
+		if (languages != null && languages.length() > 0) {
+		    resourceURL.append(languages);
+		    connector = REST_AMPERSAND;
+		}
+	    }
+	    if(page != null) {
+		resourceURL.append(connector).append(Pager.get(page));
+	    }
+	}
 
-      StringBuffer resourceURL = new StringBuffer(speciesURL);
-      resourceURL.append("/root/").append(datasetKey);
-      if ((locales != null && locales.length > 0) ||  page != null)  {
-	  String connector = "";
-	  resourceURL.append("?");
-	  if (locales != null && locales.length > 0) {
-	      String languages = getLanguages(locales);
-	      if (languages != null && languages.length() > 0) {
-		  resourceURL.append(languages);
-		  connector = REST_AMPERSAND;
-	      }
-	  }
-	  if(page != null) {
-	      resourceURL.append(connector).append(Pager.get(page));
-	  }
-      }
-
-      PagingResponse<NameUsage> response = null;
-      try {
-	  HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
-	  response = mapper.readValue(connection.getInputStream(),
-				      new TypeReference<PagingResponse<NameUsage>>() {});
-	  connection.disconnect();
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
-      return response;
-  }
+	PagingResponse<NameUsage> response = null;
+	try {
+	    HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
+	    response = mapper.readValue(connection.getInputStream(),
+					new TypeReference<PagingResponse<NameUsage>>() {});
+	    connection.disconnect();
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return response;
+    }
 
     public List<NameUsage> listSynonyms(int usageKey, @Nullable Locale ... locales) {
 	PagingResponse<NameUsage> response = listSynonyms(null, usageKey,  locales);
@@ -1023,40 +943,35 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
     public PagingResponse<NameUsage> listSynonyms(@Nullable Pageable page, int usageKey, @Nullable Locale ... locales)
     {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
+	StringBuffer resourceURL = getResourceURL(usageKey, "synonyms");
+	if ((locales != null && locales.length > 0) ||  page != null)  {
+	    String connector = "";
+	    resourceURL.append("?");
+	    if (locales != null && locales.length > 0) {
+		String languages = getLanguages(locales);
+		if (languages != null && languages.length() > 0) {
+		    resourceURL.append(languages);
+		    connector = REST_AMPERSAND;
+		}
+	    }
+	    if(page != null) {
+		resourceURL.append(connector).append(Pager.get(page));
+	    }
+	}
 
-      StringBuffer resourceURL = getResourceURL(usageKey, "synonyms");
-      if ((locales != null && locales.length > 0) ||  page != null)  {
-	  String connector = "";
-	  resourceURL.append("?");
-	  if (locales != null && locales.length > 0) {
-	      String languages = getLanguages(locales);
-	      if (languages != null && languages.length() > 0) {
-		  resourceURL.append(languages);
-		  connector = REST_AMPERSAND;
-	      }
-	  }
-	  if(page != null) {
-	      resourceURL.append(connector).append(Pager.get(page));
-	  }
-
-      }
-
-      PagingResponse<NameUsage> response = null;
-      try {
-	  HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
-	  response = mapper.readValue(connection.getInputStream(),
-				      new TypeReference<PagingResponse<NameUsage>>() {});
-	  connection.disconnect();
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
-      return response;
-  }
+	PagingResponse<NameUsage> response = null;
+	try {
+	    HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
+	    response = mapper.readValue(connection.getInputStream(),
+					new TypeReference<PagingResponse<NameUsage>>() {});
+	    connection.disconnect();
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return response;
+    }
 
     protected boolean appendClassification(StringBuffer buffer, String connector, String rankName, String name)
     {
@@ -1075,64 +990,61 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
     }
 
   public NameUsageMatch match(String scientificName, @Nullable Rank rank, @Nullable LinneanClassification classification,
-		       boolean strict, boolean verbose) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
+		       boolean strict, boolean verbose)
+    {
+	StringBuffer resourceURL = new StringBuffer(speciesURL);
+	resourceURL.append("/match");
+	String connector = REST_AMPERSAND;
+	resourceURL.append("?");
+	try {
+	    String name = URLEncoder.encode(scientificName,"utf-8");
+	    if (name != null && name.length() > 0) {
+		resourceURL.append("name=").append(name);
+	    }
+	}
+	catch (UnsupportedEncodingException e) {
+	}
+	if(strict) {
+	    resourceURL.append(connector).append("strict=").append(Boolean.toString(strict));
+	}
 
-      StringBuffer resourceURL = new StringBuffer(speciesURL);
-      resourceURL.append("/match");
-      String connector = REST_AMPERSAND;
-      resourceURL.append("?");
-      try {
-	  String name = URLEncoder.encode(scientificName,"utf-8");
-	  if (name != null && name.length() > 0) {
-	      resourceURL.append("name=").append(name);
-	  }
-      }
-      catch (UnsupportedEncodingException e) {
-      }
-      if(strict) {
-	  resourceURL.append(connector).append("strict=").append(Boolean.toString(strict));
-      }
+	if(verbose) {
+	    resourceURL.append(connector).append("verbose=").append(Boolean.toString(verbose));
+	}
 
-      if(verbose) {
-	  resourceURL.append(connector).append("verbose=").append(Boolean.toString(verbose));
-      }
+	if (rank != null) {
+	    try {
+		String rankName = URLEncoder.encode(rank.name(),"utf-8");
+		if (rankName != null && rankName.length() > 0) {
+		    resourceURL.append(connector).append("rank=").append(rankName);
+		}
+	    }
+	    catch (UnsupportedEncodingException e) {
+	    }
+	}
 
-      if (rank != null) {
-	  try {
-	      String rankName = URLEncoder.encode(rank.name(),"utf-8");
-	      if (rankName != null && rankName.length() > 0) {
-		  resourceURL.append(connector).append("rank=").append(rankName);
-	      }
-	  }
-	  catch (UnsupportedEncodingException e) {
-	  }
-      }
+	if (classification != null) {
+	    appendClassification(resourceURL, connector, "kingdom", classification.getKingdom());
+	    appendClassification(resourceURL, connector, "phylum", classification.getPhylum());
+	    appendClassification(resourceURL, connector, "class", classification.getClazz());
+	    appendClassification(resourceURL, connector, "order",classification.getOrder());
+	    appendClassification(resourceURL, connector, "family", classification.getFamily());
+	    appendClassification(resourceURL, connector, "genus", classification.getGenus ());
+	    appendClassification(resourceURL, connector, "subgenus", classification.getSubgenus ());
+	}
 
-      if (classification != null) {
-	  appendClassification(resourceURL, connector, "kingdom", classification.getKingdom());
-	  appendClassification(resourceURL, connector, "phylum", classification.getPhylum());
-	  appendClassification(resourceURL, connector, "class", classification.getClazz());
-	  appendClassification(resourceURL, connector, "order",classification.getOrder());
-	  appendClassification(resourceURL, connector, "family", classification.getFamily());
-	  appendClassification(resourceURL, connector, "genus", classification.getGenus ());
-	  appendClassification(resourceURL, connector, "subgenus", classification.getSubgenus ());
-      }
+	NameUsageMatch response = null;
+	try {
+	    response = mapper.readValue(new URL(resourceURL.toString()),  NameUsageMatch.class);
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return response;
+    }
 
-      NameUsageMatch response = null;
-      try {
-	  response = mapper.readValue(new URL(resourceURL.toString()),  NameUsageMatch.class);
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
-      return response;
-  }
-
-    public List<NameUsageSearchResult> fullTextSearch(String name, Rank rank, Integer higherTaxonKey, 
+    public List<NameUsageSearchResult> fullTextSearch(String name, Rank rank, Integer higherTaxonKey,
 						      TaxonomicStatus status, Boolean isExtinct, Habitat habitat, ThreatStatus threat,
 						      NameType nameType, NomenclaturalStatus nomenclaturalStatus, Boolean highlight,
 						      Set<NameUsageSearchParameter> facet, Integer facetMinCount, Boolean facetMultiselect,
@@ -1197,128 +1109,126 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
 
     @Override
-    public SearchResponse<NameUsageSearchResult, NameUsageSearchParameter> search(NameUsageSearchRequest searchRequest) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-      // fixme
-      // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    public SearchResponse<NameUsageSearchResult, NameUsageSearchParameter> search(NameUsageSearchRequest searchRequest)
+    {
+	// fixme
+	// mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-      StringBuffer resourceURL = new StringBuffer(speciesURL);
-      resourceURL.append( "/search");
-      try {
-	  if (searchRequest != null) {
-	      String request = URLEncoder.encode(searchRequest.getQ(), "utf-8");
-	      if (request != null && request.length() > 0) 
-		  resourceURL.append("?q=").append(request);
-	  }
-      }
-      catch (UnsupportedEncodingException e) {
-      }
-      String connector = REST_AMPERSAND;
+	StringBuffer resourceURL = new StringBuffer(speciesURL);
+	resourceURL.append( "/search");
+	try {
+	    if (searchRequest != null) {
+		String request = URLEncoder.encode(searchRequest.getQ(), "utf-8");
+		if (request != null && request.length() > 0)
+		    resourceURL.append("?q=").append(request);
+	    }
+	}
+	catch (UnsupportedEncodingException e) {
+	}
+	String connector = REST_AMPERSAND;
 
-      Multimap<NameUsageSearchParameter, String> parameters = searchRequest.getParameters();
+	Multimap<NameUsageSearchParameter, String> parameters = searchRequest.getParameters();
 
-      StringBuffer parameter = new StringBuffer();
-      Collection<String> values = parameters.get(NameUsageSearchParameter.DATASET_KEY);
-      String value = null;
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("datasetKey", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
-      values = parameters.get(NameUsageSearchParameter.RANK);
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("rank", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
-      values = parameters.get(NameUsageSearchParameter.HIGHERTAXON_KEY);
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("highertaxonKey", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
-      values = parameters.get(NameUsageSearchParameter.STATUS);
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("status", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
-      values = parameters.get(NameUsageSearchParameter.HABITAT);
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("habitat", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
-      values = parameters.get(NameUsageSearchParameter.THREAT);
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("threat", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
-      values = parameters.get(NameUsageSearchParameter.NOMENCLATURAL_STATUS);
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("nomenclaturalStatus", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
-      values = parameters.get(NameUsageSearchParameter.NAME_TYPE);
-      if (values != null && !values.isEmpty()) {
-	  value = getParameter("nameType", values);
-	  if(value != null && value.length() > 0) {
-	      parameter.append(connector).append(value);
-	  }
-      }
+	StringBuffer parameter = new StringBuffer();
+	Collection<String> values = parameters.get(NameUsageSearchParameter.DATASET_KEY);
+	String value = null;
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("datasetKey", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
+	values = parameters.get(NameUsageSearchParameter.RANK);
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("rank", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
+	values = parameters.get(NameUsageSearchParameter.HIGHERTAXON_KEY);
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("highertaxonKey", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
+	values = parameters.get(NameUsageSearchParameter.STATUS);
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("status", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
+	values = parameters.get(NameUsageSearchParameter.HABITAT);
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("habitat", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
+	values = parameters.get(NameUsageSearchParameter.THREAT);
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("threat", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
+	values = parameters.get(NameUsageSearchParameter.NOMENCLATURAL_STATUS);
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("nomenclaturalStatus", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
+	values = parameters.get(NameUsageSearchParameter.NAME_TYPE);
+	if (values != null && !values.isEmpty()) {
+	    value = getParameter("nameType", values);
+	    if(value != null && value.length() > 0) {
+		parameter.append(connector).append(value);
+	    }
+	}
 
 
-      if(searchRequest.isHighlight()) {
-	  parameter.append(connector).append("hi=true");
-      }
-      Set<NameUsageSearchParameter> facets = searchRequest.getFacets();
-      if(facets != null && facets.size() > 0) {
-	  /*
-	  if(searchRequest.isFacetsOnly()) {
+	if(searchRequest.isHighlight()) {
+	    parameter.append(connector).append("hi=true");
+	}
+	Set<NameUsageSearchParameter> facets = searchRequest.getFacets();
+	if(facets != null && facets.size() > 0) {
+	    /*
+	      if(searchRequest.isFacetsOnly()) {
 	      parameter.append(connector).append("facet_only=true");
-	  }
-	  */
-	  if(searchRequest.isMultiSelectFacets()) {
-	      parameter.append(connector).append("facet_multiselect=true");
-	  }
-	  Integer facetMinCount = searchRequest.getFacetMinCount();
-	  if(facetMinCount != null) {
-	      parameter.append(connector).append("facet_mincount=").append(facetMinCount.toString());
-	  }
-	  for (NameUsageSearchParameter facet:facets) {
-	      parameter.append(connector).append("facet=").append(facet.name());
-	  }
-      }
+	      }
+	    */
+	    if(searchRequest.isMultiSelectFacets()) {
+		parameter.append(connector).append("facet_multiselect=true");
+	    }
+	    Integer facetMinCount = searchRequest.getFacetMinCount();
+	    if(facetMinCount != null) {
+		parameter.append(connector).append("facet_mincount=").append(facetMinCount.toString());
+	    }
+	    for (NameUsageSearchParameter facet:facets) {
+		parameter.append(connector).append("facet=").append(facet.name());
+	    }
+	}
 
-      if(parameter.length() > 0) {
-	  resourceURL.append(parameter);
-      }
+	if(parameter.length() > 0) {
+	    resourceURL.append(parameter);
+	}
 
-      resourceURL.append(connector).append(Pager.get(searchRequest));
+	resourceURL.append(connector).append(Pager.get(searchRequest));
 
-      SearchResponse<NameUsageSearchResult, NameUsageSearchParameter> response = null;
-      try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
-	  			      new TypeReference<SearchResponse<NameUsageSearchResult, NameUsageSearchParameter>>() {});
-				      //	  			      new TypeReference<SearchResponse<org.nomencurator.api.gbif.model.checklistbank.search.NameUsageSearchResult, NameUsageSearchParameter>>() {});
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-	  e.printStackTrace();
-      }
-      return response;
+	SearchResponse<NameUsageSearchResult, NameUsageSearchParameter> response = null;
+	try {
+	    response = mapper.readValue(new URL(resourceURL.toString()),
+					new TypeReference<SearchResponse<NameUsageSearchResult, NameUsageSearchParameter>>() {});
+	    //	  			      new TypeReference<SearchResponse<org.nomencurator.api.gbif.model.checklistbank.search.NameUsageSearchResult, NameUsageSearchParameter>>() {});
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	    e.printStackTrace();
+	}
+	return response;
     }
 
     public List<NameUsageSuggestResult> suggest(String name, Rank rank, @Nullable UUID ... datasetKey)
@@ -1337,23 +1247,21 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
     }
 
     //    public List<NameUsage> suggest(NameUsageSuggestRequest suggestRequest) {
-    public List<NameUsageSuggestResult> suggest(NameUsageSuggestRequest suggestRequest) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-      // fixme
-      // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    public List<NameUsageSuggestResult> suggest(NameUsageSuggestRequest suggestRequest)
+    {
+	// fixme
+	// mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-      StringBuffer resourceURL = new StringBuffer(speciesURL);
-      resourceURL.append("/suggest");
-      try {
-	  String suggestion = URLEncoder.encode(suggestRequest.getQ(),"utf-8");
-	  if (suggestion != null && suggestion.length() > 0)
-	      resourceURL.append("?q=").append(suggestion);
+	StringBuffer resourceURL = new StringBuffer(speciesURL);
+	resourceURL.append("/suggest");
+	try {
+	    String suggestion = URLEncoder.encode(suggestRequest.getQ(),"utf-8");
+	    if (suggestion != null && suggestion.length() > 0)
+		resourceURL.append("?q=").append(suggestion);
+	}
+	catch (UnsupportedEncodingException e) {
       }
-      catch (UnsupportedEncodingException e) {
-      }
-      
+
       String connector = REST_AMPERSAND;
 
       Multimap<NameUsageSearchParameter, String> parameters = suggestRequest.getParameters();
@@ -1381,7 +1289,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
       List<NameUsageSuggestResult> list = null;
       try {
-	  list = mapper.readValue(new URL(resourceURL.toString()), 
+	  list = mapper.readValue(new URL(resourceURL.toString()),
 				      new TypeReference<List<NameUsageSuggestResult>>() {});
 				  //				      new TypeReference<List<org.nomencurator.api.gbif.model.checklistbank.search.NameUsageSearchResult>>() {});
       }
@@ -1412,10 +1320,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	if (names == null || names.length == 0)
 	    return null;
 
-	if (mapper == null) {
-	    mapper = new ObjectMapper();
-	}
-	
 	StringBuffer resourceURL = new StringBuffer(parserURL);
 	resourceURL.append("/name");
 	String connector = "?";
@@ -1435,7 +1339,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
 	List<ParsedName> list = null;
 	try {
-	    list = mapper.readValue(new URL(resourceURL.toString()), 
+	    list = mapper.readValue(new URL(resourceURL.toString()),
 				    new TypeReference<List<ParsedName>>() {});
 	}
 	catch (MalformedURLException e) {
@@ -1447,7 +1351,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
     }
 
     /**
-      * Returns parsed names of given content type using HTTP POST 
+      * Returns parsed names of given content type using HTTP POST
       *
       * @param contentType content type, one of JSON, TEXT, FORM_DATA
       * @param names names to be parsed
@@ -1458,10 +1362,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	    names == null || names .length() == 0 )
 	    return null;
 
-	if (mapper == null) {
-	    mapper = new ObjectMapper();
-	}
-	
 	List<ParsedName> list = null;
 	HttpURLConnection connection = null;
 	try {
@@ -1474,7 +1374,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 	    PrintWriter writer = new PrintWriter(connection.getOutputStream());
 	    writer.print(names);
 	    writer.close();
-	    list = mapper.readValue(connection.getInputStream(), 
+	    list = mapper.readValue(connection.getInputStream(),
 				    new TypeReference<List<ParsedName>>() {});
 	    connection.disconnect();
 	}
@@ -1519,10 +1419,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      * @return description pages
      */
     public PagingResponse<Description> getDescripitons(int usageKey, @Nullable Pageable page) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
       StringBuffer resourceURL = getResourceURL(usageKey, "descriptions");
       if (page != null)  {
 	  resourceURL.append("?").append(Pager.get(page));
@@ -1530,7 +1426,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
       PagingResponse<Description> response = null;
       try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
+	  response = mapper.readValue(new URL(resourceURL.toString()),
 				      new TypeReference<PagingResponse<Description>>() {});
       }
       catch (MalformedURLException e) {
@@ -1572,10 +1468,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      * @return distribution pages
      */
     public PagingResponse<Distribution> getDistributions(int usageKey, @Nullable Pageable page) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
       StringBuffer resourceURL = getResourceURL(usageKey, "distributions");
       if (page != null)  {
 	  resourceURL.append("?").append(Pager.get(page));
@@ -1583,7 +1475,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
       PagingResponse<Distribution> response = null;
       try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
+	  response = mapper.readValue(new URL(resourceURL.toString()),
 				      new TypeReference<PagingResponse<Distribution>>() {});
       }
       catch (MalformedURLException e) {
@@ -1593,8 +1485,8 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
       return response;
     }
 
-    //    public List<Image> getImages(int usageKey) { 
-    public List<NameUsageMediaObject> getMedia(int usageKey) { 
+    //    public List<Image> getImages(int usageKey) {
+    public List<NameUsageMediaObject> getMedia(int usageKey) {
 	//PagingResponse<Image> response = getImages(usageKey, null);
 	PagingResponse<NameUsageMediaObject> response = getMedia(usageKey, null);
 	if (response == null) {
@@ -1630,10 +1522,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      */
     //public PagingResponse<Image> getImages(int usageKey, @Nullable Pageable page) {
     public PagingResponse<NameUsageMediaObject> getMedia(int usageKey, @Nullable Pageable page) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
       StringBuffer resourceURL = getResourceURL(usageKey, "media");
       if (page != null)  {
 	  resourceURL.append("?").append(Pager.get(page));
@@ -1642,7 +1530,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
       //      PagingResponse<Image> response = null;
       PagingResponse<NameUsageMediaObject> response = null;
       try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
+	  response = mapper.readValue(new URL(resourceURL.toString()),
 				      //				      new TypeReference<PagingResponse<Image>>() {});
 				      new TypeReference<PagingResponse<NameUsageMediaObject>>() {});
       }
@@ -1686,10 +1574,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      * @return reference pages
      */
     public PagingResponse<Reference> getReferences(int usageKey, @Nullable Pageable page) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
       StringBuffer resourceURL = getResourceURL(usageKey, "references");
       if (page != null)  {
 	  resourceURL.append("?").append(Pager.get(page));
@@ -1697,7 +1581,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
       PagingResponse<Reference> response = null;
       try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
+	  response = mapper.readValue(new URL(resourceURL.toString()),
 				      new TypeReference<PagingResponse<Reference>>() {});
       }
       catch (MalformedURLException e) {
@@ -1738,11 +1622,8 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      *
      * @return SpeciesProfile pages
      */
-    public PagingResponse<SpeciesProfile> getSpeciesProfiles(int usageKey, @Nullable Pageable page) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
+    public PagingResponse<SpeciesProfile> getSpeciesProfiles(int usageKey, @Nullable Pageable page)
+    {
       StringBuffer resourceURL = getResourceURL(usageKey, "speciesProfiles");
       if (page != null)  {
 	  resourceURL.append("?").append(Pager.get(page));
@@ -1750,7 +1631,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
       PagingResponse<SpeciesProfile> response = null;
       try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
+	  response = mapper.readValue(new URL(resourceURL.toString()),
 				      new TypeReference<PagingResponse<SpeciesProfile>>() {});
       }
       catch (MalformedURLException e) {
@@ -1792,10 +1673,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      * @return VernacularName pages
      */
     public PagingResponse<VernacularName> getVernacularNames(int usageKey, @Nullable Pageable page) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
       StringBuffer resourceURL = getResourceURL(usageKey, "vernacularNames");
       if (page != null)  {
 	  resourceURL.append("?").append(Pager.get(page));
@@ -1803,7 +1680,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
       PagingResponse<VernacularName> response = null;
       try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
+	  response = mapper.readValue(new URL(resourceURL.toString()),
 				      new TypeReference<PagingResponse<VernacularName>>() {});
       }
       catch (MalformedURLException e) {
@@ -1844,10 +1721,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
      * @return TypeSpecimen pages
      */
     public PagingResponse<TypeSpecimen> getTypeSpecimens(int usageKey, @Nullable Pageable page) {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
       StringBuffer resourceURL = getResourceURL(usageKey, "typeSpecimens");
       if (page != null)  {
 	  resourceURL.append("?").append(Pager.get(page));
@@ -1855,7 +1728,7 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
       PagingResponse<TypeSpecimen> response = null;
       try {
-	  response = mapper.readValue(new URL(resourceURL.toString()), 
+	  response = mapper.readValue(new URL(resourceURL.toString()),
 				      new TypeReference<PagingResponse<TypeSpecimen>>() {});
       }
       catch (MalformedURLException e) {
@@ -1874,10 +1747,6 @@ public class SpeciesAPIClient implements SpeciesAPI /*NameUsageService, NameUsag
 
     public List<NameUsage> listCombinations(int basionym, Locale ... locales)
     {
-      if (mapper == null) {
-	  mapper = new ObjectMapper();
-      }
-
       StringBuffer resourceURL = getResourceURL(basionym, Constants.COMBINATIONS_PATH);
       if (locales != null && locales.length > 0)  {
 	  String connector = "";

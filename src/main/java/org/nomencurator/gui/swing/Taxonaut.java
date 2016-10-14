@@ -166,7 +166,7 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	23 Sep. 2016
+ * @version 	14 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
@@ -262,7 +262,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.1.5";
+    private static String version = "3.1.6";
 
     @Getter
     private static String softwareName = "Taxonaut";
@@ -809,6 +809,9 @@ public class Taxonaut<T extends NameUsage<?>>
 	    catch (ExecutionException e) {
 		statusLabel.setText(e.getMessage());
 	    }
+	    catch (Throwable e) {
+		statusLabel.setText(e.getMessage());
+	    }
 	    finally {
 		progress.setMinimum(progress.getMinimum());
 		progress.setIndeterminate(false);
@@ -816,7 +819,6 @@ public class Taxonaut<T extends NameUsage<?>>
 		nameUsageQueryPanel.enableButtons(true);
 		setCursor(false);
 	    }
-
 	}
     }
 
@@ -966,6 +968,9 @@ public class Taxonaut<T extends NameUsage<?>>
 	    catch (ExecutionException e) {
 		statusLabel.setText(e.getMessage());
 	    }
+	    catch (Throwable e) {
+		statusLabel.setText(e.getMessage());
+	    }
 	    finally {
 		progress.setMinimum(progress.getMinimum());
 		progress.setIndeterminate(false);
@@ -1016,6 +1021,9 @@ public class Taxonaut<T extends NameUsage<?>>
 			statusLabel.setText("Interrupted: " + literal);
 		    }
 		    catch (ExecutionException e) {
+			statusLabel.setText(e.getMessage());
+		    }
+		    catch (Throwable e) {
 			statusLabel.setText(e.getMessage());
 		    }
 		    finally {
@@ -1507,6 +1515,9 @@ public class Taxonaut<T extends NameUsage<?>>
 		message = writeException.getMessage();
 		message = (message != null && message.length() > 0) ?
 		    message : pathName + " is not writable.";
+	    }
+	    catch (Throwable e) {
+		message = e.getMessage();
 	    }
 	    finally {
 		try {

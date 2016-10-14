@@ -34,7 +34,7 @@ import org.nomencurator.model.Rank;
  * {@code NameUsageExchanger} defines an intereface to exchange
  * {@code NameUsages}s of specified type with a data source
  *
- * @version 	18 July 2016
+ * @version 	11 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface NameUsageExchanger<T extends NameUsage<?>>
@@ -61,6 +61,21 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank);
 
     /**
+     * Returnes a {@code Collection} of {@code NameUsage}s having
+     * the name and {@code rank}.  {@code rank}
+     * may be ignored depending on the data source.
+     *
+     * @param query to be searched in the data source, a name literal or name literals separated by "|"
+     * @param rank to be searchied in the data source
+     * @param filter a {@link Collection} of {@link String} to narrow the result, or null for strict matching.
+     *
+     * @return NameUsage having {@code name}
+     * and {@code rank}, or null if it doesn't exist in
+     * the data source.
+     */
+    public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, Collection<String> filter);
+
+    /**
      * Returnes an array of {@code NameUsage} having
      * {@code name} and {@code rank}.  {@code rank}
      * may be ignored depending on the data source.
@@ -68,12 +83,38 @@ public interface NameUsageExchanger<T extends NameUsage<?>>
      * @param query to be searched in the data source, a name literal or name literals separated by "|"
      * @param rank to be searchied in the data source
      * @param matchingMode specifies the method for literal matching
+     * @param includeBasionyms true to include basionyms
+     * @param includeSynonyms true to include synonyms
+     * @param includeVernaculars true to include vernacular names
+     * @param locale specifying the language of vernacular names as {@link Locale}.  It is ignored
+     * if the query does not require vernacular names.
      *
      * @return NameUsage having {@code name}
      * and {@code rank}, or null if it doesn't exist in
      * the data source.
      */
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
+
+    /**
+     * Returnes an array of {@code NameUsage} having
+     * {@code name} and {@code rank}.  {@code rank}
+     * may be ignored depending on the data source.
+     *
+     * @param query to be searched in the data source, a name literal or name literals separated by "|"
+     * @param rank to be searchied in the data source
+     * @param filter a {@link Collection} of {@link String} to narrow the result, or null for strict matching.
+     * @param matchingMode specifies the method for literal matching
+     * @param includeBasionyms true to include basionyms
+     * @param includeSynonyms true to include synonyms
+     * @param includeVernaculars true to include vernacular names
+     * @param locale specifying the language of vernacular names as {@link Locale}.  It is ignored
+     * if the query does not require vernacular names.
+     *
+     * @return NameUsage having {@code name}
+     * and {@code rank}, or null if it doesn't exist in
+     * the data source.
+     */
+    public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, Collection<String> filter, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
 
     /**
      * Returns higher {@code NameUsage} above given

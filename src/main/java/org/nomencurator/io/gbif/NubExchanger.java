@@ -89,7 +89,7 @@ import lombok.Getter;
 /**
  * {@code NubExchanger} provides a GBIF CheklistBank NameUsage exchagner with cache.
  *
- * @version	29 Aug. 2016
+ * @version	14 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubExchanger
@@ -218,6 +218,11 @@ public class NubExchanger
 	return nameUsage;
     }
 
+    public Collection<NameUsage<NubNameUsage>> getNameUsages(String query, Rank rank, Collection<String> filter, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    {
+	return super.getNameUsages(query, rank, filter, filter != null ? MatchingMode.FULL_TEXT : matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
+    }
+
     protected Dataset getDataset(UUID datasetKey)
     {
 	if(datasetKey == null)
@@ -301,7 +306,6 @@ public class NubExchanger
 	    */
 	    literals.add(literal);
 	}
-
 	return getExactNameUsages(new HashSet<String>(), literals, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
@@ -325,13 +329,15 @@ public class NubExchanger
 
 	Set<String> canonicalNames = new HashSet<String>();
 	for (String literal : literals) {
-	    canonicalNames.addAll(getParsedCanonicalNames(literal, locale));
+	    Collection<String> pn = getParsedCanonicalNames(literal, locale);
+	    if (pn != null && !pn.isEmpty())
+		canonicalNames.addAll(pn);
+	    //canonicalNames.addAll(getParsedCanonicalNames(literal, locale));
 	}
 
 	for (String canonicalName : canonicalNames) {
 	    if (canonicalName == null || canonicalName.length() == 0)
 		continue;
-
 	    List<org.gbif.api.model.checklistbank.NameUsage> result = dataSource.listByCanonicalName(canonicalName, null, (UUID[])null);
 	    knowns.add(canonicalName);
 
@@ -393,7 +399,6 @@ public class NubExchanger
 		}
 	    }
 	}
-
 	return nameUsagesOfRank;
     }
 
@@ -789,14 +794,18 @@ public class NubExchanger
 			    parsed.addAll(dataSource.parse(canonicalName));
 		    }
 		}
+		else {
+		}
+	    }
+	    else {
 	    }
 	}
 	
-	List<String> cannonicalNames = new ArrayList<String>(parsed.size());
-	parsed.forEach(parsedName ->  cannonicalNames.add(parsedName.getCanonicalName()));
+	List<String> canonicalNames = new ArrayList<String>(parsed.size());
+	parsed.forEach(parsedName ->  canonicalNames.add(parsedName.getCanonicalName()));
 	parsed.clear();
 	
-	return cannonicalNames;
+	return canonicalNames;
     }
 
     protected String getParsedCanonicalName(String name)

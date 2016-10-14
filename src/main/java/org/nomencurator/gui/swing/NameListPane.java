@@ -95,7 +95,7 @@ import lombok.Setter;
  * {@code NameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	28 Aug. 2016
+ * @version 	14 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 class NameListPane<T extends NameUsage<?>>
@@ -409,15 +409,15 @@ class NameListPane<T extends NameUsage<?>>
 	if(enable) {
 		switch(nameTable.getSelectedRowCount()) {
 		case 0:
-		    ComponentEnabler.setEnabled(false, appendButton, compareButton, pivot, pivotLabel);
+		    ComponentEnabler.setEnabled(false, appendButton, compareButton, pivot, pivotLabel, roughSet, roughSetLabel);
 		    break;
 		case 1:
-		    ComponentEnabler.setEnabled(false, appendButton, compareButton, pivot, pivotLabel);
+		    ComponentEnabler.setEnabled(false, appendButton, compareButton, pivot, pivotLabel, roughSet, roughSetLabel);
 		    if(appendable)
-			ComponentEnabler.setEnabled(true, appendButton, pivot, pivotLabel);
+			ComponentEnabler.setEnabled(true, appendButton, pivot, pivotLabel, roughSet, roughSetLabel);
 		    break;
 		default:
-		    ComponentEnabler.setEnabled(true, compareButton, pivot, pivotLabel);
+		    ComponentEnabler.setEnabled(true, compareButton, pivot, pivotLabel, roughSet, roughSetLabel);
 		    if(appendable)
 			ComponentEnabler.setEnabled(true, appendButton);
 		    break;

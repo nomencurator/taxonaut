@@ -37,10 +37,10 @@ import java.util.Collection;
 /**
  * <CODE>SpeciesAPI</CODE> implements a client interface to use GBIF SpeciesAPI.
  *
- * @version 	15 July 2015
+ * @version 	14 Oct. 2015
  * @author Nozomi "James" Ytow
  */
-public class GBIFAPIClient /* implements GBIFAPI */ {
+public abstract class GBIFAPIClient /* implements GBIFAPI */ {
 
     static protected String ZERO_CONNECTOR = "";
     static protected String REST_AMPERSAND = "&";
@@ -97,7 +97,7 @@ public class GBIFAPIClient /* implements GBIFAPI */ {
      * @return REST-ish representaion of parametrs
      */
     protected String getParameter(String key, Collection<String> parameters) {
-	String parameter = null;
+	StringBuffer parameter = new StringBuffer();
 	if(parameters != null  &&  parameters.size() > 0) {
 	    String connector = "";
 	    try {
@@ -105,13 +105,15 @@ public class GBIFAPIClient /* implements GBIFAPI */ {
 	    }
 	    catch (UnsupportedEncodingException e) {
 	    }
-	    parameter = "";
 	    for (String value : parameters) {
-		if(value != null) {
+		if(value != null && value.length() > 0) {
 		try {
-		    parameter =  parameter  + connector + key + "=" + URLEncoder.encode(value, "utf-8");
-		    if(connector.length() == 0) {
-			connector = REST_AMPERSAND;
+		    value = URLEncoder.encode(value, "utf-8");
+		    if(value != null && value.length() > 0) {
+			parameter.append(connector).append(key).append("=").append(value);
+			if(connector.length() == 0) {
+			    connector = REST_AMPERSAND;
+			}
 		    }
 		}
 		catch (UnsupportedEncodingException e) {
@@ -119,12 +121,14 @@ public class GBIFAPIClient /* implements GBIFAPI */ {
 		}
 	    }
 	}
-	return parameter;
+	return parameter.toString();
     }
 
-    public GBIFAPIClient () {
+    protected GBIFAPIClient ()
+    {
 	setVersion(CURRENT_VERSION);
 	setBaseURL("http://api.gbif.org");
 	mapper = new ObjectMapper();
     }
+
 }

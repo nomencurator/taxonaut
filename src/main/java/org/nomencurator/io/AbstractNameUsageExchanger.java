@@ -42,7 +42,7 @@ import org.nomencurator.util.CollectionUtility;
  * {@code AbstractNameUsageExchanger} provides an abstract implementation of
  * {@code NameUsageExchanger}.
  *
- * @version 	27 Aug.. 2016
+ * @version 	14 Oct.. 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
@@ -108,10 +108,20 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
 
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank)
     {
-	return getNameUsages(query, rank, getDefaultMatchingMode(), false, false, false, null);
+	return getNameUsages(query, rank, null);
+    }
+
+    public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, Collection<String> filter)
+    {
+	return getNameUsages(query, rank, filter, getDefaultMatchingMode(), false, false, false, null);
     }
 
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    {
+	return getNameUsages(query, rank, null, matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
+    }
+
+    public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, Collection<String> filter, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
 	Collection<NameUsage<T>> nameUsages = null;
 	switch(matchingMode) {
@@ -133,7 +143,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
 	default:
 	    break;
 	}
-	return getNameUsagesPostProcess(nameUsages, matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
+	return getNameUsagesPostProcess(nameUsages, filter, matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     protected abstract Collection<NameUsage<T>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
@@ -158,9 +168,21 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected Collection<NameUsage<T>> getNameUsagesPostProcess(Collection<NameUsage<T>> nameUsages, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+    protected Collection<NameUsage<T>> getNameUsagesPostProcess(Collection<NameUsage<T>> nameUsages, Collection<String> filter, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
     {
-	return nameUsages;
+	if (filter == null || filter.isEmpty() || nameUsages == null || nameUsages.isEmpty())
+	    return nameUsages;
+	Collection<NameUsage<T>> result = new ArrayList<NameUsage<T>>();
+	for (NameUsage<T> nameUsage : nameUsages) {
+	    String literal = nameUsage.getLiteral();
+	    for (String key : filter) {
+		if (literal.contains(key)) {
+		    result.add(nameUsage);
+		    break;
+		}
+	    }
+	}
+	return result;
     }
 
     /**
