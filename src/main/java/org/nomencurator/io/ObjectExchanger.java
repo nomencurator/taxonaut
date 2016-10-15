@@ -22,6 +22,8 @@
 
 package org.nomencurator.io;
 
+import java.io.IOException;
+
 import java.util.Collection;
 
 import org.nomencurator.model.NamedObject;
@@ -30,7 +32,7 @@ import org.nomencurator.model.NamedObject;
  * {@code ObjectExchanger} defines an intereface to exchange
  * {@code Object}s of specified type with a data source
  *
- * @version 	02 July 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface ObjectExchanger<T extends NamedObject<?>>
@@ -45,7 +47,7 @@ public interface ObjectExchanger<T extends NamedObject<?>>
      *
      * @return array of {@code E} matching to {@code queryParameter}
      */
-    public Collection<T> getObjects(QueryParameter<T> queryParameter);
+    public Collection<T> getObjects(QueryParameter<T> queryParameter) throws IOException;
 
     /**
      * Returnes an array of {@code E}, each of which
@@ -57,7 +59,7 @@ public interface ObjectExchanger<T extends NamedObject<?>>
      *
      * @return array of {@code E} matching to {@code queryParameter}
      */
-    public Collection<T> getObjects(String query);
+    public Collection<T> getObjects(String query) throws IOException;
 
     /**
      * Returnes an array of {@code E}, each of which
@@ -71,7 +73,7 @@ public interface ObjectExchanger<T extends NamedObject<?>>
      *
      * @return {@code E} having {@code queryParameter}
      */
-    public Collection<T> getObjects(String query, MatchingMode matchingMode);
+    public Collection<T> getObjects(String query, MatchingMode matchingMode) throws IOException;
 
     /**
      * Sets {@code queryType} as default type of query

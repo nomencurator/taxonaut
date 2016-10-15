@@ -21,6 +21,8 @@
 
 package org.nomencurator.io;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +38,7 @@ import lombok.Setter;
 /**
  * {@code AbstractObjectExchanger} implements {@code ObjectExchanger}.
  *
- * @version 	02 July 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractObjectExchanger<T extends NamedObject<?>>
@@ -80,6 +82,7 @@ public abstract class AbstractObjectExchanger<T extends NamedObject<?>>
     }
 
     public Collection<T> getObjects(QueryParameter<T> filter)
+	throws IOException
     {
 	if(filter == null)
 	    return null;
@@ -89,6 +92,7 @@ public abstract class AbstractObjectExchanger<T extends NamedObject<?>>
     
     //public Collection<NamedObject<N, T>> getObjects(String query)
     public Collection<T> getObjects(String query)
+	throws IOException
     {
 	return getObjects(query, getDefaultMatchingMode());
     }

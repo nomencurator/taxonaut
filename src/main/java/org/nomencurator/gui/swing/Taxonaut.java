@@ -166,7 +166,7 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	14 Oct. 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
@@ -262,7 +262,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.1.6";
+    private static String version = "3.1.7";
 
     @Getter
     private static String softwareName = "Taxonaut";
@@ -781,13 +781,14 @@ public class Taxonaut<T extends NameUsage<?>>
 	    queryParameter =parameter;
 	}
 
-	@Override public 	Collection<T> doInBackground() {
+	@Override public 	Collection<T> doInBackground() throws Exception {
 	    return nameUsageExchanger.getObjects(queryParameter);
 	}
 
         @Override protected void done() 
 	{
 	    String queryLiteral = null;
+	    String message = null;
 	    QueryParameter<T> parameter = nameUsageQuery.getQueryParameter();
 	    if (parameter instanceof NameUsageQueryParameter) {
 		NameUsageQueryParameter<T> queryParameter = (NameUsageQueryParameter<T>)parameter;
@@ -800,21 +801,23 @@ public class Taxonaut<T extends NameUsage<?>>
 		for(T result : results) {
 		    nameUsages.add((NameUsage<?>)result);
 		}
-		statusLabel.setText(queryMessages.getMessage(nameUsages.size(), new Object[]{queryLiteral}));
 		((NameTableModel)nameListPane.getNameList().getModel()).set(nameUsages);
+		message = queryMessages.getMessage(nameUsages.size(), new Object[]{queryLiteral});
+
 	    }
 	    catch (InterruptedException e) {
-		statusLabel.setText("Interrupted: " + queryLiteral);
+		message = "Interrupted: " + queryLiteral;
 	    }
 	    catch (ExecutionException e) {
-		statusLabel.setText(e.getMessage());
+		message = e.getMessage();
 	    }
 	    catch (Throwable e) {
-		statusLabel.setText(e.getMessage());
+		message = e.getMessage();
 	    }
 	    finally {
 		progress.setMinimum(progress.getMinimum());
 		progress.setIndeterminate(false);
+		statusLabel.setText(message);
 		statusLayout.show(statusPanel, STATUS_LABEL);
 		nameUsageQueryPanel.enableButtons(true);
 		setCursor(false);
@@ -845,7 +848,7 @@ public class Taxonaut<T extends NameUsage<?>>
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override public UnitedNameTreeModel doInBackground() {
+	@Override public UnitedNameTreeModel doInBackground() throws Exception {
 		Rank higher = comparisonQueryParameter.getHigher();
 		int height = comparisonQueryParameter.getHeight();
 		Rank lower = comparisonQueryParameter.getLower();
@@ -938,6 +941,7 @@ public class Taxonaut<T extends NameUsage<?>>
 
         @Override protected void done() 
 	{
+	    String message = null;
 	    try {
 		List<NameTreeTable<T>> tables = compare(get());
 		// AlignerTree is shared by NameTreeTables
@@ -961,21 +965,22 @@ public class Taxonaut<T extends NameUsage<?>>
 		    localQueryPanel.setEnabled(true);
 		    queryTabs.setEnabledAt(queryTabs.indexOfComponent(localQueryPanel), true);
 		}
+		message = "Comparison and analysis done";
 	    }
 	    catch (InterruptedException e) {
-		statusLabel.setText("Interrupted");
+		message = "Interrupted";
 	    }
 	    catch (ExecutionException e) {
-		statusLabel.setText(e.getMessage());
+		message = e.getMessage();
 	    }
 	    catch (Throwable e) {
-		statusLabel.setText(e.getMessage());
+		message = e.getMessage();
 	    }
 	    finally {
 		progress.setMinimum(progress.getMinimum());
 		progress.setIndeterminate(false);
 		progress.setString("");
-		statusLabel.setText("Comparison and analysis done");
+		statusLabel.setText(message);
 		statusLayout.show(statusPanel, STATUS_LABEL);
 		nameListPane.enableButtons(true);
 		detailTabs.setSelectedComponent(hierarchiesPane);
@@ -1205,27 +1210,36 @@ public class Taxonaut<T extends NameUsage<?>>
 	    this.nameUsage = nameUsage;
 	}
 
-	@Override public NameTreeModel doInBackground() {
-	    return getSelectedTreeModel(nameUsage);
+	@Override public NameTreeModel doInBackground() throws Exception{
+	    return  getSelectedTreeModel(nameUsage);
 	}
 
         @Override protected void done() {
-	    NameTreeModel nameTreeModel = getSelectedTreeModel(nameUsage);
-	    if(nameTreeModel == null) {
-		clearNameUsage();
+	    String message = null;
+	    try {
+		//NameTreeModel nameTreeModel = getSelectedTreeModel(nameUsage);
+		NameTreeModel nameTreeModel = get();
+		if(nameTreeModel == null) {
+		    clearNameUsage();
+		}
+		else {
+		    tree.setRootVisible(true);
+		    tree.setModel(nameTreeModel);
+		    tree.expandAll();
+		}
+		message = "Retrieved the hierarchy of " + nameUsage.getLiteral() + "  in " + nameUsage.getViewName();
 	    }
-	    else {
-		tree.setRootVisible(true);
-		tree.setModel(nameTreeModel);
-		tree.expandAll();
+	    catch (Exception e) {
+		message = e.getMessage();
 	    }
-
-	    progress.setMinimum(progress.getMinimum());
-	    progress.setIndeterminate(false);
-	    progress.setString("");
-	    statusLabel.setText("Retrieved the hierarchy of " + nameUsage.getLiteral() + "  in " + nameUsage.getViewName());
-	    statusLayout.show(statusPanel, STATUS_LABEL);
-	    nameListPane.enableButtons(true);
+	    finally {
+		progress.setMinimum(progress.getMinimum());
+		progress.setIndeterminate(false);
+		progress.setString("");
+		statusLabel.setText(message);
+		statusLayout.show(statusPanel, STATUS_LABEL);
+		nameListPane.enableButtons(true);
+	    }
 	}
     }
 
@@ -1261,6 +1275,7 @@ public class Taxonaut<T extends NameUsage<?>>
 
     @SuppressWarnings({"rawtypes", "unchecked"})
 	protected Collection<NameUsage<?>> getRoots(NameUsageQueryParameter<T> queryParameter)
+	throws IOException
     {
 	if(queryParameter == null)
 	    return null;
@@ -1272,6 +1287,7 @@ public class Taxonaut<T extends NameUsage<?>>
 
     @SuppressWarnings({"rawtypes", "unchecked"})
 	protected Collection<NameUsage<?>> getRoots(NameUsage<?> nameUsage)
+	throws IOException
     {
 	if(nameUsage == null || nameListPane == null)
 	    return null;
@@ -1299,6 +1315,7 @@ public class Taxonaut<T extends NameUsage<?>>
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected NameTreeModel getSelectedTreeModel(NameUsage<?> nameUsage)
+	throws IOException
     {
 	if(nameUsage == null || nameListPane == null)
 	    return null;

@@ -111,7 +111,7 @@ import org.codehaus.jackson.map.DeserializationConfig;
 /**
  * <CODE>SpeciesAPI</CODE> implements a client interface to use GBIF SpeciesAPI.
  *
- * @version 	14 Oct. 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class SpeciesAPIClient
@@ -407,21 +407,34 @@ public class SpeciesAPIClient
 	super();
 	setSpeciesURLEpithet(Constants.SPECIES_PATH);
 	setParserURLEpithet("parser");
-	mapper.getDeserializationConfig().addMixInAnnotations(NameUsage.class, NameUsageMixIn.class);
+	 mapper.getDeserializationConfig().addMixInAnnotations(NameUsage.class, NameUsageMixIn.class);
+	// just in case
+	mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public NameUsage get(int usageKey) {
+    public NameUsage get(int usageKey)
+	throws MalformedURLException, IOException
+    {
 	return get(usageKey, (Locale[])null);
     }
 
     @Override
     public NameUsage get(int usageKey, Locale locale)
     {
-	return get(usageKey, getArray(locale));
+	NameUsage nameUsage = null;
+	try {
+	    nameUsage = get(usageKey, getArray(locale));
+	}
+	catch (MalformedURLException e) {
+	}
+	catch (IOException e) {
+	}
+	return nameUsage;
     }
 
 
     public NameUsage get(int usageKey, @Nullable Locale ... locales)
+	throws MalformedURLException, IOException
     {
 	NameUsage nameUsage = null;
 	StringBuffer resourceURL = new StringBuffer(getResourceURL(usageKey));
@@ -430,17 +443,28 @@ public class SpeciesAPIClient
 	    resourceURL.append("?").append(languages);
 	}
 
+	HttpURLConnection connection = null;
+	MalformedURLException mx = null;
+	IOException iox = null;
 	try {
-	    HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
+	    connection = getConnection(resourceURL.toString(), locales);
 	    nameUsage = mapper.readValue(connection.getInputStream(), NameUsage.class);
-	    connection.disconnect();
-	}
-	catch (ProtocolException e) {
 	}
 	catch (MalformedURLException e) {
+	    mx = e;
 	}
 	catch (IOException e) {
+	    iox = e;
 	}
+	finally {
+	    if (connection != null)
+		connection.disconnect();
+	    if (mx != null)
+		throw mx;
+	    if (iox != null)
+		throw iox;
+	}
+
 	return nameUsage;
     }
 
@@ -483,6 +507,7 @@ public class SpeciesAPIClient
     }
 
     public List<NameUsage> list(@Nullable UUID datasetKey, @Nullable String sourceId, @Nullable Locale ... locales)
+	throws IOException
     {
 	PagingResponse<NameUsage> response = list(null, datasetKey,sourceId, locales);
 	if (response == null)
@@ -507,12 +532,19 @@ public class SpeciesAPIClient
 
     public PagingResponse<NameUsage> list(Locale locale, @Nullable UUID datasetKey, @Nullable String sourceId, @Nullable Pageable page)
     {
-	return list(page, datasetKey, sourceId, locale);
+	PagingResponse<NameUsage> response = null;
+	try {
+	    response = list(page, datasetKey, sourceId, locale);
+	}
+	catch (IOException e) {
+	}
+	return response;
     }
 
 
     public PagingResponse<NameUsage> list(@Nullable Pageable page, @Nullable UUID datasetKey, @Nullable String sourceId,
 					  @Nullable Locale ... locales)
+	throws IOException
     {
 	StringBuffer resourceURL =  new StringBuffer(speciesURL);
 	if ((locales != null && locales.length > 0) || datasetKey != null || sourceId != null || page != null)  {
@@ -571,6 +603,7 @@ public class SpeciesAPIClient
     }
 
     public List<NameUsage> listByCanonicalName(String canonicalName, @Nullable List<Locale> locales, @Nullable UUID ... datasetKey)
+	throws IOException
     {
 	PagingResponse<NameUsage> response = listByCanonicalName(null, canonicalName, locales, datasetKey);
 	if (response == null)
@@ -597,16 +630,24 @@ public class SpeciesAPIClient
     public PagingResponse<NameUsage> listByCanonicalName(Locale locale, String canonicalName, @Nullable Pageable page,
 						       @Nullable UUID ... datasetKey)
     {
-	return listByCanonicalName(page, canonicalName, getList(locale), datasetKey);
+	PagingResponse<NameUsage> response = null;
+	try {
+	    response = listByCanonicalName(page, canonicalName, getList(locale), datasetKey);
+	}
+	catch (IOException e) {
+	}
+
+	return response;
     }
 
 
-  public PagingResponse<NameUsage> listByCanonicalName(
-						       @Nullable Pageable page,
-						       String canonicalName,
-						       @Nullable List<Locale> locales,
-						       @Nullable UUID ... datasetKey
-						       )
+    public PagingResponse<NameUsage> listByCanonicalName(
+							 @Nullable Pageable page,
+							 String canonicalName,
+							 @Nullable List<Locale> locales,
+							 @Nullable UUID ... datasetKey
+							 )
+      throws IOException
     {
 	StringBuffer resourceURL =  new StringBuffer(speciesURL);
 	if ((locales != null  && locales.size() > 0) || canonicalName != null || page != null || datasetKey != null)  {
@@ -656,16 +697,10 @@ public class SpeciesAPIClient
       }
 
       PagingResponse<NameUsage> response = null;
-      try {
-	  HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
-	  response = mapper.readValue(connection.getInputStream(),
-				      new TypeReference<PagingResponse<NameUsage>>() {});
-	  connection.disconnect();
-      }
-      catch (MalformedURLException e) {
-      }
-      catch (IOException e) {
-      }
+      HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
+      response = mapper.readValue(connection.getInputStream(),
+				  new TypeReference<PagingResponse<NameUsage>>() {});
+      connection.disconnect();
 
       return response;
   }

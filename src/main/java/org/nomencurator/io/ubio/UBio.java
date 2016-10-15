@@ -21,6 +21,8 @@
 
 package org.nomencurator.io.ubio;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,7 +78,7 @@ import lombok.Setter;
 /**
  * {@code UBio} provides a mapping between Nomencurator data and a uBio SOAP server
  *
- * @version 	15 July 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class UBio
@@ -601,6 +603,7 @@ public class UBio
     }
 
     public Collection<NameUsage<UBioNameUsageNode>>getRoots(String name)
+	throws IOException
     {
 	return getRoots(getNameUsages(getObjects(name)));
     }

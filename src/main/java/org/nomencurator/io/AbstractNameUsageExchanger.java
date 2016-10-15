@@ -21,6 +21,8 @@
 
 package org.nomencurator.io;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,7 +44,7 @@ import org.nomencurator.util.CollectionUtility;
  * {@code AbstractNameUsageExchanger} provides an abstract implementation of
  * {@code NameUsageExchanger}.
  *
- * @version 	14 Oct.. 2016
+ * @version 	15 Oct.. 2016
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
@@ -50,6 +52,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     implements NameUsageExchanger<T>
 {
     public Collection<T> getObjects(QueryParameter<T> queryParameter)
+	throws IOException
     {
 	if(queryParameter == null)
 	    return null;
@@ -94,7 +97,9 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
     
     // FIXME: reconsider argument type
-    protected List<T> getObjects(Collection<? extends NameUsage<T>> nameUsages) {
+    protected List<T> getObjects(Collection<? extends NameUsage<T>> nameUsages)
+	throws IOException
+    {
 	if(nameUsages == null)
 	    return null;
 	List<T> objects = new ArrayList<>(nameUsages.size());
@@ -107,21 +112,25 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank)
+	throws IOException
     {
 	return getNameUsages(query, rank, null);
     }
 
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, Collection<String> filter)
+	throws IOException
     {
 	return getNameUsages(query, rank, filter, getDefaultMatchingMode(), false, false, false, null);
     }
 
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	return getNameUsages(query, rank, null, matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     public Collection<NameUsage<T>> getNameUsages(String query, Rank rank, Collection<String> filter, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	Collection<NameUsage<T>> nameUsages = null;
 	switch(matchingMode) {
@@ -146,29 +155,34 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
 	return getNameUsagesPostProcess(nameUsages, filter, matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
-    protected abstract Collection<NameUsage<T>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale);
+    protected abstract Collection<NameUsage<T>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale) throws IOException;
 
     protected Collection<NameUsage<T>> getContainerNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     protected Collection<NameUsage<T>> getFuzzyNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     protected Collection<NameUsage<T>> getFullTextNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     protected Collection<NameUsage<T>> getSuggestedNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	return getExactNameUsages(query, rank, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     protected Collection<NameUsage<T>> getNameUsagesPostProcess(Collection<NameUsage<T>> nameUsages, Collection<String> filter, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	if (filter == null || filter.isEmpty() || nameUsages == null || nameUsages.isEmpty())
 	    return nameUsages;
@@ -261,14 +275,17 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
      * @param nameUsage of interest
      */
 
-    protected abstract void resolveHigherNameUsages(NameUsage<T> nameUsage);
+    protected abstract void resolveHigherNameUsages(NameUsage<T> nameUsage) throws IOException;
+
 
     public Collection<NameUsage<T>> getHigher(NameUsage<T> nameUsage)
+	throws IOException
     {
 	return getHigher(nameUsage, null, 1);
     }
 
     public Collection<NameUsage<T>> getHigher(NameUsage<T> nameUsage, Rank rank, int height)
+	throws IOException
     {
 	if (nameUsage == null)
 	    return null;
@@ -313,10 +330,11 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
      *
      * @param nameUsage of interest
      */
-    protected abstract void resolveLowerNameUsages(NameUsage<T> nameUsage);
+    protected abstract void resolveLowerNameUsages(NameUsage<T> nameUsage) throws IOException;
 
     // FIXME to aviod <?> 
     public List<NameUsage<T>> getLowerNameUsages(NameUsage<T> nameUsage, Rank rank, int depth)
+	throws IOException
     {
 	if(nameUsage == null)
 	    return null;
@@ -351,7 +369,9 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
      * @param objects {@code Collection} containing {@code NamedObject}s.
      * @return gathered {@code Collection} of {@code NameUsage<T>}s.
      */
-    protected List<NameUsage<T>> getNameUsages(Collection<? extends NamedObject<?>> objects) {
+    protected List<NameUsage<T>> getNameUsages(Collection<? extends NamedObject<?>> objects)
+	throws IOException
+    {
 	if(objects == null)
 	    return null;
 	List<NameUsage<T>> nameUsages = new ArrayList<>(objects.size());
@@ -366,11 +386,13 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getHierarchies(String query)
+	throws IOException
     {
 	return getHierarchies(getNameUsages(getObjects(query)));
     }
 
     protected Collection<NameUsage<T>> getHierarchies(Collection<? extends NameUsage<T>> nameUsages)
+	throws IOException
     {
 	List<NameUsage<T>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<T>>());
 	for (NameUsage<T> nameUsage: nameUsages) {
@@ -380,12 +402,14 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getHierarchies(NameUsage<T> nameUsage)
+	throws IOException
     {
 	return getPartialHierarchies(nameUsage);
     }
 
     @Override
 	public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages)
+	throws IOException
     {
 	List<NameUsage<?>> hierarchies = new ArrayList<>();
 	for (NameUsage<?> nameUsage: nameUsages) {
@@ -396,6 +420,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getPartialHierarchies(Collection<? extends NameUsage<T>> nameUsages)
+	throws IOException
     {
 	List<NameUsage<T>> hierarchies = Collections.synchronizedList(new ArrayList<NameUsage<T>>());
 	for (NameUsage<T> nameUsage: nameUsages) {
@@ -405,6 +430,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getPartialHierarchies(NameUsage<T> nameUsage)
+	throws IOException
     {
 	return getPartialHierarchies(nameUsage, 
 				     null,
@@ -414,6 +440,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getPartialHierarchies(NameUsageQueryParameter<T> parameter)
+	throws IOException
     {
 	NameUsage<T> nameUsage = parameter.getNameUsageFilter();
 	Rank higher = parameter.getHigher();
@@ -425,12 +452,14 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getPartialHierarchies(NameUsage<T> nameUsage, Rank higher, int height, Rank lower, int depth)
+	throws IOException
     {
 	getLowerNameUsages(nameUsage, lower, depth);
 	return getHigher(nameUsage, higher, height);
     }
 
     public Collection<NameUsage<T>> getPartialHierarchies(String query)
+	throws IOException
     {
 	Collection<NameUsage<T>> usages = getNameUsages(getObjects(query));
 	if(usages == null)
@@ -453,16 +482,19 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getRoots(NameUsage<T> nameUsage)
+	throws IOException
     {
 	return getPartialHierarchies(nameUsage, null, FULL_HEIGHT, null, 0);
     }
 
     public Collection<NameUsage<T>> getRoots(String query)
+	throws IOException
     {
 	return getRoots(getNameUsages(getObjects(query)));
     }
 
     public Collection<NameUsage<T>> getRoots(Collection<? extends NameUsage<T>> nameUsages)
+	throws IOException
     {
 	List<NameUsage<T>> roots = Collections.synchronizedList(new ArrayList<NameUsage<T>>());
 	for (NameUsage<T> nameUsage: nameUsages) {
@@ -473,6 +505,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
 
     @Override
 	public Collection<NameUsage<T>> getDescendentNames(NameUsage<T> nameUsage)
+	throws IOException
     {
 	if(nameUsage == null)
 	    return null;
@@ -505,6 +538,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getDescendentNames(String query)
+	throws IOException
     {
 	if(query == null || query.length() == 0)
 	    return null;
@@ -537,6 +571,7 @@ public abstract class AbstractNameUsageExchanger<T extends NameUsage<?>>
     }
 
     public Collection<NameUsage<T>> getRelevantNameUsages(String query)
+	throws IOException
     {
 	if(query == null || query.length() == 0)
 	    return null;

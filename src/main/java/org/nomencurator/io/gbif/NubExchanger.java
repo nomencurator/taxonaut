@@ -35,6 +35,9 @@ import org.gbif.api.vocabulary.Language;
 
 import java.io.Serializable;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -89,7 +92,7 @@ import lombok.Getter;
 /**
  * {@code NubExchanger} provides a GBIF CheklistBank NameUsage exchagner with cache.
  *
- * @version	14 Oct. 2016
+ * @version	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubExchanger
@@ -130,6 +133,7 @@ public class NubExchanger
     };
 
     public Collection<NubNameUsage> getObjects(String query, MatchingMode matchingMode)
+	throws IOException
     {
 	String[] localKeys = splitQuery(query);
 	if(localKeys == null)
@@ -158,6 +162,7 @@ public class NubExchanger
     }
 
     public NubNameUsage getObject(Integer usageKey)
+	throws IOException
     {
 	if(usageKey == null)
 	    return null;
@@ -219,11 +224,13 @@ public class NubExchanger
     }
 
     public Collection<NameUsage<NubNameUsage>> getNameUsages(String query, Rank rank, Collection<String> filter, MatchingMode matchingMode, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	return super.getNameUsages(query, rank, filter, filter != null ? MatchingMode.FULL_TEXT : matchingMode, includeBasionyms, includeSynonyms, includeVernaculars, locale);
     }
 
     protected Dataset getDataset(UUID datasetKey)
+	throws IOException
     {
 	if(datasetKey == null)
 	    return null;
@@ -250,6 +257,7 @@ public class NubExchanger
     }
 
     protected Collection<NubNameUsage> getNewLiterals(List<org.gbif.api.model.checklistbank.NameUsage> nameUsages, Set<Integer> nubKeys, Set<String> knowns, Set<String> newLiterals)
+	throws IOException
     {
 	if (nameUsages == null)
 	    return null;
@@ -270,6 +278,7 @@ public class NubExchanger
     }
 
     protected Collection<NubNameUsage> getSynonyms(org.gbif.api.model.checklistbank.NameUsage nub, Locale locale, Set<Integer> nubKeys, Set<String> knowns, Set<String> newLiterals)
+	throws IOException
     {
 	if (nub == null)
 	    return null;
@@ -295,6 +304,7 @@ public class NubExchanger
 
 
     @Override protected Collection<NameUsage<NubNameUsage>> getExactNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	String[] queries = splitQuery(query);
 	Set<String> literals = new HashSet<String>();
@@ -310,6 +320,7 @@ public class NubExchanger
     }
 
     protected Collection<NameUsage<NubNameUsage>> getExactNameUsages(Set<String> knowns, Set<String> literals, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	if (literals == null)
 	    return null;
@@ -404,6 +415,7 @@ public class NubExchanger
 
     @SuppressWarnings({"rawtypes", "unchecked"})
 	protected Collection<NameUsage<NubNameUsage>> getContainerNameUsages(String query, Rank rank, boolean includeBasionyms, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
@@ -434,11 +446,13 @@ public class NubExchanger
 
 
     protected Collection<NubNameUsage> getFuzzyNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	return getFuzzyNameUsages(query, rank, false, true, null, null);
     }
 
     protected Collection<NubNameUsage> getFuzzyNameUsages(String query, Rank rank, boolean strict, boolean verbose, Rank rankScope, String nameScope)
+	throws IOException
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
@@ -476,6 +490,7 @@ public class NubExchanger
     }
 
     protected NubNameUsage cache(NubNameUsageMatchQuery query, NameUsageMatch matchResult)
+	throws IOException
     {
 	if(query == null || matchResult == null)
 	    return null;
@@ -522,6 +537,7 @@ public class NubExchanger
     }
 
     protected NubNameUsage createNubNameUsage(NameUsageSearchResult result)
+	throws IOException
     {
 	NubNameUsage nameUsage = getObject(result.getKey());
 	if (nameUsage == null) {
@@ -540,6 +556,7 @@ public class NubExchanger
     }
 
     protected Collection<NubNameUsage> getFullTextNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
@@ -569,6 +586,7 @@ public class NubExchanger
     }
 
     protected NubNameUsage createNubNameUsage(NameUsageSuggestResult result)
+	throws IOException
     {
 	NubNameUsage nameUsage = getObject(result.getKey());
 	if (nameUsage == null) {
@@ -580,6 +598,7 @@ public class NubExchanger
 
 
     protected Collection<NubNameUsage> getSuggestedNameUsages(String query, Rank rank, boolean includeSynonyms, boolean includeVernaculars, Locale locale)
+	throws IOException
     {
 	String[] literals = splitQuery(query);
 	if (literals == null)
@@ -608,6 +627,7 @@ public class NubExchanger
     // FIXME to use e.g. <E extends NameUsage<?>> instead of NameUsage<?>
     @SuppressWarnings({"unchecked", "rawtypes"})
 	protected void resolveLowerNameUsages(NameUsage<NubNameUsage> nameUsage)
+	throws IOException
     {
 	String key = nameUsage.getLocalKey();
 	if(key == null || key.length() == 0) {
@@ -635,6 +655,7 @@ public class NubExchanger
     }
 
     protected void resolveHigherNameUsages(NameUsage<NubNameUsage> nameUsage)
+	throws IOException
     {
 	// unnecessary because higher path is embedded
     }
@@ -642,6 +663,7 @@ public class NubExchanger
     // FIXME to use e.g. <E extends NameUsage<?>> instead of NameUsage<?>
     @SuppressWarnings({"unchecked", "rawtypes"})
 	public Collection<NameUsage<NubNameUsage>> getHigher(NameUsage<NubNameUsage> nameUsage, Rank rank, int height)
+	throws IOException
     {
 	if(nameUsage == null) {
 	    return null;
@@ -683,6 +705,7 @@ public class NubExchanger
 
 
     protected NubNameUsage getObject(org.gbif.api.model.checklistbank.NameUsage scientificNameUsage)
+	throws IOException
     {
 	NubNameUsage nameUsage = null;
 	if(scientificNameUsage != null) {
@@ -836,7 +859,9 @@ public class NubExchanger
 	return nameUsages;
     }
 
-    protected Integer getNubKey(NubNameUsage nameUsage) {
+    protected Integer getNubKey(NubNameUsage nameUsage)
+	throws IOException
+    {
 	if(nameUsage == null)
 	    return null;
 
@@ -888,11 +913,12 @@ public class NubExchanger
 	
 
     public Collection<NameUsage<NubNameUsage>> getRelevantNameUsages(NameUsage<NubNameUsage> nameUsage)
+	throws IOException
     {
 	if(nameUsage == null || !(nameUsage instanceof NubNameUsage))
 	    return null;
-
-	Integer key = getNubKey((NubNameUsage)nameUsage);
+	Integer key = null;
+	key = getNubKey((NubNameUsage)nameUsage);
 
 	if(key == null) {
 	    String keyString = nameUsage.getLocalKey();
@@ -925,6 +951,7 @@ public class NubExchanger
 
     @Override
 	public Collection<NameUsage<?>> integrateHierarchies(Collection<? extends NameUsage<?>> nameUsages)
+	throws IOException
     {
 	Collection<NameUsage<?>> hierarchies = super.integrateHierarchies(nameUsages);
 	List<NameUsage<?>> integrated = new ArrayList<NameUsage<?>>();

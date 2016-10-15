@@ -22,9 +22,11 @@
 
 package org.nomencurator.model.gbif;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import java.net.URI;
+import java.net.MalformedURLException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,7 +90,7 @@ import lombok.Getter;
 /**
  * {@code NubNameUsage} is an implementation of GBIF CheklistBank NameUsage, or nub.
  *
- * @version 	27 Aug. 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NubNameUsage
@@ -98,7 +100,7 @@ public class NubNameUsage
 
     @Getter
     private static SpeciesAPIClient dataSource;
-    
+
     private static String pidPrefix = "urn:lsid:www.gbif.org:species:";
 
     public static String getPidPrefix()
@@ -169,8 +171,8 @@ public class NubNameUsage
     @Override
     public int hashCode() {
 	return Objects.hash(super.hashCode(),
-			    pid, 
-			    scientificNameUsage, 
+			    pid,
+			    scientificNameUsage,
 			    nameUsageSearchResult,
 			    nameUsageSuggestResult,
 			    nameUsageMatch,
@@ -296,7 +298,7 @@ public class NubNameUsage
 	       return false;
 	    }
 	}
-	
+
 	this.dataset = dataset;
 
 	return true;
@@ -364,7 +366,7 @@ public class NubNameUsage
 				  NameUsageSearchResult nameUsageSearchResult,
 				  NameUsageSuggestResult nameUsageSuggestResult)
     {
-	return isConformal(nameUsageSearchResult, nameUsageSuggestResult) && 
+	return isConformal(nameUsageSearchResult, nameUsageSuggestResult) &&
 	    isConformal(scientificNameUsage, nameUsageSuggestResult) &&
 	    isConformal(scientificNameUsage, nameUsageSearchResult);
     }
@@ -427,7 +429,7 @@ public class NubNameUsage
 		this.lowerNameUsages = Collections.emptyList();
 	    */
 	}
-	
+
 	this.scientificNameUsage = scientificNameUsage;
 
 	return true;
@@ -613,7 +615,6 @@ public class NubNameUsage
     }
 
     protected NubNameUsage createNameUsage(NameUsage<?> nameUsage)
-
     {
 	NubNameUsage nub = null;
 	if(nameUsage instanceof org.gbif.api.model.checklistbank.NameUsage)
@@ -632,11 +633,20 @@ public class NubNameUsage
 
     protected NubNameUsage createNameUsage(String persistentID)
     {
+	NubNameUsage usage = null;
 	if(dataSource != null) {
-	    return new NubNameUsage(dataSource.get(Integer.valueOf(persistentID)));
+	    try {
+		usage = new NubNameUsage(dataSource.get(Integer.valueOf(persistentID)));
+	    }
+	    catch (MalformedURLException e) {
+	    }
+	    catch (IOException e) {
+	    }
 	}
 	else
-	    return createNameUsage();
+	    usage = createNameUsage();
+
+	return usage;
     }
 
     public Boolean isExtinct()
@@ -1707,7 +1717,7 @@ public class NubNameUsage
     {
 	Boolean synonymy = super.synonym(nameUsage);
 
-	if(synonymy != null 
+	if(synonymy != null
 	   && !synonymy
 	   && nameUsage != null
 	   && (nameUsage instanceof NubNameUsage)) {
@@ -1764,7 +1774,7 @@ public class NubNameUsage
 	}
 
 	String authority = super.getAuthority();
-	if((authority == null || authority.length() == 0) 
+	if((authority == null || authority.length() == 0)
 	   && scientificNameUsage != null)
 	    authority = scientificNameUsage.getAuthorship();
 
@@ -1943,7 +1953,7 @@ public class NubNameUsage
 	    summary.append("\n");
 	    summary.append("dataset UUID: ").append(dataset.getKey());
 	}
-	
+
 	return summary.toString();
     }
 

@@ -35,6 +35,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -95,7 +97,7 @@ import lombok.Setter;
  * {@code NameListPane} provides a list of name usages and
  * methods to filter them.
  *
- * @version 	14 Oct. 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 class NameListPane<T extends NameUsage<?>>
@@ -544,6 +546,8 @@ class NameListPane<T extends NameUsage<?>>
 
 
     public String getNames(String name, Rank rank, String authority, String year, MatchingMode queryType)
+	throws IOException
+
     {
 	return nameTable.getNames(name, rank, authority, year, queryType);
     }

@@ -21,6 +21,8 @@
 
 package org.nomencurator.gui.swing;
 
+import java.io.IOException;
+
 import java.text.MessageFormat;
 
 import java.util.ArrayList;
@@ -64,7 +66,7 @@ import org.nomencurator.gui.swing.tree.NameTreeNode;
  * {@code NameTable} provides a JTable to display a list of NameUsages
  * using {@code NameTreeTableModel}
  *
- * @version 	15 July 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTable
@@ -327,6 +329,7 @@ public class NameTable
     }
 
     public String getNames(String name, Rank rank, String authority, String year, MatchingMode queryType)
+	throws IOException
     {
 	return getNames(queryManager.getNameUsages(name, rank, queryType, false, false, false, null), name, rank, authority, year, queryType);
     }

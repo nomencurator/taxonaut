@@ -35,6 +35,8 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -114,7 +116,7 @@ import org.nomencurator.gui.swing.tree.NameTreeCellRenderer;
 /**
  * A {@code JTree} for a {@code NameUsageNode}
  *
- * @version 	18 July 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NameTree
@@ -445,6 +447,7 @@ class GenericNameTree<T extends NameUsage<?>, N extends NameUsageNode<?>>
     }
 
     protected void processMouseEventGenerics(MouseEvent event)
+	throws IOException
     {
 	if(event.getID() == MouseEvent.MOUSE_PRESSED) {
 	    TreePath path =

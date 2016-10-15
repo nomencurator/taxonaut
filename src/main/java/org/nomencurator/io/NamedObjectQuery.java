@@ -21,6 +21,8 @@
 
 package org.nomencurator.io;
 
+import java.io.IOException;
+
 // import java.util.ArrayList;
 import java.util.Collection;
 // import java.util.Collections;
@@ -35,7 +37,7 @@ import lombok.Getter;
 /**
  * {@code NamedObjectQuery} implements {@code ObjectExchanger}.
  *
- * @version 	29 June 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public class NamedObjectQuery<T extends NamedObject<?>>
@@ -64,11 +66,13 @@ public class NamedObjectQuery<T extends NamedObject<?>>
     }
 
     public void run()
+	throws IOException
     {
 	call();
     }
 
     public Collection<T> call()
+	throws IOException
     {
 	results = exchanger.getObjects(parameter);
 

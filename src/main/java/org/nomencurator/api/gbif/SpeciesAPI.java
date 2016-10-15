@@ -21,6 +21,8 @@
 
 package org.nomencurator.api.gbif;
 
+import java.io.IOException;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -53,7 +55,7 @@ import org.nomencurator.api.gbif.model.checklistbank.ParsedName;
 /**
  * <CODE>SpeciesAPI</CODE> defines an interface to use GBIF SpeciesAPI.
  *
- * @version 	22 Sep. 2015
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, NameUsageSearchService, NameParserService,  NameUsageExtensionServices {
@@ -67,7 +69,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of name usages
      */
-    public List<NameUsage> list(@Nullable UUID datasetKey, @Nullable String sourceId, @Nullable Locale ... locales);
+    public List<NameUsage> list(@Nullable UUID datasetKey, @Nullable String sourceId, @Nullable Locale ... locales) throws IOException;
     
     /**
      * Returns a List of all name usages with a given canonical name across all or specified checklists.
@@ -78,7 +80,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of name usages matching the exact canonical name
      */
-    public List<NameUsage> listByCanonicalName(String canonicalName, @Nullable List<Locale> locales, @Nullable UUID ... datasetKeys);
+    public List<NameUsage> listByCanonicalName(String canonicalName, @Nullable List<Locale> locales, @Nullable UUID ... datasetKeys) throws IOException;
 
     /**
      * Returns a List of  all accepted lower name usages for a given name usages
@@ -88,7 +90,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of lower name usages.
      */
-    public List<NameUsage> listChildren(int parentKey, @Nullable Locale ... locales);
+    public List<NameUsage> listChildren(int parentKey, @Nullable Locale ... locales) throws IOException;
 
     /**
      * Retruns a List of all root name usages for the given checklist, i.e. accepted usages without any higher name usage.
@@ -100,7 +102,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @see org.gbif.api.model.Constants#NUB_DATASET_KEY
      */
-    public List<NameUsage> listRoot(UUID datasetKey, @Nullable Locale ... locales);
+    public List<NameUsage> listRoot(UUID datasetKey, @Nullable Locale ... locales) throws IOException;
 
     /**
      * Lists all synonym name usages for a given accepted name usage.
@@ -110,7 +112,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of synonym name usages.
      */
-    public List<NameUsage> listSynonyms(int usageKey, @Nullable Locale ... locales);
+    public List<NameUsage> listSynonyms(int usageKey, @Nullable Locale ... locales) throws IOException;
     
     /**
      * Issues a SearchRequest and retrieves a response resulting of the search operation.
@@ -120,7 +122,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return the SearchResponse resulting of the search operation
      */
-    public List<NameUsageSearchResult> fullTextSearch(NameUsageSearchRequest searchRequest);
+    public List<NameUsageSearchResult> fullTextSearch(NameUsageSearchRequest searchRequest) throws IOException;
 
     /**
      * Returns a List of all descriptions for a name usage speficied by usasgeKey
@@ -129,7 +131,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of descriptions
      */
-    public List<Description> getDescripitons(int usageKey);
+    public List<Description> getDescripitons(int usageKey) throws IOException;
 
     /**
      * Returns a List of all distributions for a name usage speficied by usasgeKey
@@ -138,7 +140,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of distributions
      */
-    public List<Distribution> getDistributions(int usageKey);
+    public List<Distribution> getDistributions(int usageKey) throws IOException;
 
     /**
      * Returns a List of all media for a name usage speficied by usasgeKey
@@ -147,8 +149,8 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of media
      */
-    //public List<Image> getImages(int usageKey);
-    public List<NameUsageMediaObject> getMedia(int usageKey);
+    //public List<Image> getImages(int usageKey) throws IOException;
+    public List<NameUsageMediaObject> getMedia(int usageKey) throws IOException;
 
     /**
      * Returns a List of all references for a name usage speficied by usasgeKey
@@ -157,7 +159,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of references
      */
-    public List<Reference> getReferences(int usageKey);
+    public List<Reference> getReferences(int usageKey) throws IOException;
 
 
     /**
@@ -167,7 +169,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of <CODE>SpeciesProfile</CODE>s
      */
-    public List<SpeciesProfile> getSpeciesProfiles(int usageKey);
+    public List<SpeciesProfile> getSpeciesProfiles(int usageKey) throws IOException;
 
     /**
      * Returns a List of all vernacular names for a name usage speficied by usasgeKey
@@ -176,7 +178,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of <CODE>VernacularName</CODE>s
      */
-    public List<VernacularName> getVernacularNames(int usageKey);
+    public List<VernacularName> getVernacularNames(int usageKey) throws IOException;
 
     /**
      * Returns a List of all type specimens for a name usage speficied by usasgeKey
@@ -185,7 +187,7 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of <CODE>TypeSpecimen</CODE>s
      */
-    public List<TypeSpecimen> getTypeSpecimens (int usageKey);
+    public List<TypeSpecimen> getTypeSpecimens (int usageKey) throws IOException;
 
     /** 
      * Lists all <tt>NameUsage</tt>s of combinations or names based on the <tt>basionym</tt>, execpt the basionym itself.
@@ -195,5 +197,5 @@ public interface SpeciesAPI extends NameUsageService, NameUsageMatchingService, 
      *
      * @return List of name usages sharing the same basionym.
      */
-    public List<NameUsage> listCombinations(int basionym, Locale ... locales);
+    public List<NameUsage> listCombinations(int basionym, Locale ... locales) throws IOException;
 }

@@ -21,6 +21,8 @@
 
 package org.nomencurator.gui.swing;
 
+import java.io.IOException;
+
 import java.util.Collection;
 import java.util.Locale;
 
@@ -32,7 +34,7 @@ import org.nomencurator.model.Rank;
 /**
  * {@code NameQuery} provides an interface representing a query relevant to names.
  *
- * @version 	02 July 2016
+ * @version 	15 Oct. 2016
  * @author 	Nozomi `James' Ytow
  */
 public interface NameQuery
@@ -56,9 +58,9 @@ public interface NameQuery
      * {@code name}, {@code authority} and {@code year},
      * and returns result message {@code String}.
      */
-    public String getNames(String name, Rank rank, String authority, String year, MatchingMode queryType);
+    public String getNames(String name, Rank rank, String authority, String year, MatchingMode queryType) throws IOException;
 
-    //public String getNames(NameUsage<?>[] names, String rank, String name, String authority, String year, MatchingMode queryType);
+    //public String getNames(NameUsage<?>[] names, String rank, String name, String authority, String year, MatchingMode queryType) throws IOException;
 
-    public String getNames(Collection<? extends NameUsage<?>> names, String name, Rank rank, String authority, String year, MatchingMode queryType);
+    public String getNames(Collection<? extends NameUsage<?>> names, String name, Rank rank, String authority, String year, MatchingMode queryType) throws IOException;
 }
