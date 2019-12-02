@@ -19,12 +19,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-    @version: 14 Oct. 2016
+    @version: 03 Dec. 2019
   </comment>
-<!--  <entry key="VERSION">3.1.6</entry> -->
+<!--  <entry key="VERSION">3.1.8</entry> -->
   <entry key="EMPTY"></entry>
   <entry key="STETUS_TEXT">Status: </entry>
   <entry key="NAME_QUERY">Name query</entry>
+  <entry key="EPITHET_QUERY">Epithet query</entry>
   <entry key="LOCAL_QUERY">Local search</entry>
   <entry key="NAME_USAGES">Name usages</entry>
   <entry key="NAME_TREE">Name Tree</entry>
