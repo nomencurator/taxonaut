@@ -1,7 +1,7 @@
 /*
  * UBio.java: communicate with a uBio SOPA server
  *
- * Copyright (c) 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
-import org.apache.axis.AxisFault;
+// import org.apache.axis.AxisFault;
+import org.apache.axis2.AxisFault;
 
 import org.nomencurator.io.AbstractNameUsageExchanger;
 import org.nomencurator.io.NameUsageExchanger;
@@ -78,7 +79,7 @@ import lombok.Setter;
 /**
  * {@code UBio} provides a mapping between Nomencurator data and a uBio SOAP server
  *
- * @version 	15 Oct. 2016
+ * @version 	03 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class UBio
