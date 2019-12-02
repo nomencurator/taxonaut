@@ -1,7 +1,7 @@
 /*
  * AlignerTree.java:  a JTree to align multiple JTrees' nodes
  *
- * Copyright (c) 2003, 2005, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2005, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,7 +22,6 @@
 package org.nomencurator.gui.swing;
 
 import com.sun.java.swing.plaf.motif.MotifTreeUI;
-import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -104,7 +103,6 @@ import org.nomencurator.gui.swing.event.UnitedNameTreeModelListener;
 import org.nomencurator.gui.swing.plaf.basic.BasicAlignerTreeUI;
 import org.nomencurator.gui.swing.plaf.metal.MetalAlignerTreeUI;
 import org.nomencurator.gui.swing.plaf.motif.MotifAlignerTreeUI;
-import org.nomencurator.gui.swing.plaf.windows.WindowsAlignerTreeUI;
 
 import org.nomencurator.gui.swing.tree.Alignable;
 import org.nomencurator.gui.swing.tree.Aligner;
@@ -125,7 +123,7 @@ import lombok.Setter;
 /**
  * {@code AlingerTree} provides node alignment of nodes
  *
- * @version 	30 Aug. 2016
+ * @version 	03 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class AlignerTree
@@ -209,9 +207,7 @@ abstract class GenericAlignerTree<T extends NameUsage<?>>
     /* Set user interface class ID according to current default look and feel*/
     protected static void putUI()
     {
-	if(LookAndFeelManager.isWindows())
-	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.windows.WindowsAlignerTreeUI");
-	else if (LookAndFeelManager.isMotif())
+	if(LookAndFeelManager.isMotif())
 	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.motif.MotifAlignerTreeUI");
 	else
 	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.metal.MetalAlignerTreeUI");

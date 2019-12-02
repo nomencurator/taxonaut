@@ -1,7 +1,7 @@
 /*
  * NameTree.java: a JTree for NameUsageNode
  *
- * Copyright (c) 2002, 2003, 2004, 2005, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2002, 2003, 2004, 2005, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,7 +22,7 @@
 package org.nomencurator.gui.swing;
 
 import com.sun.java.swing.plaf.motif.MotifTreeUI;
-import com.sun.java.swing.plaf.windows.WindowsTreeUI;
+// import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 
 import java.awt.Component;
 import java.awt.Cursor;
@@ -95,7 +95,6 @@ import org.nomencurator.gui.swing.plaf.AlignableTreeUI;
 import org.nomencurator.gui.swing.plaf.basic.BasicAlignableTreeUI;
 import org.nomencurator.gui.swing.plaf.metal.MetalAlignableTreeUI;
 import org.nomencurator.gui.swing.plaf.motif.MotifAlignableTreeUI;
-import org.nomencurator.gui.swing.plaf.windows.WindowsAlignableTreeUI;
 
 import org.nomencurator.gui.swing.table.HeaderEditableTableColumn;
 import org.nomencurator.gui.swing.table.NameTreeTableModel;
@@ -116,7 +115,7 @@ import org.nomencurator.gui.swing.tree.NameTreeCellRenderer;
 /**
  * A {@code JTree} for a {@code NameUsageNode}
  *
- * @version 	15 Oct. 2016
+ * @version 	03 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class NameTree
@@ -228,9 +227,7 @@ class GenericNameTree<T extends NameUsage<?>, N extends NameUsageNode<?>>
     /* Set user interface class ID according to current default look and feel*/
     protected static void putUI()
     {
-	if(LookAndFeelManager.isWindows())
-	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.windows.WindowsAlignableTreeUI");
-	else if (LookAndFeelManager.isMotif())
+	if (LookAndFeelManager.isMotif())
 	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.motif.MotifAlignableTreeUI");
 	else
 	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.metal.MetalAlignableTreeUI");
