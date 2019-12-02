@@ -1,7 +1,7 @@
 /*
  * DatasetAPIClient.java:  a client implentation using DatasetAPIClient of GBIF
  *
- * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
 
@@ -78,6 +79,9 @@ import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.License;
 import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.api.vocabulary.MetadataType;
+import org.gbif.api.vocabulary.TagName;
+import org.gbif.api.vocabulary.TagNamespace;
+
 
 import org.nomencurator.api.gbif.jackson.BoundingBoxMixIn;
 
@@ -87,8 +91,8 @@ import lombok.Getter;
  * <CODE>DatasetAPIClient</CODE> provides a set of functions to use GBIF Dataset API.
  * Only GET methods are funtional.
  *
+ * @vesion 03 Dec. 2019
  * @author Nozomi "James" Ytow
- * @vesion 28 Aug. 2016
  */
 public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 
@@ -470,12 +474,52 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 	return null;
     }
 
+    public PagingResponse<Dataset> listByDOI(String doi,
+                                  @Nullable Pageable page)
+    {
+	StringBuffer resourceURL =  new StringBuffer(getDatasetURL());
+	resourceURL.append("/doi/");	
+	if((Objects.nonNull(doi) && doi.length() > 0) || Objects.nonNull(page)) {
+	    String connector = ZERO_CONNECTOR;
+	    if(Objects.nonNull(doi) && doi.length() > 0) {
+		String backup = resourceURL.toString();
+		try {
+		    resourceURL.append(connector).append(URLEncoder.encode(doi, "utf-8"));
+		    connector = REST_AMPERSAND;
+		} catch (UnsupportedEncodingException e) {
+		    resourceURL = new StringBuffer(backup);
+		}
+	    }
+	    if(page != null) {
+		resourceURL.append(connector).append(Pager.get(page));
+	    }
+	}
+
+	PagingResponse<Dataset> response = null;
+	try {
+	    response = mapper.readValue(new URL(resourceURL.toString()), 
+					new TypeReference<PagingResponse<Dataset>>() {});
+	}
+	catch (MalformedURLException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("MalformedURLException");
+	}
+	catch (IOException e) {
+	    e.printStackTrace(System.out);
+	    System.out.println("IOException");
+	}
+	return response;
+    }
+
     // MachineTagService via NetworkEntityService<Dataset>
     public int addMachineTag(@NotNull UUID targetEntityKey, @NotNull MachineTag machineTag) { return -1;}
     public int addMachineTag(@NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name,@NotNull String value) { return -1;}
+    public int addMachineTag(@NotNull UUID targetEntityKey, @NotNull TagName tagName, @NotNull String value) { return -1;}
     public void deleteMachineTag(@NotNull UUID targetEntityKey, int machineTagKey){}
     public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace){}
     public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull String namespace, @NotNull String name){}
+    public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull TagName tagName) {}
+    public void deleteMachineTags(@NotNull UUID targetEntityKey, @NotNull TagNamespace tagNamespace) {}
 
     public List<MachineTag> listMachineTags(@NotNull UUID targetEntityKey)
     {
@@ -496,6 +540,11 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 	    System.out.println("IOException");
 	}
 	return response;
+    }
+
+    public PagingResponse<Dataset>	listByMachineTag(String namespace, String name, String value, Pageable page)
+    {
+	return null;
     }
 
     // TagService via NetworkEntityService<Dataset>

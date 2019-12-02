@@ -4,23 +4,23 @@
   <groupId>org.nomencurator</groupId>
   <artifactId>taxonaut</artifactId>
   <packaging>jar</packaging>
-  <version>3.1.7</version>
+  <version>3.1.8</version>
   <name>taxonaut</name>
   <url>http://nomencurator.org</url>
 
-<!-- last updated on 15 Oct. 2016-->
+<!-- last updated on 03 Dec 2019-->
 
   <properties>
     <maven.test.skip>true</maven.test.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 <!-- check current version under http://repository.gbif.org/content/groups/gbif -->
-<!-- last checked on 20161014 -->
-    <checklistbank-ws-client.version>2.44</checklistbank-ws-client.version>
-    <dwc-api.version>1.16</dwc-api.version>
-    <gbif-api.version>0.47</gbif-api.version>
-    <gbif-common-ws.version>0.37</gbif-common-ws.version>
-<!--    <gbif-name-parser.version>2.17</gbif-name-parser.version> -->
+<!-- last checked on 20191202 -->
+    <checklistbank-ws-client.version>2.81</checklistbank-ws-client.version>
+    <dwc-api.version>1.23</dwc-api.version>
+    <gbif-api.version>0.100</gbif-api.version>
+    <gbif-common-ws.version>0.47</gbif-common-ws.version>
+<!--    <gbif-name-parser.version>3.41</gbif-name-parser.version> -->
 
     <bval-jsr303.version>0.5</bval-jsr303.version>
     <findbugs-jsr305.version>2.0.3</findbugs-jsr305.version>
@@ -37,7 +37,8 @@
     <logback.version>1.0.7</logback.version>
     <jaxrpc.version>1.1.3</jaxrpc.version>
     <stax-api.version>1.0-2</stax-api.version>
-    <axis.version>1.4</axis.version>
+    <!--    <axis.version>1.4</axis.version> -->
+        <axis2.version>1.7.9</axis2.version>
     <validation-api.version>1.1.0.Final</validation-api.version>
     <activation.version>1.1.1</activation.version>
     <jts.version>1.13</jts.version>
@@ -74,7 +75,8 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.14.4</version>
+<!--      <version>1.14.4</version> -->
+      <version>1.18.8</version>      
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -223,15 +225,22 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <!--
       <groupId>org.apache.axis</groupId>
       <artifactId>axis</artifactId>
       <version>${axis.version}</version>
+      -->
+      <groupId>org.apache.axis2</groupId>
+      <artifactId>axis2-kernel</artifactId>
+      <version>${axis2.version}</version>
     </dependency>
+<!--    
 <dependency>
     <groupId>org.apache.axis</groupId>
     <artifactId>axis-jaxrpc</artifactId>
-    <version>1.4</version>
+   <version>1.4</version>
 </dependency>
+-->
 <dependency>
 <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
     <groupId>org.apache.poi</groupId>
@@ -247,12 +256,14 @@
  </dependencies>
 
   <repositories>
-    <!--
+    <repository>
+      <id>mavenrepositorycom</id>
+      <url>https://mvnrepository.com/</url>
+    </repository>
     <repository>
       <id>mavenrepo</id>
       <url>http://repo.maven.apache.org/maven2</url>
     </repository>
-    -->
     <repository>
       <id>projectlombok.org</id>
       <url>http://projectlombok.org/mavenrepo</url>
