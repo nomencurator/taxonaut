@@ -1,7 +1,7 @@
 /*
  * AbstractNameTreeNode.java:  an MutableTreeNode implementing NamedNode
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2004, 2005, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -49,7 +49,7 @@ import org.nomencurator.model.NameUsage;
  * {@code public class Foo extends AbstractNameTreeNode<Foo, Bar>} where {@code Bar}
  * is an insance of {@code NameUsage<?>}
  *
- * @version 	09 July 2016
+ * @version 	03 Dec 2019
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameTreeNode<T extends AbstractNameTreeNode<?>>
@@ -512,7 +512,7 @@ public abstract class AbstractNameTreeNode<T extends AbstractNameTreeNode<?>>
 	return super.getIndex(aChild);
     }
     
-    public Enumeration<?> children()
+    public Enumeration<TreeNode> children()
     {
 	checkLowerNameUsage();
 	return super.children();
