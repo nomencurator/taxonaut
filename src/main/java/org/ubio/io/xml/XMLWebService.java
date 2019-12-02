@@ -1,7 +1,7 @@
 /*
  * XMLWebService.java: provides methods to access to uBio XML Webservices
  *
- * Copyright (c) 2007, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2007, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -53,7 +53,10 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.axis.encoding.Base64;
+import java.util.Base64;
+import java.util.Base64.Encoder;
+import java.util.Base64.Decoder;
+import java.util.Objects;
 
 import org.nomencurator.model.NameUsage;
 
@@ -75,11 +78,14 @@ import org.ubio.model.VernacularName;
 
 import org.ubio.io.ClassificationBankSearchResult;
 import org.ubio.io.NamebankSearchResult;
+
+import org.ubio.util.Base64Codex;
+;
 /**
  * {@code XMLWebService} provides a set of utility methods
  * to access to uBio using XML Webservices.
  *
- * @version 	02 July 2016
+ * @version 	03 Dec 2019
  * @author 	Nozomi `James' Ytow
  */
 public class XMLWebService
@@ -1588,26 +1594,11 @@ public class XMLWebService
 
     public static String encode(String text)
     {
-	if(text == null)
-	    return text;
-	try {
-	    return Base64.encode(text.getBytes());
-	}
-	catch (Throwable e) {
-	    return null;
-	}
+	return Base64Codex.encode(text);
     }
 
     public static String decode(String base64)
     {
-	if(base64 == null)
-	    return null;
-
-	try {
-	    return new String(Base64.decode(base64), UTF8);
-	}
-	catch (Throwable e) {
-	    return null;
-	}
+	return Base64Codex.decode(base64);
     }
 }

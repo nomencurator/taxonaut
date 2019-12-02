@@ -1,7 +1,7 @@
 /*
  * Base64Codex.java: provides a codex for Base64 and UTF-8
  *
- * Copyright (c) 2016 Nozomi `James' Ytow
+ * Copyright (c) 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -21,24 +21,32 @@
 
 package org.ubio.util;
 
-import org.apache.axis.encoding.Base64;
+import java.util.Base64;
+import java.util.Base64.Encoder;
+import java.util.Base64.Decoder;
+import java.util.Objects;
 
 /**
  * {@code Base64Codex} provides a codex for Base64 and UTF-8.
  *
- * @version 	17 June 2016
+ * @version 	02 Dec 2019
  * @author 	Nozomi `James' Ytow
  */
 public class Base64Codex
 {
     protected static final String UTF8="UTF-8";
 
+    protected static Encoder encoder;
+    protected static Decoder decoder;
+
     public static String encode(String text)
     {
 	if(text == null)
 	    return text;
 	try {
-	    return Base64.encode(text.getBytes());
+	    if (Objects.isNull(encoder))
+		encoder = Base64.getEncoder();
+	    return encoder.encodeToString(text.getBytes());
 	}
 	catch (Throwable e) {
 	    return null;
@@ -51,7 +59,9 @@ public class Base64Codex
 	    return null;
 
 	try {
-	    return new String(Base64.decode(base64), UTF8);
+	    if (Objects.isNull(decoder))
+		decoder = Base64.getDecoder();
+	    return new String(decoder.decode(base64), UTF8);
 	}
 	catch (Throwable e) {
 	    return null;
