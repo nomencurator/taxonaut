@@ -33,6 +33,10 @@ import java.util.Stack;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.nomencurator.model.Appearance;
 import org.nomencurator.model.DefaultNameUsage;
 import org.nomencurator.model.DefaultNameUsageNode;
@@ -47,8 +51,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import org.xml.sax.helpers.XMLReaderFactory;
-
 public class InfoVisParser
     implements ContentHandler
 {
@@ -56,6 +58,9 @@ public class InfoVisParser
 	"org.apache.xerces.parsers.SAXParser";
 
     protected Locator locator;
+
+    protected SAXParserFactory parserFactory;
+    protected SAXParser parser;
 
     protected XMLReader reader;
 
@@ -86,28 +91,11 @@ public class InfoVisParser
      * The constructor - creates an InfoVis2003 XML usind default parser
      */
     public InfoVisParser()
-	throws SAXException
+	throws ParserConfigurationException, SAXException
     {
-	this(defaultParserName);
-    }
-    
-    /**
-     * The constructor - creates an InfoVis2003 XML tree parser using given XMLReader name
-     * 
-     * @param parser The name of the SAX parser to be used by this
-     */
-    public InfoVisParser(String parser)
-	throws SAXException
-    {
-	try{
-	    reader = 
-		XMLReaderFactory.createXMLReader(parser);
-	}
-	catch(SAXException e) {
-	    reader = 
-		XMLReaderFactory.createXMLReader(defaultParserName);
-	}
-
+	parserFactory = SAXParserFactory.newInstance();
+	parser = parserFactory.newSAXParser();
+	reader = parser.getXMLReader();
 	reader.setContentHandler(this);
 
 	initialize();
