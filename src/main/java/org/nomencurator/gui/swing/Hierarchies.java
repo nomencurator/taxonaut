@@ -2,7 +2,7 @@
  * Hierarchies.java:  a class provaides table to compare hierarchies
  * using Nomencurator.
  *
- * Copyright (c) 2003, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -31,12 +31,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
 import javax.swing.Box;
-import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -72,11 +73,11 @@ import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
  * {@code Hierarchies} provides a table to compare
  * hierarchies using Nomencuartor.
  *
- * @version 	29 June 2016
+ * @version 	03 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class Hierarchies<T extends NameUsage<?>>
-    extends JApplet
+    extends JComponent
     implements ChangeListener,
 	       QueryResultListener<T>,
 	       Runnable
@@ -123,7 +124,7 @@ public class Hierarchies<T extends NameUsage<?>>
     public Hierarchies(UnitedNameTreeModel model, Locale locale)
     {
 	super();
-	setJMenuBar(createMenuBar());
+	// setJMenuBar(createMenuBar());
 	createComponents(model);
 	layoutComponents();
 	setComponentsSize();
@@ -131,7 +132,7 @@ public class Hierarchies<T extends NameUsage<?>>
 	//query.setQueryManager(model);
     }
 
-    protected JMenuBar createMenuBar()
+    protected MenuBar createMenuBar()
     {
 	menu = new MenuBar();
 	languageMenu = menu.getLanguageMenu();
@@ -156,10 +157,10 @@ public class Hierarchies<T extends NameUsage<?>>
     /** Layout <CODE>Components</CODE> */
     protected void layoutComponents()
     {
-	getContentPane().setLayout(new BorderLayout());
+	setLayout(new BorderLayout());
 
-	getContentPane().add(query, BorderLayout.NORTH);
-	getContentPane().add(views, BorderLayout.CENTER);
+	add(query, BorderLayout.NORTH);
+	add(views, BorderLayout.CENTER);
     }
 
     /** Set size of <CODE>Components</CODE> */
@@ -197,6 +198,13 @@ public class Hierarchies<T extends NameUsage<?>>
     public void remove(Component table)
     {
 	views.remove(table);
+    }
+
+    public MenuBar getMenuBar()
+    {
+	if(Objects.isNull(menu))
+	    menu = createMenuBar();
+	return menu;
     }
 
     /**

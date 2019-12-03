@@ -1,7 +1,7 @@
 /*
  * Taxonaut.java: a java based GUI for Nomencurator
  *
- * Copyright (c) 2002, 2003, 2004, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2002, 2003, 2004, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -58,7 +59,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.swing.BorderFactory;
-import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -71,6 +71,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRootPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -166,11 +167,11 @@ import lombok.Setter;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	15 Oct. 2016
+ * @version 	03 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class Taxonaut<T extends NameUsage<?>>
-    extends JApplet
+    extends JComponent
     implements ActionListener,
 	       ChangeListener,
 	       ListSelectionListener,
@@ -262,7 +263,7 @@ public class Taxonaut<T extends NameUsage<?>>
     protected ExecutorService executor;
 
     @Setter
-    private static String version = "3.1.7";
+    private static String version = "3.1.8";
 
     @Getter
     private static String softwareName = "Taxonaut";
@@ -316,7 +317,7 @@ public class Taxonaut<T extends NameUsage<?>>
     public Taxonaut(Locale locale)
     {
 	super();
-	getContentPane().setLayout(new BorderLayout());
+	setLayout(new BorderLayout());
 	createComponents(locale);
 	layoutComponents();
 	setComponentsSize();
@@ -482,6 +483,27 @@ public class Taxonaut<T extends NameUsage<?>>
 	// setQueryManager(new UBio(uBioKey));
     }
 
+    public MenuBar getMenuBar(Locale locale)
+    {
+	if (Objects.isNull(menu))
+	    menu = new MenuBar(locale);
+	return menu;
+    }
+
+    public MenuBar getMenuBar()
+    {
+	return getMenuBar(Locale.getDefault());
+    }
+
+    public MenuBar setMenuBar(MenuBar menuBar)
+    {
+	MenuBar previousMenu = getMenuBar();
+	menu = menuBar;
+	JRootPane rootPane = getRootPane();
+	if(Objects.nonNull(rootPane)) rootPane.setJMenuBar(menu);
+	return previousMenu;
+    }
+
     protected JTabbedPane createTabbedPane()
     {
 	JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
@@ -496,10 +518,11 @@ public class Taxonaut<T extends NameUsage<?>>
     {
 	//getContentPane().add(querySplitPane, BorderLayout.NORTH);
 	//getContentPane().add(resultSplitPane, BorderLayout.CENTER);
-	getContentPane().add(querySplitPane, BorderLayout.CENTER);
-	getContentPane().add(statusPanel, BorderLayout.SOUTH);
+	/* getContentPane().*/add(querySplitPane, BorderLayout.CENTER);
+	/* getContentPane(). */add(statusPanel, BorderLayout.SOUTH);
 	//getContentPane().add(progress, BorderLayout.SOUTH);
-	getRootPane().setJMenuBar(menu);
+	JRootPane rootPane = getRootPane();
+	if(Objects.nonNull(rootPane)) rootPane.setJMenuBar(menu);
 
     }
 
@@ -617,8 +640,8 @@ public class Taxonaut<T extends NameUsage<?>>
 	//	((TitledBorder)treePane.getBorder()).setTitle(treePaneBorderText);
 	((TitledBorder)detailTabs.getBorder()).setTitle(tabBorderText);
 
-	((JComponent)getContentPane()).getLayout().layoutContainer(this);
-	((JComponent)getContentPane()).revalidate();
+	/*((JComponent)getContentPane()).*/getLayout().layoutContainer(this);
+	/*((JComponent)getContentPane()).*/revalidate();
 
 	int tabCount = detailTabs.getTabCount();
 	for(int i = 0; i < tabCount; i++) {
@@ -1624,11 +1647,12 @@ public class Taxonaut<T extends NameUsage<?>>
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
 
-	JFrame frame = new JFrame("Taxonaut");
+	JFrame frame = new JFrame(new StringBuffer(softwareName).append(" ").append(version).toString());
 	//Taxonaut<NameUsage<?>> taxonaut = new Taxonaut<NameUsage<?>>();
 	Taxonaut<NubNameUsage> taxonaut = new Taxonaut<>();
 	taxonaut.setNameUsageExchanger(new NubExchanger());
 	frame.getContentPane().add(taxonaut);
+	taxonaut.setMenuBar(taxonaut.getMenuBar());
 
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setSize(frame.getPreferredSize());

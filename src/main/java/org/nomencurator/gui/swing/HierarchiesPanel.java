@@ -2,7 +2,7 @@
  * HierarchiesPanel.java:  a class provaides table to compare hierarchies
  * using Nomencurator.
  *
- * Copyright (c) 2003, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -36,7 +36,6 @@ import java.util.MissingResourceException;
 import java.util.Vector;
 
 import javax.swing.Box;
-import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -76,7 +75,7 @@ import lombok.Setter;
  * {@code HierarchiesPanel} provides a table to compare hierarchies
  * and a text box to search these hierarchies
  *
- * @version 	08 July 2016
+ * @version 	03 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class HierarchiesPanel<T extends NameUsage<?>>
