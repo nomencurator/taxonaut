@@ -1,7 +1,7 @@
 /*
  * InfoVisParser.java:  a SAX parser for InfoVis 2003 data
  *
- * Copyright (c) 2003, 2004, 2014 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2004, 2014, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -51,6 +51,14 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+/**
+ * {@code InfoVisParser} provides a SAX parser for InfoVis 2003 contest data
+ *
+ * @see <A HREF="https://www.cs.umd.edu/hcil/iv03contest/">https://www.cs.umd.edu/hcil/iv03contest/</A>
+ *
+ * @version 	03 Dec. 2019
+ * @author 	Nozomi `James' Ytow
+ */
 public class InfoVisParser
     implements ContentHandler
 {
