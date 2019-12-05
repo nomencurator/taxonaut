@@ -2,7 +2,7 @@
  * NubNameUsage.java: a Java implementation of GBIF CheklistBank
  * NameUsage, or nub
  *
- * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -90,7 +90,7 @@ import lombok.Getter;
 /**
  * {@code NubNameUsage} is an implementation of GBIF CheklistBank NameUsage, or nub.
  *
- * @version 	15 Oct. 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class NubNameUsage

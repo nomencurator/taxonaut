@@ -87,7 +87,7 @@ public class NameTreeNode
 /**
  * {@code GenericNameTreeNode} wrapping a {@code NameUsage} as {@code N}.
  *
- * @version 	08 July 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 class GenericNameTreeNode <T extends NameUsage<?>, N extends NameUsageNode<?>>
