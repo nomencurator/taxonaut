@@ -2,7 +2,7 @@
  * AbstractNameUsageNode.java:  a Java implementation of NameUsageNode class
  * for the Nomencurator, a Nomenclature Heuristic Model.
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2004, 2005, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,6 +22,9 @@
 
 package org.nomencurator.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -35,8 +38,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 import java.util.Vector;
 
@@ -52,12 +53,12 @@ import org.w3c.dom.Element;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	07 July 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNameUsageNode<T extends NameUsageNode<?>>
     extends AbstractNameUsage <T>
-    implements NameUsageNode<T>, Observer 
+    implements NameUsageNode<T>, PropertyChangeListener
 {
     private static final long serialVersionUID = -5158717413357780340L;
 
@@ -352,7 +353,7 @@ public abstract class AbstractNameUsageNode<T extends NameUsageNode<?>>
 	}
 
 	relevantAnnotations.add(annotation);
-	annotation.addObserver(this);
+	annotation.addPropertyChangeListener(this);
 
 	String linkType = annotation.getLinkType();
 	Set<Annotation> byLinkType = annotationsByLinkType.get(linkType);
@@ -400,7 +401,7 @@ public abstract class AbstractNameUsageNode<T extends NameUsageNode<?>>
 	}
 
 	boolean result = relevantAnnotations.remove(annotation);
-	annotation.deleteObserver(this);
+	annotation.removePropertyChangeListener(this);
 
 	/*
 	if(relevantAnnotations.isEmpty()) {
@@ -835,7 +836,7 @@ public abstract class AbstractNameUsageNode<T extends NameUsageNode<?>>
 	    return null;
     }
 
-    public void update(Observable obs, Object arg)
+    public void propertyChange(PropertyChangeEvent event)
     {
 	
     }

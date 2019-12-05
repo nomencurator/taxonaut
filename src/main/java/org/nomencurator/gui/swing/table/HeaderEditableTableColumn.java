@@ -2,7 +2,7 @@
  * HeaderEditableTableColumn.java: a TableColumn of which header can
  * be also editable
  *
- * Copyright (c) 2003, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2015, 2016, 2019 Nozomi `James' Ytow
  */
 
 /*
@@ -33,7 +33,7 @@ import javax.swing.table.TableColumn;
  * A {@code TableColumn} of which header cell can
  * be editable also
  *
- * @version 	29 June 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class HeaderEditableTableColumn
@@ -178,7 +178,7 @@ public class HeaderEditableTableColumn
 
 	headerEditable = editable;
 	if(changeListeners != null)
-	    changeListeners.firePropertyChange("hederEditable", new Boolean(previous), new Boolean(headerEditable)); 
+	    changeListeners.firePropertyChange("hederEditable", Boolean.valueOf(previous), Boolean.valueOf(headerEditable)); 
     }
 
     /**

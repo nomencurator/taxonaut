@@ -2,7 +2,7 @@
  * LinkType.java:  managing link type of Annotation
  * for the Nomencurator, a Nomenclature Heuristic Model.
  *
- * Copyright (c) 2004, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2004, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,11 +22,14 @@
 
 package org.nomencurator.model;
 
+import java.beans.PropertyChangeEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
+
+import org.nomencurator.beans.PropertyChanger;
 
 /**
  * {@code LinkType} represents link types of Annotation data structure in Nomencurator data model
@@ -34,11 +37,11 @@ import java.util.Observable;
  * @see org.nomencurator.model.Annotation
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class LinkTypes
-    extends Observable
+    extends PropertyChanger
 {
     static Map<String, LinkType> linkTypesMap;
     static List<LinkType> linkTypeList;
@@ -101,7 +104,7 @@ public class LinkTypes
 
 	linkTypesMap.put(linkTypeName, linkType);
 	linkTypeList.add(linkType);
-	notifyObservers(linkType);
+	firePropertyChange(new PropertyChangeEvent(this, "add", null, linkType));
     }
 
     public LinkType get(String linkType)

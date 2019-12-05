@@ -7,7 +7,7 @@
  *
  * The same thing can be implemented using nameing mechanism of CORBA.
  *
- * Copyright (c) 1999, 2002, 2003, 2004, 2005, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 1999, 2002, 2003, 2004, 2005, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -55,7 +55,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
-import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -87,7 +86,7 @@ import org.w3c.dom.Text;
  * @see org.nomencurator.model.Name
  * @see java.lang.String
  *
- * @version 	08 July 2016
+ * @version 	05 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractNamedObject <T extends NamedObject<?>>
@@ -817,14 +816,14 @@ public abstract class AbstractNamedObject <T extends NamedObject<?>>
 	    resultCode |= 1;
 	else {
 	    v1.add(o1);
-	    o2.setChanged();
+	    //	    o2.setChanged();
 	}
 
 	if(v2 == null | v2.contains(o2))
 	    resultCode |= 2;
 	else {
 	    v2.add(o2);
-	    o1.setChanged();
+	    //	    o1.setChanged();
 	}
 
 	return resultCode;
@@ -857,14 +856,14 @@ public abstract class AbstractNamedObject <T extends NamedObject<?>>
 	    resultCode |= 1;
 	else {
 	    v1.remove(o1);
-	    o2.setChanged();
+	    // o2.setChanged();
 	}
 
 	if(v2 == null | !v2.contains(o2))
 	    resultCode |= 2;
 	else {
 	    v2.remove(o2);
-	    o1.setChanged();
+	    // o1.setChanged();
 	}
 
 	return resultCode;

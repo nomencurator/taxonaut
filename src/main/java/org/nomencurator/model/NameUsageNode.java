@@ -2,7 +2,7 @@
  * NameUsageNode.java:  a Java implementation of NameUsageNode class
  * for the Nomencurator, a Nomenclature Heuristic Model.
  *
- * Copyright (c) 2003, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -27,8 +27,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 import java.util.Vector;
 
@@ -42,7 +40,7 @@ import org.w3c.dom.Element;
  *
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org</A>
  *
- * @version 	02 July 2016
+ * @version 	05 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public interface NameUsageNode <T extends NameUsageNode<?>>

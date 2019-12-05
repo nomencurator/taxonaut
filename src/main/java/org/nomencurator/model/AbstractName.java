@@ -7,7 +7,7 @@
  *
  * The same thing can be implemented using nameing mechanism of CORBA.
  *
- * Copyright (c) 1999, 2002, 2003, 2004, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 1999, 2002, 2003, 2004, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -27,6 +27,9 @@
 
 package org.nomencurator.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.String;
@@ -35,8 +38,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Observable;
 import java.util.Stack;
+
+import org.nomencurator.beans.PropertyChanger;
 
 /**
  * A {@code Name} provides a name, a tagged indirect reference.
@@ -44,11 +48,11 @@ import java.util.Stack;
  * {@code Object} "compatible" with {@code String},
  * i.e. make namable.
  *
- * @version 	09 July 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public abstract class AbstractName<T extends Name<?>>
-    extends Observable
+    extends PropertyChanger
     implements Name<T>, Serializable
 {
     private static final long serialVersionUID = -6225343190498874223L;
@@ -136,9 +140,9 @@ public abstract class AbstractName<T extends Name<?>>
      */
     public void setLiteral(String name)
     {
+	String oldLiteral = literal;
 	literal = name;
-	setChanged();
-	notifyObservers(literal);
+	firePropertyChange(new PropertyChangeEvent(this, "literal", oldLiteral, literal));
     }
 
     /**
@@ -210,9 +214,9 @@ public abstract class AbstractName<T extends Name<?>>
 					       "#setEntity(): self reference is prohibited");
 
 	if(this.entity != entity) {
+	    Object oldEntity = this.entity;
 	    this.entity = entity;
-	    setChanged();
-	    notifyObservers(entity);
+	    firePropertyChange(new PropertyChangeEvent(this, "entity", oldEntity, this.entity));
 	}
     }
 

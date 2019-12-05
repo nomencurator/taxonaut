@@ -2,7 +2,7 @@
  * LinkType.java:  managing link type of Annotation
  * for the Nomencurator, a Nomenclature Heuristic Model.
  *
- * Copyright (c) 2004, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2004, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,8 +22,8 @@
 
 package org.nomencurator.gui.swing.model;
 
-import java.util.Observable;
-import java.util.Observer;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -37,12 +37,12 @@ import org.nomencurator.model.LinkTypes;
  * @see org.nomencurator.model.LinkTypes
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	27 June 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class LinkTypeModel
     extends DefaultComboBoxModel<LinkType>
-    implements Observer
+    implements PropertyChangeListener
 {
     private static final long serialVersionUID = 6483140713123518722L;
 
@@ -51,7 +51,7 @@ public class LinkTypeModel
     public LinkTypeModel()
     {
 	super(linkTypes.getLinkTypes());
-	linkTypes.addObserver(this);
+	linkTypes.addPropertyChangeListener(this);
     }
 
     static public LinkType get(String typeName)
@@ -64,7 +64,7 @@ public class LinkTypeModel
 	linkTypes.add(linkType);
     }
 
-    public void update(Observable observable, Object arg)
+    public void propertyChange(PropertyChangeEvent event)
     {
     }
 } 

@@ -1,7 +1,7 @@
 /*
  * AssignmentModel.java:  what do I do?
  *
- * Copyright (c) 2002, 2003, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2002, 2003, 2014, 2015, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,7 +22,8 @@
 package org.nomencurator.gui.swing.model;
 
 import java.util.Map;
-import java.util.Observable;
+
+import org.nomencurator.beans.PropertyChanger;
 
 import org.nomencurator.model.NameUsage;
 import org.nomencurator.model.NameUsageNode;
@@ -31,11 +32,11 @@ import org.nomencurator.model.Rank;
 /**
  * <code>AssignmentModel</code> to do something... assignment to what?  Mapping betwwn NameUsage and NameUsageNode?
  *
- * @version 	15 July 2015
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class AssignmentModel
-    extends Observable
+    extends PropertyChanger
 {
     Map<?, ?> assignments;
 

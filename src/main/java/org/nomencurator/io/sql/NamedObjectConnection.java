@@ -1,7 +1,7 @@
 /*
  * NamedObjectConnection.java
  *
- * Copyright (c) 2003, 2004, 2005, 2007, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2004, 2005, 2007, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -20,6 +20,8 @@
  */
 
 package org.nomencurator.io.sql;
+
+import java.lang.reflect.InvocationTargetException;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -81,7 +83,7 @@ import org.nomencurator.resources.ResourceKey;
  * @see org.nomencurator.model.NamedObject
  * @see java.sql.Connection
  *
- * @version 	05 July 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class NamedObjectConnection<T extends NamedObject<?>>
@@ -266,7 +268,11 @@ public class NamedObjectConnection<T extends NamedObject<?>>
 	catch (SQLException e) {
 	    //Does cheking SQLState here help?
 	    try {
-		Class.forName(driverName).newInstance();
+		Class.forName(driverName).getDeclaredConstructor().newInstance();
+	    }
+	    catch (NoSuchMethodException nse) {
+	    }
+	    catch (InvocationTargetException ite) {
 	    }
 	    catch (InstantiationException ie) {
 	    }
@@ -803,7 +809,7 @@ public class NamedObjectConnection<T extends NamedObject<?>>
 	    objectToOIDMaps.put(dataSource, o2oidMap);
 	}
 
-	Integer id = new Integer(objectID);
+	Integer id = Integer.valueOf(objectID);
 
 	o2oidMap.put(object, id);
 
@@ -1433,12 +1439,13 @@ public class NamedObjectConnection<T extends NamedObject<?>>
 	    int i = result.getInt("optional");
 	    if(!result.wasNull())
 		rank.setOptional(i == 1);
-	    i = result.getInt("code_coverage");
-	    if(!result.wasNull())
-		rank.setCodeCoverage(i);
+	    i = result.getInt("code_compliance");
+	    if(!result.wasNull()) {
+		rank.setCodeCompliance(i);
+	    }
 	    i = result.getInt("naming_convention");
 	    if(!result.wasNull()) {
-		rank.setNamingConvention(i);
+		rank.setConvention(i);
 	    }
 	}
 	result.close();

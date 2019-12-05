@@ -1,7 +1,7 @@
 /*
  * NameTreeNode.java:  a TreeNode wrapping NameUsageNode
  *
- * Copyright (c) 2002, 2003, 2004, 2005, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2002, 2003, 2004, 2005, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -21,13 +21,14 @@
 
 package org.nomencurator.gui.swing.tree;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.JTree;
@@ -35,6 +36,8 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+
+import org.nomencurator.beans.PropertyChangeable;
 
 import org.nomencurator.io.Exchangable;
 import org.nomencurator.io.ObjectExchanger;
@@ -49,7 +52,7 @@ import org.nomencurator.model.Rank;
 /**
  * {@code NameTreeNode} wrapping a {@code NameUsage}
  *
- * @version 	08 July 2016
+ * @version 	06 Dec 2019
  * @author 	Nozomi `James' Ytow
  */
 public class NameTreeNode
@@ -89,7 +92,7 @@ public class NameTreeNode
  */
 class GenericNameTreeNode <T extends NameUsage<?>, N extends NameUsageNode<?>>
     extends AbstractNameTreeNode<GenericNameTreeNode<?, ?>>
-    implements Observer //,
+    implements PropertyChangeListener
 	       // Exchangable<NameTreeNode>
 {
     private static final long serialVersionUID = 7118376193252108532L;
@@ -130,8 +133,8 @@ class GenericNameTreeNode <T extends NameUsage<?>, N extends NameUsageNode<?>>
 	super(nameUsageNode, allowsChildren);
 
 	node = nameUsageNode;
-	if(node instanceof Observable)
-	    ((Observable)node).addObserver(this);
+	if(node instanceof PropertyChangeable)
+	    ((PropertyChangeable)node).addPropertyChangeListener(this);
 
 	if(!allowsChildren || !node.hasLowerNameUsages())
 	    return;
@@ -163,16 +166,19 @@ class GenericNameTreeNode <T extends NameUsage<?>, N extends NameUsageNode<?>>
     }
 
 
-    public synchronized void update(Observable obs, Object arg)
+    public synchronized void propertyChange(PropertyChangeEvent event)
     {
     }
 
+    /*
     protected void finalize()
+	throws Throwable
     {
-	if(node != null &&
-	   (node instanceof Observable))
-	    ((Observable)node).deleteObserver(this);
+	if(node instanceof PropertyChangeable)
+	    ((PropertyChangeable)node).removePropertyChangeListener(this);
+	super.finalize();
     }
+    */
 
     public NameUsage<T> getNameUsage()
     {

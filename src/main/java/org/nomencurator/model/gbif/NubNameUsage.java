@@ -1661,13 +1661,13 @@ public class NubNameUsage
 	    return ((NubNameUsage)n).isNub();
 	}
 	if(scientificNameUsage != null) {
-	    return new Boolean(scientificNameUsage.isNub());
+	    return Boolean.valueOf(scientificNameUsage.isNub());
 	}
 	else if (nameUsageSearchResult != null) {
-	    return  new Boolean(nameUsageSearchResult.getKey().equals(nameUsageSearchResult.getNubKey()));
+	    return  Boolean.valueOf(nameUsageSearchResult.getKey().equals(nameUsageSearchResult.getNubKey()));
 	}
 	else if (nameUsageSuggestResult != null) {
-	    return  new Boolean(nameUsageSuggestResult.getKey().equals(nameUsageSuggestResult.getNubKey()));
+	    return  Boolean.valueOf(nameUsageSuggestResult.getKey().equals(nameUsageSuggestResult.getNubKey()));
 	}
 	else {
 	    return null;
@@ -1681,7 +1681,7 @@ public class NubNameUsage
 	    return ((NubNameUsage)n).isProParte();
 	}
 	if(scientificNameUsage != null) {
-	    return new Boolean(scientificNameUsage.isProParte());
+	    return Boolean.valueOf(scientificNameUsage.isProParte());
 	}
 	else {
 	    return null;
@@ -1695,10 +1695,10 @@ public class NubNameUsage
 	    return ((NubNameUsage)n).isSynonym();
 	}
 	if(scientificNameUsage != null) {
-	    return new Boolean(scientificNameUsage.isSynonym());
+	    return Boolean.valueOf(scientificNameUsage.isSynonym());
 	}
 	else if (nameUsageSearchResult != null) {
-	    return new Boolean(nameUsageSearchResult.isSynonym());
+	    return Boolean.valueOf(nameUsageSearchResult.isSynonym());
 	}
 	else {
 	    return null;

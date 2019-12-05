@@ -2,7 +2,7 @@
  * EditableTableHeaderAdaptor.java:  an class implementing funcitions
  * of EditableTableHeaderUI
  *
- * Copyright (c) 2005, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2005, 2014, 2015, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -61,7 +61,7 @@ import org.nomencurator.gui.swing.table.TreeHeaderRenderer;
  * <code>EditableTableHedearAdaptor</code> provides core functions
  * of EditableTableHedearUI
  *
- * @version 	15 July 2015
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class EditableTableHeaderAdaptor
@@ -482,10 +482,6 @@ public class EditableTableHeaderAdaptor
 	    if(c instanceof JComponent) {
 		x = ((JComponent)c).getX();
 		y = ((JComponent)c).getY();
-	    } else if(c instanceof java.applet.Applet) {
-		Point pp = c.getLocationOnScreen();
-		x = pp.x;
-		y = pp.y;
 	    } else {
 		b = c.getBounds();
 		x = b.x;
@@ -511,7 +507,7 @@ public class EditableTableHeaderAdaptor
 	    p.x -= x;
 	    p.y -= y;
 	    
-	    if(c instanceof java.awt.Window || c instanceof java.applet.Applet)
+	    if(c instanceof java.awt.Window)
 		break;
 	    c = c.getParent();
 	} while(c != null);
@@ -614,7 +610,7 @@ public class EditableTableHeaderAdaptor
 	return new MouseEvent(destination,
 			      event.getID(),
 			      event.getWhen(),
-			      event.getModifiers(),
+			      event.getModifiersEx(),
 			      p.x, p.y,
 			      event.getClickCount(),
 			      event.isPopupTrigger());

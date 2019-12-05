@@ -2,7 +2,7 @@
  * HeaderEditableTableModel.java:  a DefaultTableModel capable to
  * manage non-String header value
  *
- * Copyright (c) 2003, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -34,7 +34,7 @@ import org.nomencurator.model.Rank;
 /**
  * <code>TreeModel</code> to manage <code>NameTreeNode</code>
  *
- * @version 	28 June 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -105,7 +105,7 @@ public class DefaultHeaderEditableTableModel
 	    //return columnIdentifiers.elementAt(column);
 	    return getHeaderValue(column);
 	else
-	    return ((Vector)dataVector.elementAt(row)).elementAt(column);
+	    return dataVector.elementAt(row).elementAt(column);
     }
 
     public void setValueAt(Object value, int row, int column)
@@ -113,7 +113,7 @@ public class DefaultHeaderEditableTableModel
 	if(row < 0)
 	    columnIdentifiers.setElementAt(value, column);
 	else
-	    ((Vector)dataVector.elementAt(row)).setElementAt(value, column);
+	    dataVector.elementAt(row).setElementAt(value, column);
 	fireTableCellUpdated(row, column);
     }
 

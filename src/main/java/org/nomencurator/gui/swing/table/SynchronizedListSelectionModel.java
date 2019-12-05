@@ -1,7 +1,7 @@
 /*
  * SynchronizedListSelectionModel.java:  a synchronized ListSelectionModel
  *
- * Copyright (c) 2003, 2005, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2005, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -56,7 +56,7 @@ import org.nomencurator.gui.swing.tree.UnitedNameTreeModel;
 /**
  * <CODE>SynchronizedListSelectionModel</code> provides a synchronized ListSelectionModel
  *
- * @version 	20 June 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class SynchronizedListSelectionModel
@@ -427,8 +427,8 @@ public class SynchronizedListSelectionModel
 	int previous = begin;
 	for(int i = 1; i < rows.length; i++) {
 	    if(rows[i] != previous + 1) {
-		selections.add(new Integer(begin));
-		selections.add(new Integer(previous));
+		selections.add(Integer.valueOf(begin));
+		selections.add(Integer.valueOf(previous));
 		begin = rows[i];
 	    }
 	    previous = rows[i];

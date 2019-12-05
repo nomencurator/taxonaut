@@ -2,7 +2,7 @@
  * AnnotationTypes.java:  managing link type of Annotation
  * for the Nomencurator, a Nomenclature Heuristic Model.
  *
- * Copyright (c) 2004, 2014, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2004, 2014, 2015, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,6 +22,8 @@
 
 package org.nomencurator.model;
 
+import java.beans.PropertyChangeEvent;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -30,9 +32,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 import java.util.Set;
 import java.util.Vector;
+
+import org.nomencurator.beans.PropertyChanger;
 
 import org.nomencurator.util.ArrayUtility;
 
@@ -42,11 +45,11 @@ import org.nomencurator.util.ArrayUtility;
  * @see org.nomencurator.model.Annotation
  * @see <A HREF="http://www.nomencurator.org/">http://www.nomencurator.org/</A>
  *
- * @version 	16 July 2015
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class AnnotationTypes
-    extends Observable
+    extends PropertyChanger
 {
     static Map<String, AnnotationType> map;
     static Set<AnnotationType> set;
@@ -112,7 +115,7 @@ public class AnnotationTypes
 
 	map.put(annotationTypeName, annotationType); 
 	set.add(annotationType);
-	notifyObservers(annotationType);
+	firePropertyChange(new PropertyChangeEvent(this, "add", null, annotationType));
     }
 
     public AnnotationType get(String typeName)

@@ -2,7 +2,7 @@
  * Rank.java:  a Java implementation of Rank class
  * for TaxoNote, an user interface model for Nomencurator
  *
- * Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,31 +22,36 @@
 
 package org.nomencurator.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Observable;
-import java.util.Observer;
 
 import lombok.Getter;
+
+import org.nomencurator.beans.PropertyChanger;
 
 /**
  * Rank provides rank tracking without parsing name of rank
  *
- * @version 	02 July 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class Rank
-    extends Observable
-    implements Serializable
+    extends PropertyChanger    
+    implements Serializable, PropertyChangeListener
 {
     private static final long serialVersionUID = 2805935755406472820L;
 
@@ -75,47 +80,90 @@ public class Rank
     /** boolean indicating whether it is optional rank */
     protected boolean optional;
 
-    /** Code relevant information */
-    protected int codeCoverage;
-
+    /** Nomenclature codes */
+    public enum NomenclatureCode {
     /** Constant representing ICBN */
-    public static final int ICBN = 1;
-
+	ICBN(1),
     /** Constant representing ICNB */
-    public static final int ICNB = 2;
-
+	ICNB(2),
     /** Constant representing ICNCP */
-    public static final int ICNCP = 4;
-
+	ICNCP(4),
     /** Constant representing ICNV */
-    public static final int ICNV = 8;
-
+	ICNV(8),
     /** Constant representing ICZN */
-    public static final int ICZN = 0x10;
+	ICZN(0x10);
 
+	private int id;
+
+	private NomenclatureCode(int id)
+	{
+	    this.id = id;
+	}
+
+	public int getId() { return id; }
+    }
+    
+    /** Code compliance of the rank */
+    protected HashSet<NomenclatureCode> codeCompliance;
+
+    /** Nomenclatural conventions */
+    public enum NomenclatureConvention {
+	/** Constant representing zoological naming convention */
+	Zoological(1),
+	/** Constant representing botanical naming convention */
+	Botanical(2),
+	/** Constant representing algal naming convention */
+	Algal(4),
+	/** Constant representing fungus naming convention */
+	Fungul(8),
+	/** Constant representing bacteriological naming convention */
+	Bactriological(0x10),
+	/** Constant representing virological naming convention */
+	Virological(0x20);
+
+	private int id;
+
+	private NomenclatureConvention(int id)
+	{
+	    this.id = id;
+	}
+
+	public int getId() { return id; }
+
+	/** name endings */
+	protected static HashMap<NomenclatureConvention, String> endings
+	= new HashMap<NomenclatureConvention, String>(NomenclatureConvention.values().length);
+
+	public static Collection<String> getEndings()
+	{
+	    return endings.values();
+	}
+
+	public static boolean addEnding(NomenclatureConvention convention, String ending)
+	{
+	    return !Objects.equals(ending, endings.put(convention, ending));
+	}
+
+	/**
+	 * Returns {@code String} representing name ending
+	 * for taxa of the {@code Rank} in given
+	 * {@code convention}, or null if it is not available.
+	 *
+	 * @param convention {@code int} representing a naming convention
+	 *
+	 * @return String representing name ending
+	 * for taxa of the {@code Rank} in
+	 * {@code convention}, or null
+	 * if it is not available.
+	 */
+	public static String getEnding(NomenclatureConvention convention)
+	{
+	    return endings.get(convention);
+	}
+    }
+    
     /** Code relevant information */
-    protected int namingConvention;
-
-    /** Constant representing zoological naming convention */
-    public static final int ZOOLOGICAL = 1;
-
-    /** Constant representing botanical naming convention */
-    public static final int BOTANICAL = 2;
-
-    /** Constant representing algal naming convention */
-    public static final int ALGAL = 4;
-
-    /** Constant representing fungus naming convention */
-    public static final int FUNGUS = 8;
-
-    /** Constant representing bacteriological naming convention */
-    public static final int BACTRIOLOGICAL = 0x10;
-
-    /** Constant representing virological naming convention */
-    public static final int VIROLOGICAL = 0x20;
-
-    /** name endings */
-    protected String[] endings;
+    protected HashSet<NomenclatureConvention> convention;
 
     //public static final String UNRANKED = "unranked";
 
@@ -200,9 +248,19 @@ public class Rank
      */
     static List<Rank> sortedRanks = Collections.synchronizedList(new ArrayList<Rank>());
 
-    static RankObserver rankObserver = new RankObserver();
+    static final RankObserver rankObserver = new RankObserver();
 
-
+    /**
+     * Returns the {@link RankObserver} observing
+     * {@code Rank} providing a satic proxy to observe
+     * {@code Rank}
+     *
+     * @return {@link RankObserver} observing {@code Rank}
+     */
+    public static RankObserver getRankObserver()
+    {
+	return rankObserver;
+    }
 
     static {
 	/*
@@ -464,10 +522,9 @@ public class Rank
 	else {
 	    sortedRanks.add(sortedRanks.indexOf(next) + 1, rank);
 	}
-	rank.addObserver(rankObserver);
-	rank.setChanged();
-	//	rank.notifyObservers(getRankNameArray());
-	rank.notifyObservers(rank);
+	rank.addPropertyChangeListener(rankObserver);
+	rankObserver.addPropertyChangeListener(rank);
+	rankObserver.propertyChange(new PropertyChangeEvent(rank, "put", null, null));
     }
 
     /**
@@ -481,9 +538,11 @@ public class Rank
 	if(rank == null)
 	    return;
 
+	rank.removePropertyChangeListener(rankObserver);	
+	rankObserver.removePropertyChangeListener(rank);
 	sortedRanks.remove(rank);
-
 	ranks.remove(rank.getName());
+	rankObserver.propertyChange(new PropertyChangeEvent(rank, "remove", null, null));	
     }
 
     /**
@@ -586,6 +645,7 @@ public class Rank
 	if(name != null && name.equals(this.name))
 	    return;
 
+	String oldName = this.name;
 	this.name = name;
 	if(this.name != null) {
 	    int length = this.name.length();
@@ -595,8 +655,7 @@ public class Rank
 		minLength = length;
 	}
 
-	setChanged();
-	notifyObservers(this.name);
+	rankObserver.propertyChange(new PropertyChangeEvent(this, "name", oldName, name));
     }
 
     /**
@@ -621,10 +680,10 @@ public class Rank
 	if(abbreviation != null && abbreviation.equals(this.abbreviation))
 	    return;
 
+	String oldAbbreviation = this.abbreviation;
 	this.abbreviation = abbreviation;
 
-	setChanged();
-	notifyObservers(this.abbreviation);
+	rankObserver.propertyChange(new PropertyChangeEvent(this, "abbreviation", oldAbbreviation, abbreviation));
     }
 
     /**
@@ -644,7 +703,12 @@ public class Rank
 
     public void setOptional(boolean state)
     {
+	if(optional == state)
+	    return;
+
+	boolean oldState = optional;
 	optional = state;
+	rankObserver.propertyChange(new PropertyChangeEvent(this, "optional", Boolean.valueOf(oldState), Boolean.valueOf(state)));
     }
 
     /**
@@ -654,7 +718,12 @@ public class Rank
      */
     public void setHigher(Rank higher)
     {
+	if (this.higher == higher)
+	    return;
+
+	Rank oldHigher = this.higher;;	
 	this.higher = higher;
+	rankObserver.propertyChange(new PropertyChangeEvent(this, "higher",  oldHigher, higher));
     }
 
     /**
@@ -675,7 +744,12 @@ public class Rank
      */
     public void setLower(Rank lower)
     {
+	if (this.lower == lower)
+	    return;
+
+	Rank oldLower = this.lower;;	
 	this.lower = lower;
+	rankObserver.propertyChange(new PropertyChangeEvent(this, "lower",  oldLower, lower));
     }
 
     /**
@@ -696,7 +770,12 @@ public class Rank
      */
     public void setEquivalent(Rank equivalent)
     {
+	if (this.equivalent == equivalent)
+	    return;
+
+	Rank oldEquivalent = this.equivalent;;	
 	this.equivalent = equivalent;
+	rankObserver.propertyChange(new PropertyChangeEvent(this, "equivalent",  oldEquivalent, equivalent));
     }
 
     /**
@@ -711,169 +790,225 @@ public class Rank
     }
 
     /**
-     * Returns int indicating coverage by Codes
+     * Returns {@code Iterator} of nomenclatural Codes to which the rank is compliant.
      *
-     * @return int indicating coverage by Codes
+     * @return {@code Iterator} of compliant nomenclatural Codes 
      */
-    public int getCodeCoverage()
+    public Iterator<NomenclatureCode> getCodeCompliance()
     {
-	return codeCoverage;
+	if(Objects.isNull(codeCompliance))
+	    codeCompliance = new HashSet<NomenclatureCode>(NomenclatureCode.values().length);
+	return codeCompliance.iterator();
     }
 
     /**
-     * Sets {@code coverage} as coverage by Codes
+     * Declare that the rank is Code compliant under the {@code nomenclatureCode}.
      *
-     * @param coverage {@code int} indicating coverage by Codes
+     * @param {@code nomenclatureCode} {@link NomenclatureCode} to which the rank is Code compliant 
+     * @return {@code true} if the nomenclature Code specified successfully, 
+     * or {@code false} if the nomenclatural Code is already specified, or specified Code is {@code null}
      */
-    public void setCodeCoverage(int coverage)
+    public boolean addCodeCompliance(NomenclatureCode nomenclatureCode)
     {
-	codeCoverage = coverage;
+	if (Objects.isNull(nomenclatureCode))
+	    return false;
+	if(Objects.isNull(codeCompliance))
+	    codeCompliance = new HashSet<NomenclatureCode>(NomenclatureCode.values().length);
+	return codeCompliance.add(nomenclatureCode);
     }
 
-    /**
-     * Returns int indicating naming convention of th {@code Rank}
+        /**
+     * Declare that the rank is Code complieant under the {@code nomenclatureCode}.
      *
-     * @return int indicating naming convention
+     * @param {@code nomenclatureCode} {@link NomenclatureCode} to which the rank is Code compliant 
+     * @return {@code true} if the nomenclature Code specified successfully, 
+     * or {@code false} if the nomenclatural Code is already specified, or specified Code is {@code null}
      */
-    public int getNamingConvention()
+    public boolean addCodeCompliance(int nomenclatureCode)
     {
-	return namingConvention;
-    }
-
-    /**
-     * Sets {@code convention} as naming convention for the {@code Rank}
-     *
-     * @param convention {@code int} indicating naming convention
-     */
-    public void setNamingConvention(int convention)
-    {
-	namingConvention = convention;
-    }
-
-
-    /**
-     * Returns true if the {@code Rank} is
-     * covered by {@code code}
-     *
-     * @param code {@code int} indicating a Code
-     *
-     * @return ture if the {@code Rank} is covered by {@code code}
-     */
-    public boolean isCovered(int code)
-    {
-	return ((codeCoverage & code) != 0);
-    }
-
-    public String[] getEndings()
-    {
-	if(endings == null)
-	    return null;
-	String[] copy = new String[endings.length];
-	System.arraycopy(endings, 0, copy, 0, endings.length);
-	return copy;
-    }
-
-    public void setEndings(String[] endings)
-    {
-	if(this.endings == endings)
-	    return;
-
-	if (endings == null) {
-	    for(int i = 0; i < this.endings.length; i++)
-		this.endings[i] = null;
-	    this.endings = null;
-	    return;
-	}
-
-	if(this.endings == null || this.endings.length != endings.length) {
-	    if(this.endings != null) {
-		for(int i = 0; i < this.endings.length; i++)
-		    this.endings[i] = null;
-	    }
-	    this.endings = new String[endings.length];
-	}
-
-	System.arraycopy(endings, 0, this.endings, 0, endings.length);
-    }
-
-    /**
-     * Returns {@code String} representing name ending
-     * for taxa of the {@code Rank} in given
-     * {@code convention}, or null if it is not available.
-     *
-     * @param convention {@code int} representing a naming convention
-     *
-     * @return String representing name ending
-     * for taxa of the {@code Rank} in
-     * {@code convention}, or null
-     * if it is not available.
-     */
-    public String getEnding(int convention)
-    {
-	String ending = null;
-	if(endings != null) {
-	    switch(convention) {
-	    case ZOOLOGICAL:
-		ending = endings[0];
-		break;
-	    case BOTANICAL:
-		ending = endings[1];
-		break;
-	    case ALGAL:
-		ending = endings[2];
-		break;
-	    case FUNGUS:
-		ending = endings[3];
-		break;
-	    case BACTRIOLOGICAL:
-		ending = endings[4];
-		break;
-	    case VIROLOGICAL:
-		ending = endings[5];
-		break;
+	boolean result = true;
+	for (NomenclatureCode c: NomenclatureCode.values()) {
+	    if (0 != (c.getId() & nomenclatureCode)) {
+		result &= addCodeCompliance(c);
 	    }
 	}
-	return ending;
+
+	return result;
     }
 
     /**
-     * Returns {@code String} representing name ending
-     * for taxa of the {@code Rank} in given
-     * {@code convention}, or null if it is not available.
+     * Declare that the rank is not Code complieant under the {@code nomenclatureCode}.
      *
-     * @param convention {@code int} representing a naming convention
-     *
-     * @return String representing name ending
-     * for taxa of the {@code Rank} in
-     * {@code convention}, or null
-     * if it is not available.
+     * @param {@code nomenclatureCode} {@link NomenclatureCode} to which the rank is not Code compliant 
+     * @return {@code true} if the rank was made Code incompliant under the {@code nomenclatureCode}
      */
-    public void setEnding(String ending, int convention)
+    public boolean removeCodeCompliance(NomenclatureCode nomenclatureCode)
     {
-	if(endings != null) {
-	    endings = new String[6];
-	}
+	if (Objects.isNull(nomenclatureCode) || Objects.isNull(codeCompliance))
+	    return false;
 
-	switch(convention) {
-	case ZOOLOGICAL:
-	    endings[0] = ending;
-	    break;
-	case BOTANICAL:
-	    endings[1] = ending;
-	    break;
-	case ALGAL:
-	    endings[2] = ending;
-	    break;
-	case FUNGUS:
-	    endings[3] = ending;
-	    break;
-	case BACTRIOLOGICAL:
-	    endings[4] = ending;
-	    break;
-	case VIROLOGICAL:
-	    endings[5] = ending;
-	    break;
+	return codeCompliance.remove(nomenclatureCode);
+    }
+
+    /**
+     * Declare that the rank is Code complieant under the {@code nomenclatureCode}.
+     *
+     * @param {@code nomenclatureCode} {@link NomenclatureCode} to which the rank is Code compliant 
+     * @return {@code true} if the nomenclature Code specified successfully, 
+     * or {@code false} if the nomenclatural Code is already specified, or specified Code is {@code null}
+     */
+    public boolean setCodeCompliance(NomenclatureCode nomenclatureCode)
+    {
+	return addCodeCompliance(nomenclatureCode);
+    }
+    
+    /**
+     * Declare that the rank is Code complieant under the {@code nomenclatureCodes}.
+     *
+     * @param {@code nomenclatureCode} {@link Collection} of {@link NomenclatureCode}s to which the rank is Code compliant 
+     * @return {@code true} if the nomenclature Code specified successfully, 
+     * or {@code false} if the nomenclatural Code is already specified, or specified Code is {@code null}
+     */
+    public boolean setCodeCompliance(Collection<NomenclatureCode> nomenclatureCodes)
+    {
+	if (Objects.isNull(nomenclatureCodes))
+	    return false;
+	if(Objects.isNull(codeCompliance)) {
+	    codeCompliance = new HashSet<NomenclatureCode>(nomenclatureCodes);
+	    return true;
 	}
+	else if (!codeCompliance.isEmpty()) {
+	    codeCompliance.clear();
+	}
+	return codeCompliance.addAll(nomenclatureCodes);
+    }
+
+    /**
+     * Declare that the rank is Code complieant under the {@code nomenclatureCodes}.
+     *
+     * @param {@code nomenclatureCode} {@code int} as bit OR of {@link NomenclatureCode} id.
+     * @return {@code true} if the nomenclature Code specified successfully, 
+     * or {@code false} if the nomenclatural Code is already specified, or specified Code is {@code null}
+     */
+    public boolean setCodeCompliance(int nomenclatureCodes)
+    {
+	if(Objects.isNull(codeCompliance)) {
+	    codeCompliance = new HashSet<NomenclatureCode>(NomenclatureCode.values().length);
+	}
+	else if (!codeCompliance.isEmpty()) {
+	    codeCompliance.clear();
+	}
+	return addCodeCompliance(nomenclatureCodes);
+    }
+
+    /**
+     * Returns wheter the rank is Code complieant with the {@code nomenclatureCode}. 
+     *
+     * @param {@code nomenclatureCode} {@link NomenclatureCoe} to test Code compliant of the rank 
+     * @return {@code true} if the rank is Code compliant under the {@code nomenclatureCode}.
+     * or {@code null}, if either the rank is Code incopmilant with the {@code nomenclatureCode}
+     * or  {@code nomenclatureCode} is {@code null}
+     */
+    public boolean isCompliant(NomenclatureCode nomenclatureCode)
+    {
+	if (Objects.isNull(nomenclatureCode) || Objects.isNull(codeCompliance))
+	    return false;
+
+	return codeCompliance.contains(nomenclatureCode);
+    }
+
+    /**
+     * Returns {@code Iterator} of nomenclatural conventions relevant to the rank.
+     *
+     * @return {@code Iterator} of relevant nomenclatural conventions.
+     */
+    public Iterator<NomenclatureConvention> getConventions()
+    {
+	if(Objects.isNull(convention))
+	    convention = new HashSet<NomenclatureConvention>(NomenclatureConvention.values().length);
+	return convention.iterator();
+    }
+
+    /**
+     * Declare that the rank is used in the {@code nomenclatureConvention}.
+     *
+     * @param {@code nomenclatureConvention} {@link NomenclatureConvention} using the {@code Rank}
+     * @return {@code true} if the nomenclature convention is dclared to use {@code Rank} successfully, 
+     * or {@code false} if the nomenclatural convention is already declared, or specified convention is {@code null}
+     */
+    public boolean addConvention(NomenclatureConvention nomenclatureConvention)
+    {
+	if (Objects.isNull(nomenclatureConvention))
+	    return false;
+	if(Objects.isNull(convention))
+	    convention = new HashSet<NomenclatureConvention>(NomenclatureConvention.values().length);
+	return convention.add(nomenclatureConvention);
+    }
+
+    /**
+     * Declare that the rank is used in the {@code nomenclatureConvention}.
+     *
+     * @param {@code nomenclatureConventions} id of {@link NomenclatureConvention} to add.  It could be bit OR of ids to add multiple conventions.
+     * @return {@code true} if the nomenclature convention is dclared to use {@code Rank} successfully, 
+     * or {@code false} if the nomenclatural convention is already declared, or specified convention is {@code null}
+     */
+    public boolean addConvention(int nomenclatureConventions)
+    {
+	boolean result = true;
+	for (NomenclatureConvention c: NomenclatureConvention.values()) {
+	    if (0 != (c.getId()  & nomenclatureConventions)) {
+		result &= addConvention(c);
+	    }
+	}
+	return result;
+    }
+
+    /**
+     * Declare that the rank is used in the {@code nomenclatureConvention}.
+     *
+     * @param {@code nomenclatureConventions} id of {@link NomenclatureConvention} to add.  It could be bit OR of ids to add multiple conventions.
+     * @return {@code true} if the nomenclature convention is dclared to use {@code Rank} successfully, 
+     * or {@code false} if the nomenclatural convention is already declared, or specified convention is {@code null}
+     */
+    public boolean setConvention(int nomenclatureConventions)
+    {
+	if(Objects.nonNull(convention) && !convention.isEmpty()) {
+	    convention.clear();
+	    }
+	    
+	return addCodeCompliance(nomenclatureConventions);
+    }
+
+
+    
+    /**
+     * Declare that the rank is not used under the {@code nomenclatureConvention}.
+     *
+     * @param {@code nomenclatureConvention} {@link NomenclatureConvention} not usind the {@code Rank}
+     * @return {@code true} if the rank declared unused under the {@code nomenclatureConvention}
+     */
+    public boolean removeConvention(NomenclatureConvention nomenclatureConvention)
+    {
+	if (Objects.isNull(nomenclatureConvention) || Objects.isNull(convention))
+	    return false;
+
+	return convention.remove(nomenclatureConvention);
+    }
+
+    /**
+     * Returns wheter the {@code Rank} is used in the {@code nomenclatureConvention}. 
+     *
+     * @param {@code nomenclatureConvention} {@link NomenclatureCoe} to test under which the {@code Rank} is used
+     * @return {@code true} if the {@code Rank} is used under the {@code nomenclatureConvention}.
+     * or {@code null}, if either the {@the Rank} is not used under the {@code nomenclatureConvention}
+     * or  {@code nomenclatureConvention} is {@code null}
+     */
+    public boolean isUsed(NomenclatureConvention nomenclatureConvention)
+    {
+	if (Objects.isNull(nomenclatureConvention) || Objects.isNull(convention))
+	    return false;
+
+	return convention.contains(nomenclatureConvention);
     }
 
     /**
@@ -1143,7 +1278,7 @@ public class Rank
 	    && Objects.equals(this.getName(), theOther.getName())
 	    && Objects.equals(this.getAbbreviation(), theOther.getAbbreviation())
 	    && Objects.equals(this.isOptional(), theOther.isOptional())
-	    && Objects.equals(this.getCodeCoverage(),theOther.getCodeCoverage())
+	    && Objects.equals(this.getCodeCompliance(),theOther.getCodeCompliance())
 	    ;
     }
 
@@ -1153,7 +1288,7 @@ public class Rank
 			    getName(),
 			    getAbbreviation(),
 			    isOptional(),
-			    getCodeCoverage()
+			    getCodeCompliance()
 			    );
     }
 
@@ -1182,48 +1317,6 @@ public class Rank
     public String toString()
     {
 	return getName();
-    }
-
-    /**
-     * Adds {@code observer} to {@code Observer} list
-     * 
-     * @param observer {@code Observer} to be added to the list
-     */
-    public void addObserver(Observer observer)
-    {
-	rankObserver.addObserver(observer);
-    }
-
-    /**
-     * Removes {@code observer} from {@code Observer} list
-     * 
-     * @param observer {@code Observer} to be removed from the list
-     */
-    public void deleteObserver(Observer observer)
-    {
-	rankObserver.deleteObserver(observer);
-    }
-
-    /**
-     * Adds {@code observer} to {@code Observer} list
-     * observing this
-     * 
-     * @param observer {@code Observer} to be added to the list
-     */
-    public void addObserver(RankObserver observer)
-    {
-	super.addObserver(observer);
-    }
-
-    /**
-     * Removes {@code observer} from {@code Observer} list
-     * observing this
-     * 
-     * @param observer {@code Observer} to be removed from the list
-     */
-    public void deleteObserver(RankObserver observer)
-    {
-	super.deleteObserver(observer);
     }
 
     /**
@@ -1274,18 +1367,6 @@ public class Rank
 	    sortedRankNames[index++] = iterator.next().getName();
 	}
 	return sortedRankNames;
-    }
-
-    /**
-     * Returns the {@code Observerable} observing
-     * {@code Rank} providing a satic proxy to observe
-     * {@code Rank}
-     *
-     * @return Observable observing {@code Rank}
-     */
-    public static Observable getRankObserver()
-    {
-	return rankObserver;
     }
 
     public static String getAbbreviation(String rank)
@@ -1355,21 +1436,35 @@ public class Rank
 	return "";
     }
 
+    volatile PropertyChangeEvent currentEvent = null;    
+    public void propertyChange(PropertyChangeEvent event)
+    {
+	if (event.getSource() == this)
+	    return;
+	
+	while (Objects.nonNull(currentEvent)) { }
+	currentEvent = event;
+	// action... 
+	currentEvent = null;
+    }
+    
 }
 
-class RankObserver
-    extends Observable
-    implements Observer
-{
-    public RankObserver()
+    class RankObserver
+	extends PropertyChanger
+	implements PropertyChangeListener
     {
-	super();
+	volatile PropertyChangeEvent currentEvent = null;
+	public RankObserver()
+	{
+	    super();
+	}
+	
+	public void propertyChange(PropertyChangeEvent event)
+	{
+	    while (Objects.nonNull(currentEvent)) { }
+	    currentEvent = event;
+	    firePropertyChange(event);
+	    currentEvent = null;
+	}
     }
-
-    public void update(Observable observer, Object arg)
-    {
-	setChanged();
-	notifyObservers(arg);
-    }
-
-}

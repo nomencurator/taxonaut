@@ -1,7 +1,7 @@
 /*
  * CitationModel.java:  a java Document to manage Puclibation data
  *
- * Copyright (c) 2004, 2015 Nozomi `James' Ytow
+ * Copyright (c) 2004, 2015, 2019 Nozomi `James' Ytow
  * All rights reserved.
 */
 
@@ -23,12 +23,12 @@ package org.nomencurator.gui.swing.model;
 
 import java.awt.BorderLayout;
 
-import java.util.Observable;
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+
+import org.nomencurator.beans.PropertyChanger;
 
 import org.nomencurator.model.Publication;
 
@@ -40,11 +40,11 @@ import org.nomencurator.model.Publication;
  * @see org.nomencurator.model.Publication
  * @see org.nomencurator.swing.CitationPanel
  *
- * @version 	16 July 2015
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class CitationModel
-    extends Observable
+    extends PropertyChanger
 {
     /** <CODE>Publication</CODE> represented by this <CODE>CitationModel</CODE> */
     protected Publication publication;

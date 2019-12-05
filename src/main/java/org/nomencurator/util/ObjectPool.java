@@ -1,7 +1,7 @@
 /*
  * ObjectPool.java:  a pool of Objects
  *
- * Copyright (c) 2003, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2003, 2015, 2016, 2019 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * <code>ObjectPool</code> provides a pool of Objects.
  *
- * @version 	24 June 2016
+ * @version 	06 Dec. 2019
  * @author 	Nozomi `James' Ytow
  */
 public class ObjectPool<K, V>
@@ -96,7 +96,7 @@ public class ObjectPool<K, V>
 	    }
 	    //objects.addElement(value);
 	    objects.add(value);
-	    indices.put(value, new Integer(index));
+	    indices.put(value, Integer.valueOf(index));
 
 	    o = super.put(key, value);
 	}
