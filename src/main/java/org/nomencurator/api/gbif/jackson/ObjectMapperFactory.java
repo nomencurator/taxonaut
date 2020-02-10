@@ -1,7 +1,7 @@
 /*
- * NameUsageMixIn.java: a mix in to deserialize NameUsage from JSON using Jackson
+ * ObjectMapperFactory.java:  a factory class to 
  *
- * Copyright (c) 2016, 2020 Nozomi `James' Ytow
+ * Copyright (c) 2020 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,22 +22,23 @@
 package org.nomencurator.api.gbif.jackson;
 
 // for Jackson 1.x
-// import org.codehaus.jackson.map.annotate.JsonDeserialize;
-// import org.codehaus.jackson.annotate.JsonIgnore;
-// import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+// import org.codehaus.jackson.map.ObjectMapper;
 // or Jackson 2.x
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import org.gbif.api.model.checklistbank.NameUsage;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * {@code NameUsageMixIn} provieds mix in to deserialize {@link NameUsage}. into JSON using {@link NameUsageDesrializer}.
+ * {@code ObjectMapperFactory} provides a factory method to provide singe, shared {@link ObjectMapper}.
  *
  * @version 	10 Feb. 2020
  * @author 	Nozomi `James' Ytow
  */
-//@JsonIgnoreProperties(ignoreUnknown=true)
-@JsonIgnoreProperties({"synonym"})
-public interface NameUsageMixIn
-{
+public class ObjectMapperFactory {
+
+    static final ObjectMapper mapper = new ObjectMapper();
+
+    private ObjectMapperFactory() {}
+
+    public static ObjectMapper getObjectMapper() {
+	return mapper;
+    }
 }

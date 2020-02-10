@@ -1,7 +1,7 @@
 /*
- * BoundingBoxMixIn.java: a mix in to deserialize BoundingBox from JSON using Jackson
+ * LanguageMixIn.java: a mix in to deserialize Language from JSON using Jackson
  *
- * Copyright (c) 2016, 2020 Nozomi `James' Ytow
+ * Copyright (c) 2020 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -25,19 +25,20 @@ package org.nomencurator.api.gbif.jackson.mixin;
 // import org.codehaus.jackson.map.annotate.JsonDeserialize;
 // or Jackson 2.x
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.gbif.api.model.registry.eml.geospatial.BoundingBox;
+import org.nomencurator.api.gbif.jackson.deserialize.LanguageDeserializer;
 
-import org.nomencurator.api.gbif.jackson.deserialize.BoundingBoxDeserializer;
+import org.gbif.api.vocabulary.Language;
 
 /**
- * {@code BoundingBoxMixIn} provieds mix in to deserialize {@link BoundingBox}. into JSON using {@link BoundingBoxDesrializer}.
+ * {@code LanguageMixIn} provieds a mix in to deserialize  JSON int {@link Language} using {@link LanguageDesrializer}.
  *
  * @version 	10 Feb. 2020
  * @author 	Nozomi `James' Ytow
  */
-public interface BoundingBoxMixIn
+public interface LanguageMixIn
 {
-    @JsonDeserialize(using = BoundingBoxDeserializer.class)
-    BoundingBox getBoundingBox();
+    @JsonDeserialize(using = LanguageDeserializer.class)
+    Language getLanguage();
 }

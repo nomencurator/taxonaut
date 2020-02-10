@@ -1,7 +1,7 @@
 /*
  * DatasetAPIClient.java:  a client implentation using DatasetAPIClient of GBIF
  *
- * Copyright (c) 2014, 2015, 2016, 2019 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016, 2019, 2020 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -22,11 +22,14 @@
 package org.nomencurator.api.gbif;
 
 // for Jackson 1.x
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+// import org.codehaus.jackson.map.ObjectMapper;
+// import org.codehaus.jackson.type.TypeReference;
 // or Jackson 2.x
-// import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.google.common.collect.Lists;
 
@@ -76,6 +79,7 @@ import org.gbif.api.service.registry.DatasetService;
 
 import org.gbif.api.vocabulary.Country;
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.Language;
 import org.gbif.api.vocabulary.License;
 import org.gbif.api.vocabulary.IdentifierType;
 import org.gbif.api.vocabulary.MetadataType;
@@ -83,7 +87,9 @@ import org.gbif.api.vocabulary.TagName;
 import org.gbif.api.vocabulary.TagNamespace;
 
 
-import org.nomencurator.api.gbif.jackson.BoundingBoxMixIn;
+import org.nomencurator.api.gbif.jackson.mixin.BoundingBoxMixIn;
+import org.nomencurator.api.gbif.jackson.mixin.DatasetMixIn;
+import org.nomencurator.api.gbif.jackson.mixin.LanguageMixIn;
 
 import lombok.Getter;
 
@@ -91,9 +97,10 @@ import lombok.Getter;
  * <CODE>DatasetAPIClient</CODE> provides a set of functions to use GBIF Dataset API.
  * Only GET methods are funtional.
  *
- * @vesion 03 Dec. 2019
+ * @vesion 10 Feb. 2020
  * @author Nozomi "James" Ytow
  */
+@JsonIgnoreProperties({"language"})
 public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 
     @Getter
@@ -108,8 +115,21 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
     {
 	super();
 	setDatasetURLEpithet("dataset");
+	// IF codehaus
+	/*
 	mapper.getDeserializationConfig().addMixInAnnotations(Dataset.class, LicenseMixin.class);
 	mapper.getDeserializationConfig().addMixInAnnotations(GeospatialCoverage.class, BoundingBoxMixIn.class);
+	*/
+	// END IF codehaus
+
+	// IF FasterXML
+	// mapper.addMixIn(Dataset.class, LicenseMixin.class);
+	mapper.addMixIn(License.class, LicenseMixin.class);
+	mapper.addMixIn(GeospatialCoverage.class, BoundingBoxMixIn.class);
+	// mapper.addMixIn(Language.class, LanguageMixIn.class);
+	mapper.addMixIn(Dataset.class, DatasetMixIn.class);
+	// END IF FasterXML
+	
     }
 
     /*

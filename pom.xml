@@ -4,13 +4,14 @@
   <groupId>org.nomencurator</groupId>
   <artifactId>taxonaut</artifactId>
   <packaging>jar</packaging>
-  <version>3.1.8</version>
-  <name>taxonaut</name>
+  <version>3.1.9</version>
+  <name>taxonaut_vm8</name>
+
   <url>http://nomencurator.org</url>
+<!-- last updated on 05 Feb 2020-->
 
-<!-- last updated on 03 Dec 2019-->
-
-  <properties>
+<properties>
+  <java.version>11</java.version>
     <maven.test.skip>true</maven.test.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -26,10 +27,10 @@
     <findbugs-jsr305.version>2.0.3</findbugs-jsr305.version>
     <guava.version>18.0</guava.version>
     <hamcrest.version>1.3</hamcrest.version>
-    <jackson.version>1.9.13</jackson.version>
 <!--
-    <jackson.version>2.4.1</jackson.version>
+    <jackson.version>1.9.13</jackson.version>
 -->
+    <jackson.version>2.10.2</jackson.version>
     <junit.version>4.11</junit.version>
     <logback.version>1.0.13</logback.version>
     <mockito.version>1.9.5</mockito.version>
@@ -56,22 +57,49 @@
 -->
 
 <!-- GBIF API doesn't work with Jackson 2.x
+-->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.4.1</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.4.1</version>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.4.1</version>
+      <version>${jackson.version}</version>
+    </dependency>
+<!--  END: GBIF API doesn't work with Jackson 2.x
+-->
+<!-- Jackson 1.x
+   <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+   <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>${jackson.version}</version>
     </dependency>
 -->
+ <!--
+    <dependency>
+	<groupId>org.codehaus.jackson</groupId>
+	<artifactId>jackson-jaxrs</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+-->
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -164,30 +192,13 @@
       <version>${bval-jsr303.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-<!--
-    <dependency>
-	<groupId>org.codehaus.jackson</groupId>
-	<artifactId>jackson-jaxrs</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
--->
-<!--
+ <!--
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
       <version>3.0.6.RELEASE</version>
     </dependency>
 -->
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
@@ -245,7 +256,7 @@
 <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
     <groupId>org.apache.poi</groupId>
     <artifactId>poi</artifactId>
-    <version>3.14</version>
+    <version>4.1.1</version>
 </dependency>
 <dependency>
 <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
@@ -312,11 +323,11 @@
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-compiler-plugin</artifactId>
-	<version>3.1</version>
+	<version>3.8.1</version>
 	<configuration>
 	  <!-- 1.7? -->
-	  <source>1.8</source>
-	  <target>1.8</target>
+	  <source>${java.version}</source>
+	  <target>${java.version}</target>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
 	  <encoding>UTF-8</encoding>
@@ -330,7 +341,7 @@
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-jar-plugin</artifactId>
-	<version>2.5</version>
+	<version>3.2.0</version>
 	<configuration>
 	  <archive>
             <manifest>
@@ -342,7 +353,7 @@
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-assembly-plugin</artifactId>
-	<version>2.5.2</version>
+	<version>3.2.0</version>
 	<configuration>
           <finalName>Taxonaut-${project.version}</finalName>
           <descriptorRefs>
@@ -367,7 +378,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.3</version>
+        <version>1.6.0</version>
         <executions>
           <execution>
             <goals>

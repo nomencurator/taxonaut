@@ -1,7 +1,7 @@
 /*
  * SpeciesAPIClient.java:  a client implementation of GBIF SpeciesAPI
  *
- * Copyright (c) 2014, 2015, 2016 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016, 2020 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -16,17 +16,22 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  */
 
 package org.nomencurator.api.gbif;
 
 // for Jackson 1.x
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+// import org.codehaus.jackson.map.ObjectMapper;
+// import org.codehaus.jackson.type.TypeReference;
+// import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+// import org.codehaus.jackson.map.DeserializationConfig;
 // or Jackson 2.x
-// import com.fasterxml.jackson.databind.ObjectMapper;
-// import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.google.common.collect.Multimap;
 
@@ -97,21 +102,18 @@ import org.gbif.checklistbank.ws.util.Constants;
 
 import com.google.common.collect.Lists;
 
-import org.nomencurator.api.gbif.jackson.NameUsageMixIn;
+import org.nomencurator.api.gbif.jackson.mixin.NameUsageMixIn;
 
 import org.nomencurator.api.gbif.model.checklistbank.Distribution;
 import org.nomencurator.api.gbif.model.checklistbank.ParsedName;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
-import org.codehaus.jackson.map.DeserializationConfig;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 /**
  * <CODE>SpeciesAPI</CODE> implements a client interface to use GBIF SpeciesAPI.
  *
- * @version 	15 Oct. 2016
+ * @version 	10 Feb. 2020
  * @author 	Nozomi `James' Ytow
  */
 public class SpeciesAPIClient
@@ -407,9 +409,18 @@ public class SpeciesAPIClient
 	super();
 	setSpeciesURLEpithet(Constants.SPECIES_PATH);
 	setParserURLEpithet("parser");
-	 mapper.getDeserializationConfig().addMixInAnnotations(NameUsage.class, NameUsageMixIn.class);
+	// IF codehaus
+	/*
+	mapper.getDeserializationConfig().addMixInAnnotations(NameUsage.class, NameUsageMixIn.class);
 	// just in case
-	mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	 mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	*/
+	// END IF codehaus
+	
+	// IF FasterXML
+	mapper.addMixIn(NameUsage.class, NameUsageMixIn.class);
+	mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	// END IF FasterXML
     }
 
     public NameUsage get(int usageKey)
@@ -878,7 +889,8 @@ public class SpeciesAPIClient
 	try {
 	    HttpURLConnection connection = getConnection(resourceURL.toString(), locales);
 	    response = mapper.readValue(connection.getInputStream(),
-					new TypeReference<List<NameUsage>>() {});
+					//new TypeReference<List<NameUsage>>() {});
+					new TypeReference<PagingResponse<NameUsage>>() {});
 	    connection.disconnect();
 	}
 	catch (MalformedURLException e) {
