@@ -36,7 +36,6 @@ import org.gbif.api.model.checklistbank.NameUsage;
  * @version 	10 Feb. 2020
  * @author 	Nozomi `James' Ytow
  */
-//@JsonIgnoreProperties(ignoreUnknown=true)
 @JsonIgnoreProperties({"synonym"})
 public interface NameUsageMixIn
 {
