@@ -1,7 +1,7 @@
 /*
  * NameTree.java: a JTree for NameUsageNode
  *
- * Copyright (c) 2002, 2003, 2004, 2005, 2014, 2015, 2016, 2019 Nozomi `James' Ytow
+ * Copyright (c) 2002, 2003, 2004, 2005, 2014, 2015, 2016, 2019, 2020 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -21,7 +21,6 @@
 
 package org.nomencurator.gui.swing;
 
-import com.sun.java.swing.plaf.motif.MotifTreeUI;
 // import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 
 import java.awt.Component;
@@ -94,7 +93,6 @@ import org.nomencurator.model.Rank;
 import org.nomencurator.gui.swing.plaf.AlignableTreeUI;
 import org.nomencurator.gui.swing.plaf.basic.BasicAlignableTreeUI;
 import org.nomencurator.gui.swing.plaf.metal.MetalAlignableTreeUI;
-import org.nomencurator.gui.swing.plaf.motif.MotifAlignableTreeUI;
 
 import org.nomencurator.gui.swing.table.HeaderEditableTableColumn;
 import org.nomencurator.gui.swing.table.NameTreeTableModel;
@@ -209,7 +207,7 @@ public class NameTree
 /**
  * A {@code JTree} for a {@code NameUsageNode}
  *
- * @version 	03 July 2016
+ * @version 	10 Feb. 2016
  * @author 	Nozomi `James' Ytow
  */
 class GenericNameTree<T extends NameUsage<?>, N extends NameUsageNode<?>>
@@ -227,10 +225,7 @@ class GenericNameTree<T extends NameUsage<?>, N extends NameUsageNode<?>>
     /* Set user interface class ID according to current default look and feel*/
     protected static void putUI()
     {
-	if (LookAndFeelManager.isMotif())
-	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.motif.MotifAlignableTreeUI");
-	else
-	    UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.metal.MetalAlignableTreeUI");
+	UIManager.put(uiClassID, "org.nomencurator.gui.swing.plaf.metal.MetalAlignableTreeUI");
     }
 
     static {
