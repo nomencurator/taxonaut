@@ -57,25 +57,29 @@ import org.gbif.api.vocabulary.License;
  * {@code LicenseDeserializer} provides a Jackson  {@link JsonDeserializer} for {@link License},
  * adopted from {@link LicenseSerde.LenienseJsonDesrializer} code copyrighted by GBIF.
  *
- * @version 	09 Feb. 2020
+ * @version 	11 Feb. 2020
  * @author 	Nozomi `James' Ytow
  */
 public class LicenseDeserializer extends JsonDeserializer<License> {
     @Override
     public License deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
       if (jp.getCurrentToken() == JsonToken.VALUE_STRING) {
-        if (Strings.isNullOrEmpty(jp.getText())) {
+	  return getLicense(jp.getText());
+      }
+      return getLicense((String) ctxt.handleUnexpectedToken(String.class, jp.getCurrentToken(), jp, "Expected String", jp.getText()));
+    }
+
+    static public License getLicense(String expression) {
+        if (Strings.isNullOrEmpty(expression)) {
           return License.UNSPECIFIED;
         }
         // first, try by url
-        Optional<License> license = License.fromLicenseUrl(jp.getText());
+        Optional<License> license = License.fromLicenseUrl(expression);
         if (license.isPresent()) {
           return license.get();
         }
 
         // then, try by name
-        return License.fromString(jp.getText()).orElse(License.UNSUPPORTED);
-      }
-      throw ctxt.mappingException("Expected String");
+        return License.fromString(expression).orElse(License.UNSUPPORTED);
     }
 }

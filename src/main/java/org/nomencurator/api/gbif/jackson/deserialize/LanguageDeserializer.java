@@ -55,7 +55,7 @@ import org.gbif.api.vocabulary.Language;
  * {@code LanguageDeserializer} provides a Jackson  {@link JsonDeserializer} for {@link Language},
  * adopted from {@link Language.LenientDesrializer} code copyrighted by GBIF.
  *
- * @version 	09 Feb. 2020
+ * @version 	11 Feb. 2020
  * @author 	Nozomi `James' Ytow
  */
 public class LanguageDeserializer extends JsonDeserializer<Language> {
@@ -68,8 +68,9 @@ public class LanguageDeserializer extends JsonDeserializer<Language> {
           return Language.UNKNOWN; // none provided
         }
       } catch (Exception e) {
-        throw new IOException("Unable to deserialize language from provided value (hint: not an ISO 2 or 3 character?): "
-                              + jp.getText());
+	  return lenientParse((String) ctxt.handleUnexpectedToken(String.class, jp.getCurrentToken(), jp,
+								  "Unable to deserialize language from provided value (hint: not an ISO 2 or 3 character?): "
+								  + jp.getText(), jp.getText()));
       }
     }
 
