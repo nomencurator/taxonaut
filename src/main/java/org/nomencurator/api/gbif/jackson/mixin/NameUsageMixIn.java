@@ -33,7 +33,7 @@ import org.gbif.api.model.checklistbank.NameUsage;
 /**
  * {@code NameUsageMixIn} provieds mix in to deserialize {@link NameUsage}. into JSON using {@link NameUsageDesrializer}.
  *
- * @version 	10 Feb. 2020
+ * @version 	11 Feb. 2020
  * @author 	Nozomi `James' Ytow
  */
 @JsonIgnoreProperties({"synonym"})
