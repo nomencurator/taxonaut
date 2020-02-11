@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-package org.nomencurator.api.gbif.jackson;
+package org.nomencurator.api.gbif.jackson.mixin;
 
 // for Jackson 1.x
 // import org.codehaus.jackson.map.annotate.JsonDeserialize;
