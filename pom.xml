@@ -8,7 +8,7 @@
   <name>taxonaut_vm8</name>
 
   <url>http://nomencurator.org</url>
-<!-- last updated on 05 Feb 2020-->
+<!-- last updated on 11 Feb 2020-->
 
 <properties>
   <java.version>11</java.version>
@@ -66,11 +66,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
