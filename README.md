@@ -1,11 +1,11 @@
 # Taxonaut: a comparative viewer of multiple hierarchies
 
 Taxonaut is a Java application software to compare multiple hierarchies retrieved from data sources
-accessible by GBIF Species API.  Current version is [3.1.9](https://github.com/nomencurator/taxonaut/releases/tag/3.1.9).
-[Executable jar file](https://github.com/nomencurator/taxonaut/releases/download/3.1.9/Taxonaut-3.1.9-jar-with-dependencies.jar) is available to try on any Java 8 environment including Linux, Mac OS X, Solaris and Windows.
+accessible by GBIF Species API.  Current version is [3.1.10](https://github.com/nomencurator/taxonaut/releases/tag/3.1.10).
+[Executable jar file](https://github.com/nomencurator/taxonaut/releases/download/3.1.10/Taxonaut-3.1.10-jar-with-dependencies.jar) is available to try on any Java 8 environment including Linux, Mac OS X, Solaris and Windows.
 Download the jar file and double click it, or if it does not work, execute java from the command line by typing
 ```
-java -jar Taxonaut-3.1.9-jar-with-dependencies.jar
+java -jar Taxonaut-3.1.10-jar-with-dependencies.jar
 ```
 at the directory where the jar file is.  Java Runtime Environment is available from [download site] (https://java.com/download/), if you do not have.  It is tested with openjdk 14-ea 2020-03-17.  Network connection to GBIF data server (api.gbif.org) is essential.   See [Wiki page](https://github.com/nomencurator/taxonaut/wiki) for more instructions.
 
