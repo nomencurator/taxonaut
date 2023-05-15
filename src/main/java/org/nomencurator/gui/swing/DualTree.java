@@ -135,7 +135,7 @@ import org.nomencurator.gui.swing.tree.FlippableVariableHeightLayoutCache;
 /**
  * <CODE>DualTree</CODE> provides a {@code Flippable} <code>JTree</code>
  *
- * @version 	01 June 2022
+ * @version 	16 May 2023
  * @author 	Nozomi `James' Ytow
  */
 public class DualTree
