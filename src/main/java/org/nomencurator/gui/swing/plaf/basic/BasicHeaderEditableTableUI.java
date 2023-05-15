@@ -20,6 +20,10 @@
  * limitations under the License.
  */
 
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP13878069
+ */
+
 package org.nomencurator.gui.swing.plaf.basic;
 
 import java.awt.Component;

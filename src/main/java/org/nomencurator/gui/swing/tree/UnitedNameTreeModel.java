@@ -20,6 +20,10 @@
  */
 
 /*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP13878069, JP17300071
+ */
+
+/*
   synopsys:
   the node to add could be either new name or existing name,
   either root node or other.

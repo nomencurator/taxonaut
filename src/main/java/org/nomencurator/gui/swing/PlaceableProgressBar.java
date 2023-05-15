@@ -20,6 +20,10 @@
  * limitations under the License.
  */
 
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP17300071
+ */
+
 package org.nomencurator.gui.swing;
 
 import java.awt.Color;

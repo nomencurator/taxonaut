@@ -20,6 +20,10 @@
  * limitations under the License.
  */
 
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP13878069, JP19K12711
+ */
+
 package org.nomencurator.model;
 
 import java.util.Collection;

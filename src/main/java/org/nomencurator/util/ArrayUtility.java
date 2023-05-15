@@ -19,6 +19,10 @@
  * limitations under the License.
  */
 
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP17300071
+ */
+
 package org.nomencurator.util;
 
 import java.util.ArrayList;

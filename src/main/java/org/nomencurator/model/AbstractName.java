@@ -25,6 +25,10 @@
  * limitations under the License.
  */
 
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP13878069, JP17300071, JP19K12711
+ */
+
 package org.nomencurator.model;
 
 import java.beans.PropertyChangeEvent;

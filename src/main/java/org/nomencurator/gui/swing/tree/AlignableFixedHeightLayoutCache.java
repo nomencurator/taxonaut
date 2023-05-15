@@ -20,6 +20,10 @@
  * limitations under the License.
  */
 
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP13878069, JP17300071
+ */
+
 package org.nomencurator.gui.swing.tree;
 
 import java.awt.Rectangle;

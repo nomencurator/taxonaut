@@ -1,7 +1,7 @@
 /*
  * SpeciesAPIClient.java:  a client implementation of GBIF SpeciesAPI
  *
- * Copyright (c) 2014, 2015, 2016, 2020 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016, 2020, 2023 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -17,6 +17,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
+ */
+
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP19K12711
  */
 
 package org.nomencurator.api.gbif;
@@ -54,6 +58,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -113,7 +118,7 @@ import org.nomencurator.api.gbif.model.checklistbank.ParsedName;
 /**
  * <CODE>SpeciesAPI</CODE> implements a client interface to use GBIF SpeciesAPI.
  *
- * @version 	10 Feb. 2020
+ * @version 	16 May. 2023
  * @author 	Nozomi `James' Ytow
  */
 public class SpeciesAPIClient
@@ -1174,7 +1179,7 @@ public class SpeciesAPIClient
 	}
 	String connector = REST_AMPERSAND;
 
-	Multimap<NameUsageSearchParameter, String> parameters = searchRequest.getParameters();
+	Map<NameUsageSearchParameter, Set<String>> parameters = searchRequest.getParameters();
 
 	StringBuffer parameter = new StringBuffer();
 	Collection<String> values = parameters.get(NameUsageSearchParameter.DATASET_KEY);
@@ -1311,7 +1316,7 @@ public class SpeciesAPIClient
 
       String connector = REST_AMPERSAND;
 
-      Multimap<NameUsageSearchParameter, String> parameters = suggestRequest.getParameters();
+      Map<NameUsageSearchParameter, Set<String>> parameters = suggestRequest.getParameters();
 
       StringBuffer parameter = new StringBuffer();
       Collection<String> values = parameters.get(NameUsageSearchParameter.DATASET_KEY);

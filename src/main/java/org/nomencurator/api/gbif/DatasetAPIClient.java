@@ -1,7 +1,7 @@
 /*
  * DatasetAPIClient.java:  a client implentation using DatasetAPIClient of GBIF
  *
- * Copyright (c) 2014, 2015, 2016, 2019, 2020 Nozomi `James' Ytow
+ * Copyright (c) 2014, 2015, 2016, 2019, 2020, 2023 Nozomi `James' Ytow
  * All rights reserved.
  */
 
@@ -17,6 +17,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP19K12711
  */
 
 package org.nomencurator.api.gbif;
@@ -55,7 +59,7 @@ import javax.annotation.Nullable;
 
 import org.gbif.api.jackson.LicenseSerde;
 
-import org.gbif.ws.mixin.LicenseMixin;
+//import org.gbif.ws.mixin.LicenseMixin;
 
 import org.gbif.api.model.common.paging.Pageable;
 import org.gbif.api.model.common.paging.PagingResponse;
@@ -64,6 +68,7 @@ import org.gbif.api.model.registry.Comment;
 import org.gbif.api.model.registry.Contact;
 import org.gbif.api.model.registry.Dataset;
 import org.gbif.api.model.registry.Endpoint;
+import org.gbif.api.model.registry.Grid;
 import org.gbif.api.model.registry.Identifier;
 import org.gbif.api.model.registry.MachineTag;
 import org.gbif.api.model.registry.Metadata;
@@ -97,7 +102,7 @@ import lombok.Getter;
  * <CODE>DatasetAPIClient</CODE> provides a set of functions to use GBIF Dataset API.
  * Only GET methods are funtional.
  *
- * @vesion 10 Feb. 2020
+ * @vesion 16 May. 2023
  * @author Nozomi "James" Ytow
  */
 @JsonIgnoreProperties({"language"})
@@ -124,7 +129,6 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 
 	// IF FasterXML
 	// mapper.addMixIn(Dataset.class, LicenseMixin.class);
-	mapper.addMixIn(License.class, LicenseMixin.class);
 	mapper.addMixIn(GeospatialCoverage.class, BoundingBoxMixIn.class);
 	// mapper.addMixIn(Language.class, LanguageMixIn.class);
 	mapper.addMixIn(Dataset.class, DatasetMixIn.class);
@@ -529,6 +533,11 @@ public class DatasetAPIClient extends GBIFAPIClient implements DatasetService {
 	    System.out.println("IOException");
 	}
 	return response;
+    }
+
+    public List<Grid> listGrids(UUID datasetKey)
+    {
+	return null;
     }
 
     // MachineTagService via NetworkEntityService<Dataset>

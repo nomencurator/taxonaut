@@ -20,6 +20,10 @@
  * limitations under the License.
  */
 
+/*
+ * The work is partially supproted by JSPS KAKENHI Grant Number JP17300071
+ */
+
 /**
  * {@code Attribute} provides a Java implementation of attribute element returned
  * by uBio XML Webservices
