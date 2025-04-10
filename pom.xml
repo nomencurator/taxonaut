@@ -266,7 +266,7 @@
     <groupId>org.apache.poi</groupId>
     <artifactId>poi-ooxml</artifactId>
 <!--    <version>3.14</version> -->
-    <version>5.2.2</version>
+    <version>5.4.0</version>
 </dependency>
  </dependencies>
 
